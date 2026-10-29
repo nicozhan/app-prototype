@@ -1,0 +1,14 @@
+# 验证截图与临时截图产物（非源码）
+shots/
+new/
+
+# Figma 导出中间产物（非源码）
+*.json
+
+# 工具/个人私有数据
+.workbuddy/
+
+# 系统 / 编辑器
+.DS_Store
+.idea/
+.vscode/
