@@ -312,63 +312,79 @@ a{ text-decoration:none; color:inherit; }
 .atag.dev{ background:var(--bg); color:var(--blue); }
 .atag.ops{ background:var(--orange-bg); color:var(--orange); border-color:#FFE3C7; }
 
-/* 告警卡片 · 全描边 + 顶部色条（C4 方向，severity 配色可复用） */
-.acard{ display:block; margin:0; background:#fff; border:1.5px solid; border-radius:12px;
-  overflow:hidden; box-shadow:var(--shadow); text-decoration:none; color:inherit; }
-.acard .astrip{ height:4px; }
-.acard .ain{ padding:11px 13px 12px; }
-.acard .atop{ display:flex; align-items:center; gap:7px; }
-.acard .alvl{ font-size:11px; font-weight:800; letter-spacing:.6px; text-transform:uppercase;
-  display:flex; align-items:center; gap:5px; padding:0; border-radius:0; background:none; }
-.acard .sdot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.acard .ast2{ margin-left:auto; font-size:11.5px; font-weight:700; white-space:nowrap;
-  display:flex; align-items:center; gap:5px; }
-.acard .tdot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.acard .atitle{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:5px; }
+/* ===== 全局卡片标准 C3（整圈描边 + 同色光晕 + 实心徽章 + 实心按钮） ===== */
+.acard{ display:block; margin:0; border:2px solid transparent; border-radius:14px; background:#fff;
+  overflow:hidden; text-decoration:none; color:inherit; }
+.acard .astrip{ display:none; }
+.acard .ain{ padding:12px 13px 13px; }
+.acard .atop{ display:flex; align-items:center; gap:8px; }
+.acard .alvl{ font-size:11px; font-weight:800; letter-spacing:.4px; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:8px; color:#fff; }
+.acard .sdot{ display:none; }
+.acard .ast2{ margin-left:auto; font-size:11px; font-weight:700; white-space:nowrap;
+  display:flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; }
+.acard .tdot{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.acard .atitle{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:9px; }
 .acard .achips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
 .acard .achip{ display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600;
   color:var(--gray); background:var(--bg-soft); border:1px solid var(--line);
   padding:4px 8px; border-radius:999px; }
 .acard .achip svg{ width:11px; height:11px; }
-.acard .achip.dev{ color:var(--blue); background:var(--bg); border-color:#C9D2F5; }
-.acard .achip.ops{ color:var(--orange); background:var(--orange-bg); border-color:#FFE3C7; }
-.acard .afoot{ display:flex; align-items:center; justify-content:space-between; margin-top:11px; }
+.acard .achip.dev{ color:var(--blue); background:#F5F7FF; border-color:#DCE3F7; }
+.acard .achip.ops{ color:var(--orange); background:#FFF7F0; border-color:#FFE3C7; }
+.acard .afoot{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; }
 .acard .atime{ font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#9AA1BC; }
-.acard .abtn{ flex:none; display:inline-block; border:none; text-align:center;
-  font-size:12px; font-weight:700; color:var(--blue); background:var(--bg);
-  padding:6px 12px; border-radius:8px; }
+.acard .abtn{ flex:none; display:inline-block; text-align:center; color:#fff; border:none;
+  font-size:12px; font-weight:700; padding:6px 13px; border-radius:8px; }
 
-/* 严重度配色：P0 红 / P1 橙 / P2 浅蓝灰 */
-.acard.p0{ border-color:var(--red); }
-.acard.p0 .astrip{ background:var(--red); }
-.acard.p0 .alvl{ color:var(--red); } .acard.p0 .sdot{ background:var(--red); }
-.acard.p1{ border-color:var(--orange); }
-.acard.p1 .astrip{ background:var(--orange); }
-.acard.p1 .alvl{ color:var(--orange); } .acard.p1 .sdot{ background:var(--orange); }
-.acard.p2{ border-color:#C9D2F5; }
-.acard.p2 .astrip{ background:#C9D2F5; }
-.acard.p2 .alvl{ color:var(--gray); } .acard.p2 .sdot{ background:var(--gray); }
-
-/* 状态配色：待处理红 / 处理中蓝 / 已完成绿 / 已关闭灰 */
-.acard .ast2.s-todo{ color:var(--red); }   .acard .ast2.s-todo .tdot{ background:var(--red); }
-.acard .ast2.s-doing{ color:var(--blue); } .acard .ast2.s-doing .tdot{ background:var(--blue); }
-.acard .ast2.s-done{ color:var(--green); } .acard .ast2.s-done .tdot{ background:var(--green); }
-.acard .ast2.s-closed{ color:var(--gray); }.acard .ast2.s-closed .tdot{ background:var(--gray); }
-
-/* 双按钮操作区（认领等场景） */
-.acard .aacts{ display:flex; gap:8px; margin-top:11px; }
-.acard .abt2{ flex:1; text-align:center; font-size:12px; font-weight:700; padding:8px 10px;
+/* 双按钮操作区 */
+.acard .aacts{ display:flex; gap:8px; margin-top:12px; }
+.acard .abt2{ flex:1; text-align:center; font-size:12px; font-weight:700; padding:9px 10px;
   border-radius:8px; background:var(--blue); color:#fff; border:1px solid var(--blue); cursor:pointer; }
 .acard .abt2.ghost{ background:#fff; color:var(--blue); }
 
-/* 扩展状态色：等待反馈橙 / 待认领绿 */
-.acard .ast2.s-warn{ color:var(--orange); } .acard .ast2.s-warn .tdot{ background:var(--orange); }
-.acard .ast2.s-claim{ color:var(--green); } .acard .ast2.s-claim .tdot{ background:var(--green); }
+/* 等级配色：P0 最强光晕 → P2 几近无感，逐档递减 */
+.acard.p0{ border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(229,72,77,.10), 0 8px 20px rgba(229,72,77,.14); }
+.acard.p0 .alvl{ background:var(--red); }
+.acard.p0 .abtn{ background:var(--red); }
+.acard.p1{ border-color:var(--orange);
+  box-shadow:0 0 0 3px rgba(255,122,0,.08), 0 8px 18px rgba(255,122,0,.10); }
+.acard.p1 .alvl{ background:var(--orange); }
+.acard.p1 .abtn{ background:var(--orange); }
+.acard.p2{ border-color:#C9D2F5;
+  box-shadow:0 0 0 3px rgba(122,132,168,.07), 0 6px 16px rgba(36,52,200,.06); }
+.acard.p2 .alvl{ background:#7A84A8; }
+.acard.p2 .abtn{ background:#7A84A8; }
 
-/* 详情页状态头同款描边 */
-.sect.sev{ border:1.5px solid; border-radius:12px; overflow:hidden; padding:0; }
-.sect.sev .sstrip{ height:4px; }
-.sect.sev .sin{ padding:12px 13px; }
-.sect.sev.p0{ border-color:var(--red); }     .sect.sev.p0 .sstrip{ background:var(--red); }
-.sect.sev.p1{ border-color:var(--orange); }  .sect.sev.p1 .sstrip{ background:var(--orange); }
-.sect.sev.p2{ border-color:#C9D2F5; }        .sect.sev.p2 .sstrip{ background:#C9D2F5; }
+/* 状态配色：软底胶囊 + 色点 */
+.acard .ast2.s-todo{ color:var(--red);    background:var(--red-bg); }
+.acard .ast2.s-todo .tdot{ background:var(--red); }
+.acard .ast2.s-doing{ color:var(--blue);  background:var(--bg); }
+.acard .ast2.s-doing .tdot{ background:var(--blue); }
+.acard .ast2.s-warn{ color:var(--orange); background:var(--orange-bg); }
+.acard .ast2.s-warn .tdot{ background:var(--orange); }
+.acard .ast2.s-claim{ color:var(--green); background:var(--green-bg); }
+.acard .ast2.s-claim .tdot{ background:var(--green); }
+.acard .ast2.s-done{ color:var(--green);  background:var(--green-bg); }
+.acard .ast2.s-done .tdot{ background:var(--green); }
+.acard .ast2.s-closed{ color:var(--gray); background:#F1F3FA; }
+.acard .ast2.s-closed .tdot{ background:var(--gray); }
+
+/* 详情页状态头：同款描边 + 光晕 */
+.sect.sev{ border:2px solid transparent; border-radius:14px; overflow:hidden; padding:0; background:#fff; }
+.sect.sev .sstrip{ display:none; }
+.sect.sev .sin{ padding:12px 13px 13px; }
+.sect.sev .alvl{ padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; color:#fff; }
+.sect.sev.p0{ border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(229,72,77,.10), 0 8px 20px rgba(229,72,77,.12); }
+.sect.sev.p0 .alvl{ background:var(--red); }
+.sect.sev.p1{ border-color:var(--orange);
+  box-shadow:0 0 0 3px rgba(255,122,0,.08), 0 8px 18px rgba(255,122,0,.10); }
+.sect.sev.p1 .alvl{ background:var(--orange); }
+.sect.sev.p2{ border-color:#C9D2F5;
+  box-shadow:0 0 0 3px rgba(122,132,168,.07), 0 6px 16px rgba(36,52,200,.06); }
+.sect.sev.p2 .alvl{ background:#7A84A8; }
+
+/* C3 光晕需要呼吸空间：列表间距加大（追加覆盖，不改动原规则文本） */
+.tklist{ gap:12px; padding-top:12px; }

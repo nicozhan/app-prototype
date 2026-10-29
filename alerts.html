@@ -20,6 +20,19 @@
     width:calc(100% - 22px); margin:2px 11px 10px; padding:9px; background:var(--bg);
     color:var(--blue); border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; }
   .aclear svg{ width:13px; height:13px; }
+  /* 自定义时间段（精确到年月日时分秒） */
+  .adaterange{ display:none; margin-top:8px; }
+  .adaterange.open{ display:flex; flex-direction:column; gap:7px; }
+  .adr-field{ display:block; background:var(--bg-soft);
+    border:1px solid var(--line); border-radius:10px; padding:6px 9px; }
+  .adr-field span{ display:block; font-size:10px; font-weight:600; color:var(--gray); margin-bottom:2px; letter-spacing:.2px; }
+  .adr-field input{ width:100%; min-width:0; display:block; border:none; outline:none; background:transparent;
+    font-family:inherit; font-size:13px; font-weight:600; color:var(--ink); padding:0;
+    font-variant-numeric:tabular-nums; }
+  .adr-field input::-webkit-date-and-time-value{ text-align:left; }
+  .adr-hint{ font-size:10.5px; color:var(--gray); margin-top:0; line-height:1.5; }
+  .adr-hint b{ color:var(--blue); font-weight:700; }
+  .adr-hint i{ font-style:normal; font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
@@ -35,14 +48,6 @@
 
   <!-- 筛选面板 -->
   <div class="tfilter" id="tfilter">
-    <div class="fg">
-      <div class="fl">租户</div>
-      <div class="opts" id="tenantOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="JAVA">JAVA</span>
-        <span class="opt" data-v="默认租户">默认租户</span>
-      </div>
-    </div>
     <div class="fg">
       <div class="fl">告警类型</div>
       <div class="opts" id="typeOpts">
@@ -81,6 +86,18 @@
         <span class="opt" data-v="today">今天</span>
         <span class="opt" data-v="7d">近 7 天</span>
         <span class="opt" data-v="30d">近 30 天</span>
+        <span class="opt" data-v="custom">自定义</span>
+      </div>
+      <div class="adaterange" id="dateRange">
+        <label class="adr-field">
+          <span>开始时间 · 年/月/日 时:分:秒</span>
+          <input type="datetime-local" id="dStart" step="1">
+        </label>
+        <label class="adr-field">
+          <span>结束时间 · 年/月/日 时:分:秒</span>
+          <input type="datetime-local" id="dEnd" step="1">
+        </label>
+        <div class="adr-hint" id="drHint">精确到秒；留空表示该端不限</div>
       </div>
     </div>
     <button class="aclear" id="clearBtn">
@@ -119,43 +136,54 @@ var SEV = {
 };
 var STC = { todo:'s-todo', doing:'s-doing', done:'s-done', closed:'s-closed' };
 
-var NOW = Date.now();
-var MIN = 60*1000, H = 60*MIN, D = 24*H;
+var D = 24*60*60*1000;
 
-/* 前 3 条为真实示例（设备告警 / 设备离线 / P2 / SN0010155 / JAVA / 已完成），其余为演示数据 */
+/* 前 3 条为真实示例（设备告警 / 设备离线 / P2 / SN0010155 / 已完成），其余为演示数据 */
 var ALERTS = [
   { id:'60e340a2-fe34-4255-9511-2899ffeab032', cat:'dev', kind:'设备离线', name:'设备离线',
-    lvl:'P2', sn:'SN0010155', site:'—', tenant:'JAVA', time:'2026/10/25 14:27', ts:NOW-41*MIN,
-    st:'已完成', stKey:'done', stCls:'b-green', wo:'WO2114242490149998594' },
+    lvl:'P2', sn:'SN0010155', site:'—', time:'2026/10/25 14:27',
+    st:'已完成', stKey:'done', wo:'WO2114242490149998594' },
   { id:'04f113e8-d6aa-4263-bf6d-7b418bb000a8', cat:'dev', kind:'设备离线', name:'设备离线',
-    lvl:'P2', sn:'SN0010155', site:'—', tenant:'JAVA', time:'2026/10/25 12:57', ts:NOW-2*H-11*MIN,
-    st:'已完成', stKey:'done', stCls:'b-green', wo:'WO2114242490149998601' },
+    lvl:'P2', sn:'SN0010155', site:'—', time:'2026/10/25 12:57',
+    st:'已完成', stKey:'done', wo:'WO2114242490149998601' },
   { id:'e41f042e-9c25-453f-a1b5-8d8f82f1000d', cat:'dev', kind:'设备离线', name:'设备离线',
-    lvl:'P2', sn:'SN0010155', site:'—', tenant:'JAVA', time:'2026/10/25 11:21', ts:NOW-3*H-47*MIN,
-    st:'已完成', stKey:'done', stCls:'b-green', wo:'WO2114242490149998610' },
+    lvl:'P2', sn:'SN0010155', site:'—', time:'2026/10/25 11:21',
+    st:'已完成', stKey:'done', wo:'WO2114242490149998610' },
   { id:'a1b2c3d4-5e6f-4000-8000-000000000001', cat:'dev', kind:'温度过高', name:'柜内温度过高',
-    lvl:'P0', sn:'SN0020301', site:'上海 A 店', tenant:'JAVA', time:'2026/10/25 14:40', ts:NOW-28*MIN,
-    st:'待处理', stKey:'todo', stCls:'b-red', wo:null },
+    lvl:'P0', sn:'SN0020301', site:'上海 A 店', time:'2026/10/25 14:40',
+    st:'待处理', stKey:'todo', wo:null },
   { id:'a1b2c3d4-5e6f-4000-8000-000000000002', cat:'dev', kind:'出货异常', name:'出货电机卡货',
-    lvl:'P1', sn:'SN0010120', site:'北京 B 店', tenant:'JAVA', time:'2026/10/25 13:05', ts:NOW-2*H-3*MIN,
-    st:'处理中', stKey:'doing', stCls:'b-blue', wo:'WO2114242490149998622' },
+    lvl:'P1', sn:'SN0010120', site:'北京 B 店', time:'2026/10/25 13:05',
+    st:'处理中', stKey:'doing', wo:'WO2114242490149998622' },
   { id:'a1b2c3d4-5e6f-4000-8000-000000000003', cat:'ops', kind:'库存不足', name:'库存低于安全水位',
-    lvl:'P1', sn:'—', site:'上海 A 店', tenant:'JAVA', time:'2026/10/25 10:12', ts:NOW-4*H-56*MIN,
-    st:'处理中', stKey:'doing', stCls:'b-blue', wo:null },
+    lvl:'P1', sn:'—', site:'上海 A 店', time:'2026/10/25 10:12',
+    st:'处理中', stKey:'doing', wo:null },
   { id:'a1b2c3d4-5e6f-4000-8000-000000000004', cat:'ops', kind:'支付异常', name:'支付成功率下降',
-    lvl:'P0', sn:'—', site:'—', tenant:'JAVA', time:'2026/10/24 21:48', ts:NOW-17*H-20*MIN,
-    st:'已关闭', stKey:'closed', stCls:'b-gray', wo:null },
+    lvl:'P0', sn:'—', site:'—', time:'2026/10/24 21:48',
+    st:'已关闭', stKey:'closed', wo:null },
   { id:'a1b2c3d4-5e6f-4000-8000-000000000005', cat:'ops', kind:'日结异常', name:'日结金额对不上',
-    lvl:'P2', sn:'—', site:'深圳科技园', tenant:'默认租户', time:'2026/10/24 23:59', ts:NOW-15*H-9*MIN,
-    st:'已完成', stKey:'done', stCls:'b-green', wo:null }
+    lvl:'P2', sn:'—', site:'深圳科技园', time:'2026/10/24 23:59',
+    st:'已完成', stKey:'done', wo:null }
 ];
 
-var cat='all', tenant='all', kind='all', lvl='all', st='all', time='all', kw='';
+/* ts 统一按「展示时间」解析：保证时间筛选与列表显示一致（此前按当前时间相对计算，会导致自定义日期筛空） */
+function tsFromTime(s){
+  var m = String(s).match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})(?::(\d{2}))?/);
+  return m ? new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], m[6]?+m[6]:0).getTime() : Date.now();
+}
+ALERTS.forEach(function(a){ a.ts = tsFromTime(a.time); });
+
+/* 数据实际时间跨度：用于自定义区默认值与范围提示 */
+var TS_MIN = ALERTS.length ? Math.min.apply(null, ALERTS.map(function(a){ return a.ts; })) : Date.now();
+var TS_MAX = ALERTS.length ? Math.max.apply(null, ALERTS.map(function(a){ return a.ts; })) : Date.now();
+
+var cat='all', kind='all', lvl='all', st='all', time='all', kw='';
+/* 自定义时间段（毫秒时间戳），null 表示该端不限 */
+var customStart=null, customEnd=null;
 
 function filtered(){
   var list = ALERTS.filter(function(a){
     if(cat!=='all' && a.cat!==cat) return false;
-    if(tenant!=='all' && a.tenant!==tenant) return false;
     if(kind!=='all' && a.kind!==kind) return false;
     if(lvl!=='all' && a.lvl!==lvl) return false;
     if(st!=='all' && a.stKey!==st) return false;
@@ -164,9 +192,13 @@ function filtered(){
       if(time==='today'){ var d=new Date(); d.setHours(0,0,0,0); if(a.ts < d.getTime()) return false; }
       if(time==='7d' && now-a.ts > 7*D) return false;
       if(time==='30d' && now-a.ts > 30*D) return false;
+      if(time==='custom'){
+        if(customStart!==null && a.ts < customStart) return false;
+        if(customEnd!==null && a.ts > customEnd) return false;
+      }
     }
     if(kw){
-      var s=(a.name+' '+a.kind+' '+a.sn+' '+a.id+' '+a.site+' '+a.tenant).toLowerCase();
+      var s=(a.name+' '+a.kind+' '+a.sn+' '+a.id+' '+a.site).toLowerCase();
       if(s.indexOf(kw.toLowerCase())===-1) return false;
     }
     return true;
@@ -189,6 +221,7 @@ function render(){
   var el = document.getElementById('alist');
   if(!list.length){
     el.innerHTML = '<div class="tkempty">暂无符合条件的告警</div>';
+    updateHint(0);
     return;
   }
   el.innerHTML = list.map(function(a){
@@ -198,9 +231,7 @@ function render(){
     var chips = '<span class="' + typeCls + '">' + typeTxt + '</span>';
     if(a.sn && a.sn!=='—') chips += '<span class="achip">' + DEV + a.sn + '</span>';
     if(a.site && a.site!=='—') chips += '<span class="achip">' + PIN + a.site + '</span>';
-    chips += '<span class="achip">' + a.tenant + '</span>';
     return '<a class="acard ' + sev.cls + '" href="alert-detail.html">'
-         +   '<div class="astrip"></div>'
          +   '<div class="ain">'
          +     '<div class="atop">'
          +       '<span class="alvl"><span class="sdot"></span>' + sev.txt + '</span>'
@@ -212,6 +243,44 @@ function render(){
          +   '</div>'
          + '</a>';
   }).join('');
+  updateHint(list.length);
+}
+
+/* 自定义时间段：提示 + 工具函数（精确到秒） */
+function pad2(n){ return ('0'+n).slice(-2); }
+/* 毫秒时间戳 → datetime-local 值：YYYY-MM-DDTHH:mm:ss */
+function toDT(ts){
+  var d = new Date(ts);
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())
+       + 'T'+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());
+}
+/* 毫秒时间戳 → 展示文案：YYYY/MM/DD HH:mm:ss */
+function fmtDT(ts){
+  var d = new Date(ts);
+  return d.getFullYear()+'/'+pad2(d.getMonth()+1)+'/'+pad2(d.getDate())
+       + ' '+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());
+}
+/* datetime-local 值 → 毫秒时间戳（秒可缺省，缺省按 00 计） */
+function parseDT(v){
+  if(!v) return null;
+  var p = String(v).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/);
+  if(!p) return null;
+  var d = new Date(+p[1], +p[2]-1, +p[3], +p[4], +p[5], p[6]?+p[6]:0, 0);
+  return isNaN(d.getTime()) ? null : d.getTime();
+}
+function updateHint(n){
+  var h = document.getElementById('drHint');
+  if(!h) return;
+  var active = (time==='custom');
+  if(!active || (customStart===null && customEnd===null)){
+    h.className = 'adr-hint';
+    h.innerHTML = '精确到秒；留空表示该端不限（当前数据 <i>' + fmtDT(TS_MIN) + '</i> – <i>' + fmtDT(TS_MAX) + '</i>）';
+    return;
+  }
+  var txt = (customStart!==null ? '<i>'+fmtDT(customStart)+'</i>' : '不限')
+          + ' – ' + (customEnd!==null ? '<i>'+fmtDT(customEnd)+'</i>' : '不限');
+  h.className = 'adr-hint';
+  h.innerHTML = '已选 ' + txt + '，命中 <b>' + (n===undefined?'—':n) + '</b> 条';
 }
 
 /* 分类分段 */
@@ -238,16 +307,63 @@ function bindOpts(id, cb){
     render();
   });
 }
-bindOpts('tenantOpts', function(v){ tenant=v; });
 bindOpts('typeOpts',   function(v){ kind=v; });
 bindOpts('lvlOpts',    function(v){ lvl=v; });
 bindOpts('stOpts',     function(v){ st=v; });
-bindOpts('timeOpts',   function(v){ time=v; });
+bindOpts('timeOpts',   function(v){
+  time = v;
+  var dr = document.getElementById('dateRange');
+  if(v==='custom'){
+    dr.classList.add('open');
+    var s = document.getElementById('dStart'), e = document.getElementById('dEnd');
+    /* 首次进入自定义：用数据实际跨度预填，便于直接在合理区间上调整（含时分秒） */
+    if(!s.value && !e.value){
+      s.value = toDT(TS_MIN);
+      e.value = toDT(TS_MAX);
+      customStart = parseDT(s.value);
+      customEnd   = parseDT(e.value);
+    }
+  } else {
+    dr.classList.remove('open');
+  }
+});
+
+function setOpt(groupId, v){
+  var g = document.getElementById(groupId);
+  if(!g) return;
+  g.querySelectorAll('.opt').forEach(function(x){ x.classList.toggle('on', x.dataset.v === v); });
+}
+
+/* 时间变更：起止颠倒自动交换；两端皆空则回到「全部」；精确到秒 */
+function onDateChange(){
+  var s = document.getElementById('dStart'), e = document.getElementById('dEnd');
+  var st = parseDT(s.value), et = parseDT(e.value);
+  if(st!==null && et!==null && st > et){
+    var tv = s.value; s.value = e.value; e.value = tv;
+    var tt = st; st = et; et = tt;
+  }
+  customStart = st;
+  customEnd   = et;
+  if(!s.value && !e.value){
+    time = 'all';
+    setOpt('timeOpts','all');
+  } else {
+    time = 'custom';
+    setOpt('timeOpts','custom');
+  }
+  render();
+}
+document.getElementById('dStart').addEventListener('change', onDateChange);
+document.getElementById('dEnd').addEventListener('change', onDateChange);
 
 /* 清除过滤条件 */
 document.getElementById('clearBtn').addEventListener('click', function(){
-  cat='all'; tenant='all'; kind='all'; lvl='all'; st='all'; time='all'; kw='';
+  cat='all'; kind='all'; lvl='all'; st='all'; time='all'; kw='';
+  customStart=null; customEnd=null;
   document.getElementById('kw').value='';
+  document.getElementById('dStart').value='';
+  document.getElementById('dEnd').value='';
+  document.getElementById('dateRange').classList.remove('open');
   document.querySelectorAll('#tfilter .opts').forEach(function(g){
     g.querySelectorAll('.opt').forEach(function(x,i){ x.classList.toggle('on', i===0); });
   });

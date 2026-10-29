@@ -106,7 +106,7 @@ var TICKETS = [
 
 var mainTab = 'mine', chip = 'all', priFilter = 'all', slaFilter = 'all', kw = '';
 
-/* 卡片标准 C4：优先级映射配色，状态映射色点 */
+/* 卡片标准 C2：优先级映射配色，状态映射色点 */
 var SEV = {
   P1:{ cls:'p0', txt:'P1 · 紧急' },
   P2:{ cls:'p1', txt:'P2 · 普通' }
@@ -152,7 +152,6 @@ function render(){
   el.innerHTML = list.map(function(t){
     var sev = SEV[t.pri];
     return '<a class="acard ' + sev.cls + '" href="ticket-detail.html">'
-         +   '<div class="astrip"></div>'
          +   '<div class="ain">'
          +     '<div class="atop">'
          +       '<span class="alvl"><span class="sdot"></span>' + sev.txt + '</span>'

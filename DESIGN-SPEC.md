@@ -3,7 +3,7 @@
 > 适用对象：VendSolution 移动端（自动售货运营）HTML 原型全部页面
 > 设计基准：iPhone 15（逻辑宽 **393** × 高 **852**）
 > 样式来源：`vend.css`（根）与 `app_workorder/vend.css`（工单副本，需保持同步）
-> 可视化参考：`style-guide.html`（卡片标准 C4）、`nav.html`（页面导航）
+> 可视化参考：`style-guide.html`（卡片标准 C3）、`nav.html`（页面导航）
 > 最后更新：2026-10-25
 
 ---
@@ -42,7 +42,7 @@
 | `--bg-soft` | `#F8F9FF` | 页面底色、输入框底、Chip 底 |
 | `--line` | `#E3E7FF` | 默认描边、分隔线 |
 | `#F0F3FC` | — | 卡片内部分隔线（比 `--line` 更浅） |
-| `#C9D2F5` | — | P2 描边/色条、虚线框、禁用图标 |
+| `#C9D2F5` | — | P2 描边/光晕边框、虚线框、禁用图标 |
 | `#9AA1BC` | — | 单号 / 时间戳等弱文本 |
 | `--orange-bg` | `#FFF4EB` | 橙 Tag / 提示条底 |
 | `--green-bg` | `#E6F9F1` | 绿 Tag 底 |
@@ -58,7 +58,7 @@
 | 浮层阴影 | `0 18px 40px rgba(11,16,47,.35)` | `.navmenu` |
 | `--r` | `16px` | 列表行 `.row`、`.card` |
 | 卡片 | `14px` | `.sect`、`.dcard`、`.tkcard`、主按钮 |
-| 标准卡 | `12px` | **`.acard`（C4 标准）**、输入框、按钮、缩略图 |
+| 标准卡 | `14px` | **`.acard`（C3 标准）**、输入框、按钮、缩略图 |
 | 小件 | `10–11px` | 下拉、图标块、Tab |
 | 胶囊 | `999px` | Tag / Chip / Badge / 状态 |
 
@@ -178,20 +178,19 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 
 ---
 
-## 5. 卡片标准 · C4（全局强制）
+## 5. 卡片标准 · C3（全局强制）
 
 > 这是**唯一的列表卡片标准**。所有自主设计页面的列表项一律使用 `.acard`，不得新增变体。
-> 原型参考：`alert-detail-design.html`（C1–C4 对比）
+> 原型参考：`alert-detail-design.html`（C1–C4 对比，最终采用 **C3 · 描边 / 发光实心徽章**）
 
 ### 5.1 结构
 
 ```
-┌────────────────────────────┐ ← 整圈描边 1.5px（按严重度取色）
-├────────────────────────────┤ ← 顶部色条 4px（同色）
-│ ● P0 · 严重        待处理 ● │ ← 严重度标签（左）| 状态（右）
+┌────────────────────────────┐ ← 整圈描边 2px + 同色光晕（按严重度取色）
+│ [P0 · 严重]      (待处理 ●) │ ← 实心等级徽章（左）| 软底状态胶囊（右）
 │ 柜内温度过高                │ ← 标题 16/800
-│ [设备告警] [SN0020301] [...] │ ← 属性 chips
-│ 2026/10/25 14:40    查看 →  │ ← 等宽时间 | 操作
+│ (设备告警) (SN0020301) (…)  │ ← 属性 chips（浅底细描边）
+│ 2026/10/25 14:40    [查看→] │ ← 等宽时间 | 实心按钮
 └────────────────────────────┘
 ```
 
@@ -199,10 +198,9 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 
 ```html
 <a class="acard p0" href="alert-detail.html">
-  <div class="astrip"></div>
   <div class="ain">
     <div class="atop">
-      <span class="alvl"><span class="sdot"></span>P0 · 严重</span>
+      <span class="alvl">P0 · 严重</span>
       <span class="ast2 s-todo"><span class="tdot"></span>待处理</span>
     </div>
     <div class="atitle">柜内温度过高</div>
@@ -227,15 +225,18 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 </div>
 ```
 
-详情页状态头使用同款描边变体：`.sect.sev.p0` + `.sstrip` + `.sin`。
+详情页状态头使用同款变体：`.sect.sev.p0` + `.sin`（描边 + 光晕，无顶部色条、无浅色底）。
 
 ### 5.3 严重度 / 优先级配色
 
-| 档位 | 类名 | 描边 + 色条 | 标签文字 | 色点 |
+| 档位 | 类名 | 描边 | 光晕（box-shadow） | 实心徽章 / 按钮 |
 |---|---|---|---|---|
-| 严重 | `.p0` | `#E5484D` 红 | 红 | 红 |
-| 警告 | `.p1` | `#FF7A00` 橙 | 橙 | 橙 |
-| 提示 | `.p2` | `#C9D2F5` 浅蓝灰 | `--gray` | `--gray` |
+| 严重 | `.p0` | `#E5484D` 红 2px | `0 0 0 3px rgba(229,72,77,.10)` + `0 8px 20px rgba(229,72,77,.14)` | 红底白字 |
+| 警告 | `.p1` | `#FF7A00` 橙 2px | `0 0 0 3px rgba(255,122,0,.08)` + `0 8px 18px rgba(255,122,0,.10)` | 橙底白字 |
+| 提示 | `.p2` | `#C9D2F5` 浅蓝灰 2px | `0 0 0 3px rgba(122,132,168,.07)` + `0 6px 16px rgba(36,52,200,.06)` | `#7A84A8` 底白字 |
+
+> 卡片底色统一**纯白**，严重度由「描边颜色 + 光晕强度」表达。光晕必须**逐档递减**：P0 最强、P1 约减半、P2 仅留极淡一圈，否则整页发光会失去分级意义。
+> 操作按钮（`.abtn`）与徽章（`.alvl`）同为实心填充 + 白字，按钮取同档颜色。
 
 **业务映射**
 
@@ -246,24 +247,25 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 
 ### 5.4 状态配色
 
-| 状态 | 类名 | 颜色 | 语义 |
-|---|---|---|---|
-| 待处理 | `.s-todo` | `#E5484D` 红 | 未响应，需立即处理 |
-| 处理中 | `.s-doing` | `#2434C8` 蓝 | 已接单处理中 |
-| 等待反馈 | `.s-warn` | `#FF7A00` 橙 | 挂起等待外部反馈 |
-| 待认领 | `.s-claim` | `#00A76F` 绿 | 待分配 |
-| 已完成 | `.s-done` | `#00A76F` 绿 | 终态成功 |
-| 已关闭 / 待审核 | `.s-closed` | `#697095` 灰 | 终态 / 待审核 |
+| 状态 | 类名 | 文字/色点 | 胶囊底色 | 语义 |
+|---|---|---|---|---|
+| 待处理 | `.s-todo` | `#E5484D` 红 | `--red-bg` | 未响应，需立即处理 |
+| 处理中 | `.s-doing` | `#2434C8` 蓝 | `--bg` | 已接单处理中 |
+| 等待反馈 | `.s-warn` | `#FF7A00` 橙 | `--orange-bg` | 挂起等待外部反馈 |
+| 待认领 | `.s-claim` | `#00A76F` 绿 | `--green-bg` | 待分配 |
+| 已完成 | `.s-done` | `#00A76F` 绿 | `--green-bg` | 终态成功 |
+| 已关闭 / 待审核 | `.s-closed` | `#697095` 灰 | `#F1F3FA` | 终态 / 待审核 |
 
-> 状态一律「色点 + 文字」成对出现，禁止仅用颜色表达状态（无障碍要求）。
+> 状态为「软底胶囊 + 色点 + 文字」三件套，禁止仅用颜色表达状态（无障碍要求）。胶囊与实心等级徽章形成「实心 / 空心」层次对比。
 
 ### 5.5 卡片内容规则
 
-1. 严重度只取 `p0 / p1 / p2`，颜色由类决定，禁止内联写死颜色
+1. 严重度只取 `p0 / p1 / p2`，颜色与光晕由类决定，禁止内联写死
 2. 空值（`—`）**不渲染**为 chip，直接省略
 3. 列表排序：最高严重度置顶，同级按时间倒序
 4. 标签最多 4 个 chip，超出折叠为 `+N`
 5. 卡片整体可点击（`<a>` 包裹）；若卡内有独立按钮，卡体改为 `<div>`，按钮单独绑定
+6. 同一列表中**光晕强度不可拉平**，必须保持 P0 > P1 > P2 的视觉落差
 
 ---
 
@@ -290,7 +292,7 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 | `.alvl` + `.p0/.p1/.p2` | 10/800、圆角 6 | 告警等级（描边卡外使用） |
 | `.tkpri` + `.pri-p1/.pri-p2/.pri-p3` | 10/800、圆角 6 | 工单优先级 |
 | `.atag` + `.dev/.ops` | 10/700、圆角 6、带描边 | 告警类型（设备蓝 / 运营橙） |
-| `.achip` | 11/600、padding 4×8、圆角 999、`--bg-soft` 底 | C4 卡内属性 |
+| `.achip` | 11/600、padding 4×8、圆角 999、`--bg-soft` 底 + 细描边 | C3 卡内属性 |
 | `.achip.dev` | 蓝 `#2434C8` + `--bg` 底 | 设备类属性 |
 | `.achip.ops` | 橙 `#FF7A00` + `--orange-bg` 底 | 运营类属性 |
 
@@ -331,7 +333,13 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 | `.sel` | 统计页筛选下拉（标签 + 下拉同一行） |
 | `.searchrow` / `.search` | 搜索行：`.search` 圆角 12、`#F1F3FA` 底、14px |
 
-**筛选面板规则**：每项筛选末尾必须提供「清除过滤条件」，一键重置全部维度（含分段切换）。
+**筛选面板规则**
+
+1. 必须提供「清除过滤条件」，一键重置全部维度（含分段切换与自定义时间区间）。
+2. 时间维度固定提供 **全部 / 今天 / 近 7 天 / 近 30 天 / 自定义**；选「自定义」就地展开起止时间（两个原生 `datetime-local` + `step="1"`，**精确到年月日时分秒**，纵向全宽排列），留空表示该端不限。
+3. 起止时间颠倒时**自动交换**，不弹错打断用户；两端都清空则回到「全部」。
+4. 自定义区必须回显「已选区间（含秒）+ 命中条数」，让用户确认筛选已生效。
+5. 时间筛选的时间基准必须与列表展示的时间一致（不应使用与展示脱节的相对时间），否则会出现"选了区间却筛空"。
 
 ### 6.6 数据展示
 
@@ -452,7 +460,7 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 | 总览 | App 总览画廊 | `index.html` |
 | | 工单总览 | `app_workorder/index.html` |
 | | 页面导航 | `nav.html` |
-| | **设计标准（C4）** | `style-guide.html` |
+| | **设计标准（C3）** | `style-guide.html` |
 | 登录 / 账户 | 登录、我的 | `login.html`、`my.html` |
 | 首页 | 首页（含告警入口） | `home.html` |
 | 商品 / 设备 / 补货 | 商品列表、商品详情、设备、补货、补货完成 | `products.html`、`product-detail.html`、`machines.html`、`restock.html`、`restock-done.html` |
@@ -460,11 +468,11 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 | 告警 | 告警列表、告警详情、卡片设计对比 | `alerts.html`、`alert-detail.html`、`alert-detail-design.html` |
 | 工单 | 我的工单 A01、待认领 A02、详情 A03、记录进展 A04、完工提交 A05、等待反馈 A06、恢复处理 A07、转派 A08、退回返工 A09 | `app_workorder/tickets.html`、`app_workorder/ticket-claim.html`、`app_workorder/ticket-detail.html`、`app_workorder/ticket-progress.html`、`app_workorder/ticket-complete.html`、`app_workorder/ticket-wait.html`、`app_workorder/ticket-resume.html`、`app_workorder/ticket-transfer.html`、`app_workorder/ticket-rework.html` |
 
-> 导航页 `nav.html` 收录其中 28 页（不含自身）；`alert-detail-design.html` 为 C4 选型对比稿，同样纳入导航便于回看。
+> 导航页 `nav.html` 收录其中 28 页（不含自身）；`alert-detail-design.html` 为 C1–C4 选型对比稿，同样纳入导航便于回看。
 
 ### 例外说明
 
-`login / my / home / products / product-detail / machines / restock / restock-done` 为 **Figma 1:1 像素复刻**页，其卡片沿用 Figma 原结构（`.row` 等），**不套用 C4**，以免破坏与设计稿的一致性。
+`login / my / home / products / product-detail / machines / restock / restock-done` 为 **Figma 1:1 像素复刻**页，其卡片沿用 Figma 原结构（`.row` 等），**不套用 C3**，以免破坏与设计稿的一致性。
 
 ---
 
@@ -489,9 +497,9 @@ font-family:'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif
 
 | 我要做… | 用什么 |
 |---|---|
-| 一个列表项 | `.acard` + `.astrip` + `.ain` |
+| 一个列表项 | `.acard` + `.ain` |
 | 一个详情信息块 | `.sect` + `.hd` / `.frow` |
-| 详情页状态头 | `.sect.sev.p0` + `.sstrip` + `.sin` |
+| 详情页状态头 | `.sect.sev.p0` + `.sin` |
 | 一个表单 | `.field` + `.flabel` + `.fsel/.finput/.ftarea` |
 | 一个筛选面板 | `.tfilter` + `.fg` + `.fl` + `.opt` |
 | 底部主操作 | `.dobot` + `.row2` + `.abtn` |
