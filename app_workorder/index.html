@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>维修工单 App · 页面总览 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ font-family:'Inter',-apple-system,'PingFang SC',sans-serif; background:#F4F6FE;
+    padding:30px 26px 60px; color:#0B102F; }
+  h1{ font-size:22px; font-weight:800; letter-spacing:-.3px; }
+  .sub{ font-size:13px; color:#697095; margin-top:5px; }
+  .nav{ display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .nav a{ font-size:12.5px; font-weight:600; color:#2434C8; background:#fff;
+    border:1px solid #E3E7FF; border-radius:999px; padding:6px 13px; text-decoration:none; }
+  .wrap{ display:flex; flex-wrap:wrap; gap:26px; margin-top:26px; }
+  .lb{ font:600 13px 'Inter',sans-serif; color:#697095; margin-bottom:9px; }
+  .lb b{ color:#2434C8; }
+  .lb a{ color:#2434C8; margin-left:6px; font-weight:600; }
+  iframe{ width:393px; height:852px; border:none; border-radius:12px; background:#fff;
+    box-shadow:0 10px 28px rgba(36,52,200,.08); display:block; }
+</style>
+</head>
+<body>
+  <h1>维修工单 App · 页面总览</h1>
+  <div class="sub">VendSolution · 统一设计系统（393 × 852 · iPhone 15）· 现场维修流程 MVP</div>
+
+  <div class="nav">
+    <a href="#a01">A01 我的工单</a>
+    <a href="#a02">A02 待认领</a>
+    <a href="#a03">A03 工单详情</a>
+    <a href="#a04">A04 记录进展</a>
+    <a href="#a05">A05 完工提交</a>
+    <a href="#a06">A06 等待反馈</a>
+    <a href="#a07">A07 恢复处理</a>
+    <a href="#a08">A08 转派</a>
+    <a href="#a09">A09 退回返工</a>
+  </div>
+
+  <div class="wrap">
+    <div id="a01"><div class="lb"><b>A01</b> 我的工单列表（含待认领 Tab / SLA 提示）· <a href="tickets.html">单独打开</a></div>
+      <iframe src="tickets.html"></iframe></div>
+
+    <div id="a02"><div class="lb"><b>A02</b> 待认领列表（筛选 / 认领 / 底部导航）· <a href="ticket-claim.html">单独打开</a></div>
+      <iframe src="ticket-claim.html"></iframe></div>
+
+    <div id="a03"><div class="lb"><b>A03</b> 工单详情 / 处理主页（核心页）· <a href="ticket-detail.html">单独打开</a></div>
+      <iframe src="ticket-detail.html"></iframe></div>
+
+    <div id="a04"><div class="lb"><b>A04</b> 记录处理进展（独立表单页）· <a href="ticket-progress.html">单独打开</a></div>
+      <iframe src="ticket-progress.html"></iframe></div>
+
+    <div id="a05"><div class="lb"><b>A05</b> 完工提交（必填校验 / 测试失败提示）· <a href="ticket-complete.html">单独打开</a></div>
+      <iframe src="ticket-complete.html"></iframe></div>
+
+    <div id="a06"><div class="lb"><b>A06</b> 等待反馈（底部弹窗）· <a href="ticket-wait.html">单独打开</a></div>
+      <iframe src="ticket-wait.html"></iframe></div>
+
+    <div id="a07"><div class="lb"><b>A07</b> 恢复处理（底部弹窗）· <a href="ticket-resume.html">单独打开</a></div>
+      <iframe src="ticket-resume.html"></iframe></div>
+
+    <div id="a08"><div class="lb"><b>A08</b> 转派工单（独立表单页）· <a href="ticket-transfer.html">单独打开</a></div>
+      <iframe src="ticket-transfer.html"></iframe></div>
+
+    <div id="a09"><div class="lb"><b>A09</b> 退回返工（复用详情 + 审核意见 + 历史版本）· <a href="ticket-rework.html">单独打开</a></div>
+      <iframe src="ticket-rework.html"></iframe></div>
+  </div>
+</body>
+</html>

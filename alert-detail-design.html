@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>告警卡片 · 全描边 4 款 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(30px + env(safe-area-inset-bottom)); }
+  .phead{ padding:18px 18px 4px; }
+  .phead .brand{ font-size:11px; font-weight:700; letter-spacing:2.5px; color:var(--blue); }
+  .phead h1{ font-size:23px; font-weight:900; letter-spacing:-.3px; margin-top:2px; }
+  .phead .tip{ font-size:12px; color:var(--gray); margin-top:4px; }
+  .cap{ display:flex; align-items:baseline; gap:8px; margin:20px 18px 8px; }
+  .cap .no{ font-size:11px; font-weight:800; color:#fff; background:var(--red);
+    padding:2px 8px; border-radius:6px; letter-spacing:.3px; }
+  .cap .nm{ font-size:15px; font-weight:800; }
+  .cap .src{ font-size:11px; color:var(--gray); margin-left:auto; }
+  .chip{ display:flex; align-items:center; gap:4px; font-size:11px; font-weight:600; }
+  .chip svg{ width:11px; height:11px; }
+
+  /* ===== C1 · 细描边 / 白底 ===== */
+  .c1{ margin:0 18px; background:#fff; border:1.5px solid var(--red); border-radius:12px; padding:12px 13px; }
+  .c1-top{ display:flex; align-items:center; gap:7px; }
+  .c1-lvl{ font-size:11px; font-weight:800; letter-spacing:.6px; text-transform:uppercase;
+    color:var(--red); display:flex; align-items:center; gap:5px; }
+  .c1-dot{ width:7px; height:7px; border-radius:50%; background:var(--red); }
+  .c1-st{ margin-left:auto; font-size:11.5px; font-weight:700; color:var(--red);
+    display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .c1-title{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:5px; }
+  .c1-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+  .c1-chip{ color:var(--gray); background:var(--bg-soft); border:1px solid var(--line);
+    padding:4px 8px; border-radius:999px; }
+  .c1-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:11px; }
+  .c1-time{ font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#9AA1BC; }
+  .c1-btn{ font-size:12px; font-weight:700; color:var(--blue); background:var(--bg); padding:6px 12px; border-radius:8px; }
+
+  /* ===== C2 · 描边 / 浅红底 ===== */
+  .c2{ margin:0 18px; background:#FFF7F6; border:1.5px solid var(--red); border-radius:12px; padding:12px 13px; }
+  .c2-top{ display:flex; align-items:center; gap:8px; }
+  .c2-lvl{ font-size:11px; font-weight:800; color:#fff; background:var(--red);
+    padding:3px 8px; border-radius:6px; letter-spacing:.4px; }
+  .c2-sev{ font-size:11px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:.6px; }
+  .c2-st{ margin-left:auto; font-size:11.5px; font-weight:700; color:var(--red);
+    display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .c2-dot{ width:7px; height:7px; border-radius:50%; background:var(--red); }
+  .c2-title{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:7px; }
+  .c2-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+  .c2-chip{ color:var(--ink); background:#fff; border:1px solid #F3C7C9; padding:4px 8px; border-radius:999px; }
+  .c2-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:11px; }
+  .c2-time{ font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#C88; }
+  .c2-btn{ font-size:12px; font-weight:700; color:var(--red); background:#fff; border:1px solid var(--red);
+    padding:5px 12px; border-radius:8px; }
+
+  /* ===== C3 · 描边 / 发光实心徽章 ===== */
+  .c3{ margin:0 18px; background:#fff; border:2px solid var(--red); border-radius:14px;
+    box-shadow:0 0 0 4px rgba(229,72,77,.12), 0 10px 24px rgba(229,72,77,.14); padding:13px; }
+  .c3-top{ display:flex; align-items:center; gap:8px; }
+  .c3-badge{ background:var(--red); color:#fff; font-size:11px; font-weight:800;
+    padding:4px 10px; border-radius:8px; letter-spacing:.4px; }
+  .c3-sev{ font-size:11px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:.6px; }
+  .c3-st{ margin-left:auto; font-size:11px; font-weight:700; color:var(--red);
+    background:var(--red-bg); padding:4px 10px; border-radius:999px; white-space:nowrap; }
+  .c3-title{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:9px; }
+  .c3-meta{ font-size:12px; color:var(--gray); margin-top:5px; }
+  .c3-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; }
+  .c3-time{ font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#9AA1BC; }
+  .c3-btn{ font-size:12px; font-weight:700; color:#fff; background:var(--red); padding:7px 13px; border-radius:8px; }
+
+  /* ===== C4 · 描边 / 顶部色条 ===== */
+  .c4{ margin:0 18px; background:#fff; border:1.5px solid var(--red); border-radius:12px; overflow:hidden; }
+  .c4-strip{ height:4px; background:var(--red); }
+  .c4-in{ padding:11px 13px 12px; }
+  .c4-top{ display:flex; align-items:center; gap:7px; }
+  .c4-lvl{ font-size:11px; font-weight:800; letter-spacing:.6px; text-transform:uppercase;
+    color:var(--red); display:flex; align-items:center; gap:5px; }
+  .c4-dot{ width:7px; height:7px; border-radius:50%; background:var(--red); }
+  .c4-st{ margin-left:auto; font-size:11.5px; font-weight:700; color:var(--red);
+    display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .c4-title{ font-size:16px; font-weight:800; letter-spacing:-.2px; margin-top:5px; }
+  .c4-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+  .c4-chip{ color:var(--gray); background:var(--bg-soft); border:1px solid var(--line);
+    padding:4px 8px; border-radius:999px; }
+  .c4-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:11px; }
+  .c4-time{ font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#9AA1BC; }
+  .c4-btn{ font-size:12px; font-weight:700; color:var(--blue); background:var(--bg); padding:6px 12px; border-radius:8px; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="phead">
+    <div class="brand">VENDSOLUTION</div>
+    <h1>告警卡片 · 全描边 4 款</h1>
+    <div class="tip">C 方向改「整圈描边」（severity 颜色勾勒全卡），非仅左侧一条。点卡片可进详情。</div>
+  </div>
+
+  <!-- C1 -->
+  <div class="cap"><span class="no">C1</span><span class="nm">细描边 / 白底</span><span class="src">全描边</span></div>
+  <a class="c1" href="alert-detail.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="c1-top">
+      <span class="c1-lvl"><span class="c1-dot"></span>P0 · 严重</span>
+      <span class="c1-st"><span class="c1-dot"></span>待处理</span>
+    </div>
+    <div class="c1-title">柜内温度过高</div>
+    <div class="c1-chips">
+      <span class="chip c1-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>SN0020301</span>
+      <span class="chip c1-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>上海 A 店</span>
+      <span class="chip c1-chip">JAVA</span>
+    </div>
+    <div class="c1-foot"><span class="c1-time">2026/10/25 14:40</span><span class="c1-btn">查看 →</span></div>
+  </a>
+
+  <!-- C2 -->
+  <div class="cap"><span class="no">C2</span><span class="nm">描边 / 浅红底</span><span class="src">全描边</span></div>
+  <a class="c2" href="alert-detail.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="c2-top">
+      <span class="c2-lvl">P0</span><span class="c2-sev">严重</span>
+      <span class="c2-st"><span class="c2-dot"></span>待处理</span>
+    </div>
+    <div class="c2-title">柜内温度过高</div>
+    <div class="c2-chips">
+      <span class="chip c2-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>SN0020301</span>
+      <span class="chip c2-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>上海 A 店</span>
+      <span class="chip c2-chip">JAVA</span>
+    </div>
+    <div class="c2-foot"><span class="c2-time">2026/10/25 14:40</span><span class="c2-btn">查看 →</span></div>
+  </a>
+
+  <!-- C3 -->
+  <div class="cap"><span class="no">C3</span><span class="nm">描边 / 发光实心徽章</span><span class="src">全描边</span></div>
+  <a class="c3" href="alert-detail.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="c3-top">
+      <span class="c3-badge">P0</span><span class="c3-sev">严重告警</span>
+      <span class="c3-st">待处理</span>
+    </div>
+    <div class="c3-title">柜内温度过高</div>
+    <div class="c3-meta">设备 SN0020301 · 点位 上海 A 店 · JAVA</div>
+    <div class="c3-foot"><span class="c3-time">2026/10/25 14:40</span><span class="c3-btn">查看 →</span></div>
+  </a>
+
+  <!-- C4 -->
+  <div class="cap"><span class="no">C4</span><span class="nm">描边 / 顶部色条</span><span class="src">全描边</span></div>
+  <a class="c4" href="alert-detail.html" style="display:block;text-decoration:none;color:inherit">
+    <div class="c4-strip"></div>
+    <div class="c4-in">
+      <div class="c4-top">
+        <span class="c4-lvl"><span class="c4-dot"></span>P0 · 严重</span>
+        <span class="c4-st"><span class="c4-dot"></span>待处理</span>
+      </div>
+      <div class="c4-title">柜内温度过高</div>
+      <div class="c4-chips">
+        <span class="chip c4-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>SN0020301</span>
+        <span class="chip c4-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>上海 A 店</span>
+        <span class="chip c4-chip">JAVA</span>
+      </div>
+      <div class="c4-foot"><span class="c4-time">2026/10/25 14:40</span><span class="c4-btn">查看 →</span></div>
+    </div>
+  </a>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>点位销量排行 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh; padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+  .drow .amt{ margin-left:auto; font-size:14px; font-weight:800; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="dtop">
+    <a class="back" href="stats.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">点位销量排行</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="filters">
+    <div class="flt">
+      <span class="lb">时间</span>
+      <span class="sel">近7天
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">区域</span>
+      <span class="sel">全部区域
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">排序</span>
+      <span class="sel">销售额
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+  </div>
+
+  <!-- 点位销售额分布 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>点位销售额分布</h3>
+      <span class="sub">近7天</span>
+    </div>
+    <div class="bars">
+      <div class="bar">
+        <div class="bl"><b>北京国贸店</b><span>¥ 6,850</span></div>
+        <div class="bt"><div class="bf" style="width:100%;"></div></div>
+      </div>
+      <div class="bar">
+        <div class="bl"><b>上海办公园区</b><span>¥ 5,620</span></div>
+        <div class="bt"><div class="bf" style="width:82%;"></div></div>
+      </div>
+      <div class="bar">
+        <div class="bl"><b>深圳科技园</b><span>¥ 4,980</span></div>
+        <div class="bt"><div class="bf" style="width:73%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 点位明细 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>点位明细</h3>
+      <span class="sub">共 3 个点位</span>
+    </div>
+    <div style="margin-top:6px;">
+      <a class="drow" href="site-product.html">
+        <span>
+          <div class="t">北京国贸店</div>
+          <div class="s">¥6,850 · 186 笔订单 · 248 件商品</div>
+        </span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="drow" href="site-product.html">
+        <span>
+          <div class="t">上海办公园区</div>
+          <div class="s">¥5,620 · 152 笔订单 · 219 件商品</div>
+        </span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="drow" href="site-product.html">
+        <span>
+          <div class="t">深圳科技园</div>
+          <div class="s">¥4,980 · 141 笔订单 · 205 件商品</div>
+        </span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>工单 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+  /* 仅覆盖内边距，保留 .searchrow / .search 的 display:flex 等基础属性 */
+  .searchrow{ padding:8px 14px 0; }
+  .search{ padding:9px 12px; border-radius:11px; }
+  .search input{ flex:1; min-width:0; border:none; outline:none; background:transparent;
+    font-family:inherit; font-size:13px; color:var(--ink); }
+  .search input::placeholder{ color:#9AA1BC; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- 页头 -->
+  <div class="ttop">
+    <div class="title">工单</div>
+    <button class="fltbtn" id="fltBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选
+    </button>
+  </div>
+
+  <!-- 筛选面板 -->
+  <div class="tfilter" id="tfilter">
+    <div class="fg">
+      <div class="fl">优先级</div>
+      <div class="opts" id="priOpts">
+        <span class="opt on" data-v="all">全部</span>
+        <span class="opt" data-v="P1">P1 紧急</span>
+        <span class="opt" data-v="P2">P2 普通</span>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">SLA 状态</div>
+      <div class="opts" id="slaOpts">
+        <span class="opt on" data-v="all">全部</span>
+        <span class="opt" data-v="warn">即将超时</span>
+        <span class="opt" data-v="danger">已超时</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主 Tab -->
+  <div class="tmain" id="mainTabs">
+    <span class="mt on" data-v="mine">我的工单 <small id="cMine"></small></span>
+    <span class="mt" data-v="claim">待认领 <small id="cClaim"></small></span>
+  </div>
+
+  <!-- 状态 chips -->
+  <div class="tchips" id="chips">
+    <span class="tchip on" data-v="all">全部</span>
+    <span class="tchip" data-v="doing">处理中</span>
+    <span class="tchip" data-v="feedback">待反馈</span>
+    <span class="tchip" data-v="review">待审核</span>
+  </div>
+
+  <!-- 搜索 -->
+  <div class="searchrow">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="kw" placeholder="搜索工单标题 / 编号 / 设备SN">
+    </div>
+  </div>
+
+  <!-- 工单列表 -->
+  <div class="tklist" id="tklist"></div>
+</div>
+
+<script>
+var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+var DEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
+var CLK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>';
+var NOTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+
+/* mode: mine=我的工单 / claim=待认领；stKey: doing/feedback/review/claim */
+var TICKETS = [
+  { id:'WO-001', pri:'P1', priCls:'pri-p1', st:'处理中', stCls:'b-blue', stKey:'doing',
+    title:'咖啡机无法出杯', site:'上海 A 店', sn:'CF-001', mode:'mine',
+    slaCls:'warn', slaText:'SLA 剩余 2 小时' },
+  { id:'WO-002', pri:'P2', priCls:'pri-p2', st:'等待反馈', stCls:'b-orange', stKey:'feedback',
+    title:'设备通讯异常', site:'北京 B 店', sn:'VM-1002', mode:'mine',
+    note:'等待原因：等待配件', noteCls:'warn' },
+  { id:'WO-003', pri:'P1', priCls:'pri-p1', st:'待审核', stCls:'b-gray', stKey:'review',
+    title:'支付模块故障', site:'深圳科技园', sn:'VM-1003', mode:'mine',
+    note:'完工已提交，等待审核', noteCls:'ok' },
+  { id:'WO-004', pri:'P1', priCls:'pri-p1', st:'处理中', stCls:'b-blue', stKey:'doing',
+    title:'制冷系统停机', site:'广州天河店', sn:'CF-004', mode:'mine',
+    slaCls:'danger', slaText:'SLA 已超时 35 分钟' },
+  { id:'WO-005', pri:'P1', priCls:'pri-p1', st:'待认领', stCls:'b-green', stKey:'claim',
+    title:'出杯口持续卡货', site:'上海 B 店', sn:'CF-005', mode:'claim',
+    slaCls:'ok', slaText:'SLA 剩余 4 小时' },
+  { id:'WO-006', pri:'P2', priCls:'pri-p2', st:'待认领', stCls:'b-green', stKey:'claim',
+    title:'屏幕显示花屏', site:'杭州西湖店', sn:'VM-1006', mode:'claim',
+    slaCls:'ok', slaText:'SLA 剩余 6 小时' }
+];
+
+var mainTab = 'mine', chip = 'all', priFilter = 'all', slaFilter = 'all', kw = '';
+
+/* 卡片标准 C4：优先级映射配色，状态映射色点 */
+var SEV = {
+  P1:{ cls:'p0', txt:'P1 · 紧急' },
+  P2:{ cls:'p1', txt:'P2 · 普通' }
+};
+var STC = { doing:'s-doing', feedback:'s-warn', review:'s-closed', claim:'s-claim' };
+
+function footHtml(t){
+  var txt = t.note || t.slaText || '';
+  var act = (t.mode === 'claim') ? '认领 →' : '查看 →';
+  return '<div class="afoot">'
+       +   '<span class="atime">' + txt + '</span>'
+       +   '<span class="abtn">' + act + '</span>'
+       + '</div>';
+}
+
+function filtered(){
+  return TICKETS.filter(function(t){
+    if(t.mode !== mainTab) return false;
+    if(mainTab === 'mine' && chip !== 'all' && t.stKey !== chip) return false;
+    if(priFilter !== 'all' && t.pri !== priFilter) return false;
+    if(slaFilter !== 'all' && t.slaCls !== slaFilter) return false;
+    if(kw){
+      var s = (t.title + ' ' + t.id + ' ' + t.sn + ' ' + t.site).toLowerCase();
+      if(s.indexOf(kw.toLowerCase()) === -1) return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  var list = filtered();
+  document.getElementById('cMine').textContent =
+    TICKETS.filter(function(t){ return t.mode==='mine'; }).length;
+  document.getElementById('cClaim').textContent =
+    TICKETS.filter(function(t){ return t.mode==='claim'; }).length;
+  document.getElementById('chips').style.display = (mainTab === 'mine') ? 'flex' : 'none';
+
+  var el = document.getElementById('tklist');
+  if(!list.length){
+    el.innerHTML = '<div class="tkempty">暂无符合条件的工单</div>';
+    return;
+  }
+  el.innerHTML = list.map(function(t){
+    var sev = SEV[t.pri];
+    return '<a class="acard ' + sev.cls + '" href="ticket-detail.html">'
+         +   '<div class="astrip"></div>'
+         +   '<div class="ain">'
+         +     '<div class="atop">'
+         +       '<span class="alvl"><span class="sdot"></span>' + sev.txt + '</span>'
+         +       '<span class="ast2 ' + STC[t.stKey] + '"><span class="tdot"></span>' + t.st + '</span>'
+         +     '</div>'
+         +     '<div class="atitle">' + t.title + '</div>'
+         +     '<div class="achips">'
+         +       '<span class="achip">' + PIN + t.site + '</span>'
+         +       '<span class="achip">' + DEV + t.sn + '</span>'
+         +       '<span class="achip">' + t.id + '</span>'
+         +     '</div>'
+         +     footHtml(t)
+         +   '</div>'
+         + '</a>';
+  }).join('');
+}
+
+/* 主 Tab */
+document.getElementById('mainTabs').addEventListener('click', function(e){
+  var m = e.target.closest('.mt'); if(!m) return;
+  this.querySelectorAll('.mt').forEach(function(x){ x.classList.remove('on'); });
+  m.classList.add('on');
+  mainTab = m.dataset.v; chip = 'all';
+  this.parentNode.querySelectorAll('#chips .tchip').forEach(function(x, i){
+    x.classList.toggle('on', i === 0);
+  });
+  render();
+});
+
+/* 状态 chips */
+document.getElementById('chips').addEventListener('click', function(e){
+  var c = e.target.closest('.tchip'); if(!c) return;
+  this.querySelectorAll('.tchip').forEach(function(x){ x.classList.remove('on'); });
+  c.classList.add('on');
+  chip = c.dataset.v;
+  render();
+});
+
+/* 筛选面板 */
+document.getElementById('fltBtn').addEventListener('click', function(){
+  document.getElementById('tfilter').classList.toggle('open');
+});
+document.getElementById('priOpts').addEventListener('click', function(e){
+  var o = e.target.closest('.opt'); if(!o) return;
+  this.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
+  o.classList.add('on');
+  priFilter = o.dataset.v;
+  render();
+});
+document.getElementById('slaOpts').addEventListener('click', function(e){
+  var o = e.target.closest('.opt'); if(!o) return;
+  this.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
+  o.classList.add('on');
+  slaFilter = o.dataset.v;
+  render();
+});
+
+/* 搜索 */
+document.getElementById('kw').addEventListener('input', function(){
+  kw = this.value.trim();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

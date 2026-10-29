@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>恢复处理 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh; }
+  .sheet{ animation:up .24s cubic-bezier(.2,.8,.2,1); }
+  @keyframes up{ from{ transform:translate(-50%,100%); } to{ transform:translate(-50%,0); } }
+  .sheetmask{ animation:fade .24s ease-out; }
+  @keyframes fade{ from{ opacity:0; } to{ opacity:1; } }
+  .sheet .radio{ padding:8px 10px; }
+  .sheet .field + .field{ margin-top:10px; }
+  .sheet .notice{ padding:9px 10px; }
+</style>
+</head>
+<body>
+
+<!-- 背景：等待反馈状态下的工单详情 -->
+<div class="screen">
+  <div class="dtop">
+    <a class="back" href="ticket-detail.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">工单详情</div>
+    <span class="right"></span>
+  </div>
+  <div class="sect" style="margin-top:9px">
+    <div class="dstat">
+      <span class="st badge b-orange">等待反馈</span>
+      <span class="pri tkpri pri-p1">P1 · 高优先级</span>
+    </div>
+    <div class="tktitle" style="font-size:17px;margin-top:9px">咖啡机无法出杯</div>
+    <div style="font-size:11.5px;color:var(--gray);margin-top:5px;letter-spacing:.3px">WO-20261022-001 · 创建时间 10-22 09:30</div>
+  </div>
+  <div class="sect">
+    <div class="hd"><h3>SLA</h3><span class="rt">截止 10-22 18:00</span></div>
+    <div style="font-size:25px;font-weight:800;letter-spacing:-.5px">02:15:30</div>
+    <div style="font-size:11.5px;color:var(--orange);margin-top:2px">剩余处理时间 · SLA 持续计时</div>
+  </div>
+  <div class="sect">
+    <div class="hd"><h3>设备与点位</h3><span class="rt">导航 →</span></div>
+    <div class="frow"><span class="k">设备</span><span class="v">CF-001</span></div>
+    <div class="frow"><span class="k">点位</span><span class="v">上海 A 店</span></div>
+  </div>
+</div>
+
+<div class="sheetmask" id="mask"></div>
+
+<!-- 底部弹窗 -->
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <div class="sh">
+    <span class="t">恢复处理</span>
+    <button class="x" id="closeBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="body">
+    <div class="notice warn" style="margin:0 0 12px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+      <div>当前等待原因：<b>等待配件</b><br>等待开始时间 10-22 11:05</div>
+    </div>
+
+    <div class="field">
+      <label class="flabel">反馈结果<span class="req">*</span></label>
+      <textarea class="ftarea" id="fb" style="min-height:56px">已收到配件，准备继续维修。</textarea>
+    </div>
+
+    <div class="field">
+      <label class="flabel">是否已具备继续处理条件？<span class="req">*</span></label>
+      <div class="rgrp" id="readyGrp">
+        <span class="radio on" data-v="yes"><span class="dot"></span><b>是</b><div class="sub">工单恢复为「处理中」</div></span>
+        <span class="radio" data-v="no"><span class="dot"></span><b>否，继续等待</b><div class="sub">保持「等待反馈」，记录新的反馈</div></span>
+      </div>
+    </div>
+
+    <div class="row2" style="display:flex;gap:9px;margin-top:13px">
+      <button class="abtn ghost" id="cancelBtn">取消</button>
+      <button class="abtn" id="okBtn">确认恢复</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">已恢复处理</div>
+
+<script>
+var toastEl = document.getElementById('toast');
+function toast(msg, ms){
+  toastEl.textContent = msg;
+  toastEl.classList.add('on');
+  setTimeout(function(){ toastEl.classList.remove('on'); }, ms || 1500);
+}
+function closeSheet(){ location.href = 'ticket-detail.html'; }
+
+var ready = 'yes';
+document.getElementById('readyGrp').addEventListener('click', function(e){
+  var r = e.target.closest('.radio'); if(!r) return;
+  this.querySelectorAll('.radio').forEach(function(x){ x.classList.remove('on'); });
+  r.classList.add('on');
+  ready = r.dataset.v;
+});
+
+document.getElementById('closeBtn').addEventListener('click', closeSheet);
+document.getElementById('cancelBtn').addEventListener('click', closeSheet);
+document.getElementById('mask').addEventListener('click', closeSheet);
+
+document.getElementById('okBtn').addEventListener('click', function(){
+  if(!document.getElementById('fb').value.trim()){ toast('请填写反馈结果'); return; }
+  toast(ready === 'yes' ? '已恢复处理' : '已记录反馈，继续等待');
+  setTimeout(function(){ location.href = 'ticket-detail.html'; }, 900);
+});
+</script>
+</body>
+</html>

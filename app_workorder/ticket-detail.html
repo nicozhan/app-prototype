@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>工单详情 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(132px + env(safe-area-inset-bottom)); }
+  .moremenu{ position:absolute; right:14px; top:50px; width:206px; z-index:30;
+    background:#1E2235; border-radius:14px; padding:7px;
+    box-shadow:0 18px 40px rgba(11,16,47,.35); display:none; }
+  .moremenu.open{ display:block; }
+  .moremenu a{ display:flex; align-items:center; gap:10px; padding:11px 12px;
+    border-radius:9px; color:#C7CBE0; font-size:13.5px; font-weight:500; cursor:pointer; }
+  .moremenu a:hover{ background:rgba(255,255,255,.06); }
+  .moremenu svg{ width:16px; height:16px; opacity:.85; }
+  .req{ display:flex; align-items:center; gap:7px; font-size:12.5px; }
+  .req + .req{ margin-top:6px; }
+  .req svg{ width:15px; height:15px; color:var(--green); flex-shrink:0; }
+  .tl .it.extra{ display:none; }
+  .tl.open .it.extra{ display:flex; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop" style="position:relative">
+    <a class="back" href="tickets.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">工单详情</div>
+    <span class="right">
+      <button class="iconbtn" id="moreBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+      </button>
+    </span>
+    <div class="moremenu" id="moreMenu">
+      <a href="ticket-transfer.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>转派工单</a>
+      <a id="histBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>查看完整操作历史</a>
+    </div>
+  </div>
+
+  <!-- 状态头（C4 标准：整圈描边 + 顶部色条） -->
+  <div class="sect sev p0">
+    <div class="sstrip"></div>
+    <div class="sin">
+      <div class="dstat">
+        <span class="st badge b-blue">处理中</span>
+        <span class="pri tkpri pri-p1">P1 · 高优先级</span>
+      </div>
+      <div class="tktitle" style="font-size:17px;margin-top:9px">咖啡机无法出杯</div>
+      <div style="font-size:11.5px;color:var(--gray);margin-top:5px;letter-spacing:.3px">
+        WO-20261022-001 · 创建时间 10-22 09:30</div>
+    </div>
+  </div>
+
+  <!-- SLA -->
+  <div class="sect">
+    <div class="hd"><h3>SLA</h3><span class="rt">截止 10-22 18:00</span></div>
+    <div id="slaTimer" style="font-size:25px;font-weight:800;letter-spacing:-.5px">02:15:30</div>
+    <div style="font-size:11.5px;color:var(--orange);margin-top:2px">剩余处理时间 · SLA 持续计时</div>
+  </div>
+
+  <!-- 设备与点位 -->
+  <div class="sect">
+    <div class="hd"><h3>设备与点位</h3>
+      <a href="#" style="color:var(--blue);font-size:12px;font-weight:700">导航 →</a></div>
+    <div class="frow"><span class="k">设备</span><span class="v">CF-001</span></div>
+    <div class="frow"><span class="k">SN</span><span class="v">VS-CF-8X20-00391</span></div>
+    <div class="frow"><span class="k">点位</span><span class="v">上海 A 店</span></div>
+    <div class="frow"><span class="k">地址</span><span class="v">上海市浦东新区世纪大道 100 号 1F</span></div>
+  </div>
+
+  <!-- 故障信息 -->
+  <div class="sect">
+    <h3>故障信息</h3>
+    <div class="frow" style="margin-top:8px"><span class="k">故障类型</span><span class="v">出货异常</span></div>
+    <div class="frow"><span class="k">故障描述</span><span class="v">启动后无法出杯，屏幕提示故障码 E-12</span></div>
+    <div class="frow"><span class="k">附件</span>
+      <span class="v photos" style="margin-top:2px">
+        <span class="photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>现场</span>
+        <span class="photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>故障码</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 处理要求 -->
+  <div class="sect">
+    <div class="hd"><h3>处理要求</h3><span class="rt" style="color:var(--green)">3 项已完成</span></div>
+    <div class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>填写处理描述</div>
+    <div class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>上传现场照片</div>
+    <div class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>填写维修测试结果</div>
+  </div>
+
+  <!-- 处理记录 -->
+  <div class="sect">
+    <div class="hd"><h3>处理记录</h3>
+      <a id="histBtn2" style="color:var(--blue);font-size:12px;font-weight:700;cursor:pointer">查看全部记录 →</a></div>
+    <div class="tl" id="tl">
+      <div class="it extra">
+        <div class="dc"><div class="dot g"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 09:30 <span>系统</span></div>
+          <div class="p">工单创建 · 来源：设备自动告警</div></div>
+      </div>
+      <div class="it extra">
+        <div class="dc"><div class="dot"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 09:40 <span>张三</span></div>
+          <div class="p">已认领工单，状态进入处理中</div></div>
+      </div>
+      <div class="it">
+        <div class="dc"><div class="dot"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 10:20 <span>张三</span></div>
+          <div class="p">已检查设备电源与出货模块，发现出货电机连接异常</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部固定操作 -->
+  <div class="dobot">
+    <div class="row2"><a class="abtn wide" href="ticket-progress.html">记录进展</a></div>
+    <div class="row2">
+      <a class="abtn ghost" href="ticket-wait.html">等待反馈</a>
+      <a class="abtn" href="ticket-complete.html">提交完工</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ··· 菜单 */
+document.getElementById('moreBtn').addEventListener('click', function(e){
+  e.stopPropagation();
+  document.getElementById('moreMenu').classList.toggle('open');
+});
+document.addEventListener('click', function(e){
+  var m = document.getElementById('moreMenu');
+  if(m && !m.contains(e.target)) m.classList.remove('open');
+});
+
+/* 展开完整记录（嵌入详情页，不新建页面） */
+function toggleHist(){
+  var tl = document.getElementById('tl');
+  tl.classList.toggle('open');
+  var open = tl.classList.contains('open');
+  document.getElementById('histBtn2').textContent = open ? '收起记录 ↑' : '查看全部记录 →';
+}
+document.getElementById('histBtn').addEventListener('click', function(){
+  document.getElementById('moreMenu').classList.remove('open');
+  toggleHist();
+  document.getElementById('tl').scrollIntoView({behavior:'smooth', block:'center'});
+});
+document.getElementById('histBtn2').addEventListener('click', toggleHist);
+
+/* SLA 倒计时 */
+(function(){
+  var left = 2*3600 + 15*60 + 30, el = document.getElementById('slaTimer');
+  function pad(n){ return (n<10?'0':'') + n; }
+  setInterval(function(){
+    if(left > 0) left--;
+    var h = Math.floor(left/3600), m = Math.floor(left%3600/60), s = left%60;
+    el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+    if(left === 0) el.style.color = 'var(--red)';
+  }, 1000);
+})();
+</script>
+</body>
+</html>

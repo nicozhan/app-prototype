@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>设备 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+</head>
+<body>
+<div class="screen">
+  <div class="hero">
+    <div class="row1">
+      <div class="brand">VENDSOLUTION</div>
+      <div class="actions">
+        <button aria-label="新增"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button aria-label="更多"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+      </div>
+    </div>
+    <button class="pagetitle" id="navToggle">设备
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="navmenu" id="navMenu">
+      <a href="products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>商品</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>订单</a>
+      <a href="machines.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>设备
+        <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></a>
+      <a href="stats.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>经营统计</a>
+    </div>
+  </div>
+
+  <div class="searchrow">
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>搜索设备</div>
+    <button class="toolbtn" aria-label="排序"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10M11 9h7M11 13h4"/><path d="m3 17 3 3 3-3"/><path d="M6 18V4"/></svg></button>
+    <button class="toolbtn" aria-label="筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg></button>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <span class="tab on" data-f="all">全部</span>
+    <span class="tab" data-f="active">已激活</span>
+    <span class="tab" data-f="inactive">未激活</span>
+    <span class="spacer"></span>
+    <span class="mini">筛选</span>
+  </div>
+
+  <div class="list" id="list">
+    <a class="row" href="#" data-s="active">
+      <span class="thumbicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+      <div class="body">
+        <div class="name">万事达WSD923xxw</div>
+        <div class="sub">现调机 · Fuji F300</div>
+        <div class="meta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          悉尼机场 T1-A01
+          <span class="badge b-red">缺货 1</span>
+          <span class="badge b-orange">低库存 1</span>
+        </div>
+      </div>
+      <span class="badge b-green status">已激活</span>
+    </a>
+    <a class="row" href="#" data-s="active">
+      <span class="thumbicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+      <div class="body">
+        <div class="name">泰信-矩视开门柜1</div>
+        <div class="sub">开门柜 · TX-G200</div>
+        <div class="meta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          曼谷机场 B12
+          <span class="badge b-red">缺货 1</span>
+        </div>
+      </div>
+      <span class="badge b-green status">已激活</span>
+    </a>
+    <a class="row" href="#" data-s="inactive">
+      <span class="thumbicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+      <div class="body">
+        <div class="name">北京首都 T3 综合柜</div>
+        <div class="sub">综合柜 · Crane 678</div>
+        <div class="meta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          北京首都 T3-D22
+        </div>
+      </div>
+      <span class="badge b-gray status">未激活</span>
+    </a>
+  </div>
+</div>
+<script>
+  var t = document.getElementById('navToggle'), m = document.getElementById('navMenu');
+  t.addEventListener('click', function(e){ e.stopPropagation(); m.classList.toggle('open'); });
+  document.addEventListener('click', function(){ m.classList.remove('open'); });
+  document.getElementById('tabs').addEventListener('click', function(e){
+    var tab = e.target.closest('.tab'); if(!tab) return;
+    this.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+    tab.classList.add('on');
+    var f = tab.dataset.f;
+    document.querySelectorAll('#list .row').forEach(function(r){
+      r.style.display = (f==='all' || r.dataset.s===f) ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>

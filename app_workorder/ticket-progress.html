@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>记录处理进展 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop">
+    <a class="back" href="ticket-detail.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">记录处理进展</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 工单摘要 -->
+  <div class="sect" style="margin-top:9px;padding:11px 12px">
+    <div style="font-size:11px;color:var(--gray);letter-spacing:.3px">工单 WO-20261022-001</div>
+    <div class="tktitle" style="font-size:14.5px;margin-top:4px">咖啡机无法出杯</div>
+  </div>
+
+  <!-- 表单 -->
+  <div class="sect">
+    <div class="field">
+      <label class="flabel">处理阶段</label>
+      <span class="fsel" id="selStage" style="position:relative">
+        <span class="lbtxt">故障排查</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </div>
+
+    <div class="field">
+      <label class="flabel">处理描述<span class="req">*</span></label>
+      <textarea class="ftarea">已检查电源与出货模块，发现出货电机连接异常……</textarea>
+      <div class="fhint">每次保存都会追加一条新记录，不会覆盖历史内容</div>
+    </div>
+
+    <div class="field">
+      <label class="flabel">故障原因<span class="opt">（选填）</span></label>
+      <span class="fsel ph" id="selReason" style="position:relative">
+        <span class="lbtxt">请选择故障原因</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </div>
+
+    <div class="field">
+      <label class="flabel">现场照片</label>
+      <div class="photos">
+        <span class="photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>照片1</span>
+        <span class="photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>照片2</span>
+        <span class="photo add">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>添加</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="flabel">备注<span class="opt">（选填）</span></label>
+      <input class="finput" placeholder="补充说明（选填）">
+    </div>
+  </div>
+
+  <!-- 底部操作 -->
+  <div class="dobot">
+    <div class="row2">
+      <a class="abtn ghost" href="ticket-detail.html">取消</a>
+      <button class="abtn" id="saveBtn">保存记录</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">处理记录已保存</div>
+
+<script>
+/* 通用下拉 */
+function bindDrop(id, arr, resetLabel){
+  var el = document.getElementById(id);
+  var d = document.createElement('div');
+  d.className = 'drop'; d.style.display = 'none';
+  d.innerHTML = arr.map(function(v){ return '<span data-v="' + v + '">' + v + '</span>'; }).join('');
+  el.appendChild(d);
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+    var s = e.target.closest('.drop span');
+    if(s){
+      d.querySelectorAll('span').forEach(function(x){ x.classList.remove('on'); });
+      s.classList.add('on');
+      el.querySelector('.lbtxt').textContent = s.dataset.v;
+      el.classList.remove('ph');
+      d.style.display = 'none';
+      return;
+    }
+    document.querySelectorAll('.drop').forEach(function(x){ if(x !== d) x.style.display = 'none'; });
+    d.style.display = (d.style.display === 'none') ? 'block' : 'none';
+  });
+}
+bindDrop('selStage', ['故障诊断', '故障排查', '部件更换', '现场测试', '清洁保养']);
+bindDrop('selReason', ['出货电机故障', '线路接触不良', '控制板异常', '缺料卡顿', '其他']);
+document.addEventListener('click', function(){
+  document.querySelectorAll('.drop').forEach(function(x){ x.style.display = 'none'; });
+});
+
+/* 保存：追加记录，不改变工单状态 */
+document.getElementById('saveBtn').addEventListener('click', function(){
+  var t = document.getElementById('toast');
+  t.classList.add('on');
+  setTimeout(function(){ t.classList.remove('on'); }, 1500);
+  setTimeout(function(){ location.href = 'ticket-detail.html'; }, 800);
+});
+</script>
+</body>
+</html>

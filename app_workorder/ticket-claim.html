@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>待认领工单 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    display:flex; flex-direction:column; }
+  .searchrow{ padding:8px 14px 0; }
+  .search{ padding:9px 12px; border-radius:11px; }
+  .search input{ flex:1; min-width:0; border:none; outline:none; background:transparent;
+    font-family:inherit; font-size:13px; color:var(--ink); }
+  .search input::placeholder{ color:#9AA1BC; }
+  .tabbar{ margin-top:auto; }
+  .wait.hot{ color:var(--orange); }
+  .wait.over{ color:var(--red); }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop">
+    <a class="back" href="tickets.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">待认领工单</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 筛选行 -->
+  <div style="display:flex;gap:7px;padding:10px 14px 0">
+    <span class="fsel" id="selType" data-key="type" style="flex:1;padding:8px 10px;position:relative">
+      <span class="lbtxt">维修</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>
+    <span class="fsel" id="selPri" data-key="pri" style="flex:1;padding:8px 10px;position:relative">
+      <span class="lbtxt">优先级</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>
+    <button class="toolbtn" id="fltBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+    </button>
+  </div>
+
+  <!-- 高级筛选面板 -->
+  <div class="tfilter" id="tfilter" style="padding-top:9px">
+    <div class="fg">
+      <div class="fl">等待时长</div>
+      <div class="opts" id="waitOpts">
+        <span class="opt on" data-v="all">全部</span>
+        <span class="opt" data-v="hot">30 分钟以上</span>
+        <span class="opt" data-v="over">60 分钟以上</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搜索 -->
+  <div class="searchrow">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="kw" placeholder="搜索标题 / 设备SN">
+    </div>
+  </div>
+
+  <!-- 列表 -->
+  <div class="tklist" id="tklist" style="flex:1"></div>
+
+  <!-- 底部导航 -->
+  <div class="tabbar">
+    <a class="tb" href="../home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>工作台</a>
+    <a class="tb on" href="tickets.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>工单</a>
+    <a class="tb" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>消息</a>
+    <a class="tb" href="../my.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>我的</a>
+  </div>
+</div>
+
+<div class="toast" id="toast">认领成功</div>
+
+<script>
+var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+var DEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
+
+var LIST = [
+  { id:'WO-101', pri:'P1', cls:'pri-p1', lb:'P1 · 紧急', title:'咖啡机无法出杯',
+    site:'上海 A 店', sn:'CF-001', wait:25, type:'维修' },
+  { id:'WO-102', pri:'P2', cls:'pri-p2', lb:'P2 · 普通', title:'制冷温度异常',
+    site:'北京 B 店', sn:'VM-003', wait:40, type:'维修' },
+  { id:'WO-103', pri:'P1', cls:'pri-p1', lb:'P1 · 紧急', title:'支付模块无响应',
+    site:'深圳科技园', sn:'VM-007', wait:68, type:'维修' }
+];
+
+var fType = 'all', fPri = 'all', fWait = 'all', kw = '';
+
+function waitCls(w){ return w >= 60 ? 'over' : (w >= 30 ? 'hot' : ''); }
+
+function render(){
+  var list = LIST.filter(function(t){
+    if(fType !== 'all' && t.type !== fType) return false;
+    if(fPri !== 'all' && t.pri !== fPri) return false;
+    if(fWait === 'hot' && t.wait < 30) return false;
+    if(fWait === 'over' && t.wait < 60) return false;
+    if(kw){
+      var s = (t.title + ' ' + t.id + ' ' + t.sn).toLowerCase();
+      if(s.indexOf(kw.toLowerCase()) === -1) return false;
+    }
+    return true;
+  });
+  var el = document.getElementById('tklist');
+  if(!list.length){ el.innerHTML = '<div class="tkempty">暂无符合条件的待认领工单</div>'; return; }
+  el.innerHTML = list.map(function(t){
+    var sev = t.pri === 'P1' ? 'p0' : 'p1';
+    var w = waitCls(t.wait);
+    var wc = w === 'over' ? 'var(--red)' : (w === 'hot' ? 'var(--orange)' : 'var(--gray)');
+    return '<div class="acard ' + sev + '">'
+      +  '<div class="astrip"></div>'
+      +  '<div class="ain">'
+      +    '<div class="atop">'
+      +      '<span class="alvl"><span class="sdot"></span>' + t.lb + '</span>'
+      +      '<span class="ast2 s-claim"><span class="tdot"></span>待认领</span>'
+      +    '</div>'
+      +    '<div class="atitle">' + t.title + '</div>'
+      +    '<div class="achips">'
+      +      '<span class="achip">' + PIN + t.site + '</span>'
+      +      '<span class="achip">' + DEV + t.sn + '</span>'
+      +      '<span class="achip" style="color:' + wc + '">等待 ' + t.wait + ' 分钟</span>'
+      +      '<span class="achip">' + t.id + '</span>'
+      +    '</div>'
+      +    '<div class="aacts">'
+      +      '<a class="abt2 ghost" href="ticket-detail.html">查看详情</a>'
+      +      '<a class="abt2 claim" href="#" data-id="' + t.id + '">认领工单</a>'
+      +    '</div>'
+      +  '</div>'
+      + '</div>';
+  }).join('') ;
+}
+
+/* 下拉选择 */
+var TYPES = ['全部', '维修', '保养', '巡检'];
+var PRIS  = ['全部', 'P1', 'P2'];
+function buildDrop(el, arr, cb){
+  el.style.position = 'relative';
+  var d = document.createElement('div');
+  d.className = 'drop'; d.style.display = 'none';
+  d.innerHTML = arr.map(function(v){
+    return '<span data-v="' + v + '">' + v + '</span>';
+  }).join('');
+  el.appendChild(d);
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+    var span = e.target.closest('.drop span');
+    if(span){
+      d.querySelectorAll('span').forEach(function(x){ x.classList.remove('on'); });
+      span.classList.add('on');
+      el.querySelector('.lbtxt').textContent = span.dataset.v === '全部' ? (el.dataset.key === 'type' ? '维修' : '优先级') : span.dataset.v;
+      cb(span.dataset.v);
+      d.style.display = 'none';
+      return;
+    }
+    document.querySelectorAll('.drop').forEach(function(x){ if(x !== d) x.style.display = 'none'; });
+    d.style.display = (d.style.display === 'none') ? 'block' : 'none';
+  });
+}
+buildDrop(document.getElementById('selType'), TYPES, function(v){ fType = (v === '全部' ? 'all' : v); render(); });
+buildDrop(document.getElementById('selPri'), PRIS, function(v){ fPri = (v === '全部' ? 'all' : v); render(); });
+document.addEventListener('click', function(){
+  document.querySelectorAll('.drop').forEach(function(x){ x.style.display = 'none'; });
+});
+
+/* 筛选面板 */
+document.getElementById('fltBtn').addEventListener('click', function(){
+  document.getElementById('tfilter').classList.toggle('open');
+});
+document.getElementById('waitOpts').addEventListener('click', function(e){
+  var o = e.target.closest('.opt'); if(!o) return;
+  this.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
+  o.classList.add('on');
+  fWait = o.dataset.v; render();
+});
+
+/* 搜索 */
+document.getElementById('kw').addEventListener('input', function(){
+  kw = this.value.trim(); render();
+});
+
+/* 认领：直接认领，成功后进入详情；失败提示已被认领 */
+document.getElementById('tklist').addEventListener('click', function(e){
+  var b = e.target.closest('.claim'); if(!b) return;
+  e.preventDefault();
+  var t = document.getElementById('toast');
+  t.textContent = '认领成功 · ' + b.dataset.id;
+  t.classList.add('on');
+  setTimeout(function(){ t.classList.remove('on'); }, 1400);
+  setTimeout(function(){ location.href = 'ticket-detail.html'; }, 700);
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>工单详情 · 退回返工 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+  .oldver{ display:none; }
+  .oldver.on{ display:block; }
+  .req{ display:flex; align-items:center; gap:7px; font-size:12.5px; }
+  .req + .req{ margin-top:6px; }
+  .req svg{ width:15px; height:15px; color:var(--green); flex-shrink:0; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop">
+    <a class="back" href="tickets.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">工单详情</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 状态头 -->
+  <div class="sect" style="margin-top:9px">
+    <div class="dstat">
+      <span class="st badge b-red">退回返工</span>
+      <span class="pri tkpri pri-p1">P1 · 高优先级</span>
+    </div>
+    <div class="tktitle" style="font-size:17px;margin-top:9px">咖啡机无法出杯</div>
+    <div style="font-size:11.5px;color:var(--gray);margin-top:5px;letter-spacing:.3px">WO-20261022-001 · 创建时间 10-22 09:30</div>
+  </div>
+
+  <!-- 审核意见 -->
+  <div class="notice">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>
+      <b>工单已被退回返工</b>
+      <div class="q">测试结果不完整，请补充连续出杯测试记录及照片。</div>
+      <div class="meta">退回人：管理员 · 退回时间：10-22 11:30</div>
+    </div>
+  </div>
+
+  <!-- 原完工记录 -->
+  <div class="sect">
+    <div class="hd"><h3>原完工记录</h3>
+      <a id="verBtn" style="color:var(--blue);font-size:12px;font-weight:700;cursor:pointer">查看 →</a></div>
+    <div style="font-size:12px;color:var(--gray)">处理描述、测试结果、照片 · 版本 V1</div>
+    <div class="oldver" id="oldver" style="margin-top:10px;padding:11px;background:var(--bg-soft);
+      border:1px solid var(--line);border-radius:11px">
+      <div class="frow"><span class="k">版本</span><span class="v">V1 · 10-22 11:05 提交</span></div>
+      <div class="frow"><span class="k">处理描述</span><span class="v">更换出货电机连接线，重新固定连接器。</span></div>
+      <div class="frow"><span class="k">测试结果</span><span class="v">测试通过</span></div>
+      <div class="frow"><span class="k">测试说明</span><span class="v">连续出杯测试 5 次，均正常</span></div>
+      <div class="frow"><span class="k">现场照片</span><span class="v photos" style="margin-top:1px">
+        <span class="photo" style="width:52px;height:52px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </span></span></div>
+    </div>
+  </div>
+
+  <!-- SLA -->
+  <div class="sect">
+    <div class="hd"><h3>SLA</h3><span class="rt">截止 10-22 18:00</span></div>
+    <div id="slaTimer" style="font-size:25px;font-weight:800;letter-spacing:-.5px">06:28:14</div>
+    <div style="font-size:11.5px;color:var(--orange);margin-top:2px">剩余处理时间 · SLA 持续计时</div>
+  </div>
+
+  <!-- 设备与点位 -->
+  <div class="sect">
+    <div class="hd"><h3>设备与点位</h3>
+      <a href="#" style="color:var(--blue);font-size:12px;font-weight:700">导航 →</a></div>
+    <div class="frow"><span class="k">设备</span><span class="v">CF-001</span></div>
+    <div class="frow"><span class="k">SN</span><span class="v">VS-CF-8X20-00391</span></div>
+    <div class="frow"><span class="k">点位</span><span class="v">上海 A 店</span></div>
+    <div class="frow"><span class="k">地址</span><span class="v">上海市浦东新区世纪大道 100 号 1F</span></div>
+  </div>
+
+  <!-- 故障信息 -->
+  <div class="sect">
+    <h3>故障信息</h3>
+    <div class="frow" style="margin-top:8px"><span class="k">故障类型</span><span class="v">出货异常</span></div>
+    <div class="frow"><span class="k">故障描述</span><span class="v">启动后无法出杯，屏幕提示故障码 E-12</span></div>
+  </div>
+
+  <!-- 处理要求 -->
+  <div class="sect">
+    <div class="hd"><h3>处理要求</h3><span class="rt" style="color:var(--red)">审核未通过 1 项</span></div>
+    <div class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>填写处理描述</div>
+    <div class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>上传现场照片</div>
+    <div class="req" style="color:var(--red)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      填写维修测试结果（不完整，需补充）</div>
+  </div>
+
+  <!-- 处理记录 -->
+  <div class="sect">
+    <div class="hd"><h3>处理记录</h3><span class="rt">4 条</span></div>
+    <div class="tl">
+      <div class="it">
+        <div class="dc"><div class="dot g"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 09:30 <span>系统</span></div>
+          <div class="p">工单创建 · 来源：设备自动告警</div></div>
+      </div>
+      <div class="it">
+        <div class="dc"><div class="dot"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 10:20 <span>张三</span></div>
+          <div class="p">已检查设备电源与出货模块，发现出货电机连接异常</div></div>
+      </div>
+      <div class="it">
+        <div class="dc"><div class="dot"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h">10-22 11:05 <span>张三</span></div>
+          <div class="p">提交完工申请（版本 V1），等待审核</div></div>
+      </div>
+      <div class="it">
+        <div class="dc"><div class="dot" style="background:var(--red)"></div><div class="ln"></div></div>
+        <div class="ct"><div class="h" style="color:var(--red)">10-22 11:30 <span>管理员</span></div>
+          <div class="p" style="color:var(--ink)">审核退回：测试结果不完整，请补充连续出杯测试记录及照片</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部固定操作：返工后为两枚主操作 -->
+  <div class="dobot">
+    <div class="row2">
+      <a class="abtn ghost" href="ticket-progress.html">记录进展</a>
+      <a class="abtn" href="ticket-complete.html">重新提交完工</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 展开原完工版本（保留历史，不覆盖旧记录） */
+document.getElementById('verBtn').addEventListener('click', function(){
+  var v = document.getElementById('oldver');
+  v.classList.toggle('on');
+  this.textContent = v.classList.contains('on') ? '收起 ↑' : '查看 →';
+});
+
+/* SLA 倒计时 */
+(function(){
+  var left = 6*3600 + 28*60 + 14, el = document.getElementById('slaTimer');
+  function pad(n){ return (n<10?'0':'') + n; }
+  setInterval(function(){
+    if(left > 0) left--;
+    var h = Math.floor(left/3600), m = Math.floor(left%3600/60), s = left%60;
+    el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+  }, 1000);
+})();
+</script>
+</body>
+</html>

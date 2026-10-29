@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>设计标准 · C4 卡片 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(30px + env(safe-area-inset-bottom)); }
+  .sect h3{ margin-bottom:0; }
+  .note{ font-size:12px; color:var(--gray); margin-top:7px; line-height:1.6; }
+  .strow{ display:flex; align-items:center; gap:7px; font-size:12.5px; padding:7px 0; }
+  .strow + .strow{ border-top:1px solid #F0F3FC; }
+  .strow .d{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .strow .m{ color:var(--gray); font-size:11px; margin-left:auto; }
+  pre{ background:#0B102F; color:#C7CBE0; border-radius:10px; padding:11px 12px;
+    font-family:ui-monospace,Menlo,monospace; font-size:10.5px; line-height:1.65;
+    overflow-x:auto; margin-top:9px; }
+  pre b{ color:#FFD28A; font-weight:600; }
+  .rule{ display:flex; gap:8px; font-size:12.5px; padding:7px 0; }
+  .rule + .rule{ border-top:1px solid #F0F3FC; }
+  .rule svg{ width:15px; height:15px; color:var(--green); flex-shrink:0; margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop">
+    <a class="back" href="nav.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">设计标准</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 总纲 -->
+  <div class="sect" style="margin-top:9px">
+    <h3>卡片标准 · C4</h3>
+    <div class="note">所有列表卡片统一使用 <b>.acard</b>：<b>整圈描边</b>（1.5px，按严重度/优先级取色）+ <b>顶部 4px 色条</b> + 严重度标签 + 状态色点 + 标题 + 标签 chips + 底部（等宽时间 + 操作）。新页面一律沿用此结构。</div>
+  </div>
+
+  <!-- 结构示例 -->
+  <div class="sect">
+    <div class="hd"><h3>结构示例</h3><span class="rt">.acard.p0</span></div>
+    <div style="margin-top:9px">
+      <a class="acard p0" href="#" onclick="return false;">
+        <div class="astrip"></div>
+        <div class="ain">
+          <div class="atop">
+            <span class="alvl"><span class="sdot"></span>P0 · 严重</span>
+            <span class="ast2 s-todo"><span class="tdot"></span>待处理</span>
+          </div>
+          <div class="atitle">柜内温度过高</div>
+          <div class="achips">
+            <span class="achip dev">设备告警</span>
+            <span class="achip">SN0020301</span>
+            <span class="achip">上海 A 店</span>
+            <span class="achip">JAVA</span>
+          </div>
+          <div class="afoot"><span class="atime">2026/10/25 14:40</span><span class="abtn">查看 →</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 三档严重度 -->
+  <div class="sect">
+    <div class="hd"><h3>严重度 / 优先级配色</h3><span class="rt">描边 + 色条</span></div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-top:9px">
+      <div class="acard p2">
+        <div class="astrip"></div>
+        <div class="ain">
+          <div class="atop"><span class="alvl"><span class="sdot"></span>P2 · 提示</span>
+            <span class="ast2 s-done"><span class="tdot"></span>已完成</span></div>
+          <div class="atitle" style="font-size:13px">低严重度 · 浅蓝灰描边</div>
+        </div>
+      </div>
+      <div class="acard p1">
+        <div class="astrip"></div>
+        <div class="ain">
+          <div class="atop"><span class="alvl"><span class="sdot"></span>P1 · 警告</span>
+            <span class="ast2 s-doing"><span class="tdot"></span>处理中</span></div>
+          <div class="atitle" style="font-size:13px">中严重度 · 橙色描边</div>
+        </div>
+      </div>
+      <div class="acard p0">
+        <div class="astrip"></div>
+        <div class="ain">
+          <div class="atop"><span class="alvl"><span class="sdot"></span>P0 · 严重</span>
+            <span class="ast2 s-todo"><span class="tdot"></span>待处理</span></div>
+          <div class="atitle" style="font-size:13px">高严重度 · 红色描边</div>
+        </div>
+      </div>
+    </div>
+    <div class="note">工单优先级同样映射：P1 → <b>p0（红）</b>，P2 → <b>p1（橙）</b>。</div>
+  </div>
+
+  <!-- 状态色 -->
+  <div class="sect">
+    <div class="hd"><h3>状态配色</h3><span class="rt">色点 + 文字</span></div>
+    <div style="margin-top:5px">
+      <div class="strow"><span class="d" style="background:var(--red)"></span>待处理<span class="m">s-todo</span></div>
+      <div class="strow"><span class="d" style="background:var(--blue)"></span>处理中<span class="m">s-doing</span></div>
+      <div class="strow"><span class="d" style="background:var(--orange)"></span>等待反馈<span class="m">s-warn</span></div>
+      <div class="strow"><span class="d" style="background:var(--green)"></span>待认领 / 已完成<span class="m">s-claim / s-done</span></div>
+      <div class="strow"><span class="d" style="background:var(--gray)"></span>已关闭 / 待审核<span class="m">s-closed</span></div>
+    </div>
+  </div>
+
+  <!-- 用法 -->
+  <div class="sect">
+    <div class="hd"><h3>用法</h3><span class="rt">HTML 骨架</span></div>
+    <pre>&lt;a class="acard <b>p0</b>" href="..."&gt;
+  &lt;div class="astrip"&gt;&lt;/div&gt;      <b>&lt;!-- 顶部色条 --&gt;</b>
+  &lt;div class="ain"&gt;
+    &lt;div class="atop"&gt;
+      &lt;span class="alvl"&gt;&lt;span class="sdot"&gt;&lt;/span&gt;P0 · 严重&lt;/span&gt;
+      &lt;span class="ast2 <b>s-todo</b>"&gt;&lt;span class="tdot"&gt;&lt;/span&gt;待处理&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="atitle"&gt;标题&lt;/div&gt;
+    &lt;div class="achips"&gt;…chips…&lt;/div&gt;
+    &lt;div class="afoot"&gt;
+      &lt;span class="atime"&gt;时间&lt;/span&gt;&lt;span class="abtn"&gt;查看 →&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/a&gt;</pre>
+    <div class="note">双按钮场景用 <b>.aacts</b> + <b>.abt2</b>（主）/ <b>.abt2.ghost</b>（次）替代 <b>.afoot</b>。</div>
+  </div>
+
+  <!-- 规则 -->
+  <div class="sect">
+    <div class="hd"><h3>约束</h3></div>
+    <div style="margin-top:5px">
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>新页面卡片一律用 <b>.acard</b>，不新增卡片变体</div>
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>严重度只取 <b>p0 / p1 / p2</b> 三档，颜色由类决定</div>
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>空值（<b>—</b>）不渲染为 chip</div>
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Figma 1:1 复刻页（登录/我的/首页/商品/设备/补货）保持不变</div>
+      <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>vend.css 只追加新类，不改动既有规则</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

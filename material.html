@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>点位原料统计 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh; padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+  /* 原料明细表 */
+  .dtbl{ margin-top:9px; }
+  .dtbl .th2, .dtbl .tr2{ display:grid; grid-template-columns:1fr 72px 62px; gap:6px; align-items:center; }
+  .dtbl .th2{ font-size:11.5px; color:var(--gray); font-weight:600;
+    padding:0 2px 8px; border-bottom:1px solid var(--line); }
+  .dtbl .tr2{ padding:10px 2px; border-bottom:1px solid #F0F3FC; font-size:13px; font-weight:600; }
+  .dtbl .tr2:last-child{ border-bottom:none; }
+  .dtbl .th2 span:nth-child(2), .dtbl .th2 span:nth-child(3){ text-align:right; }
+  .dtbl .tr2 span:nth-child(2){ text-align:right; font-weight:800; }
+  .dtbl .tr2 span:nth-child(3){ text-align:right; color:var(--gray); font-weight:500; }
+  .chart{ width:100%; height:auto; display:block; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="dtop">
+    <a class="back" href="stats.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">点位原料统计</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="filters">
+    <div class="flt">
+      <span class="lb">时间</span>
+      <span class="sel">近7天
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">点位</span>
+      <span class="sel">选择点位
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">原料</span>
+      <span class="sel">全部原料
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+  </div>
+
+  <!-- 原料消耗概览 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>原料消耗概览</h3>
+      <span class="sub">近7天</span>
+    </div>
+    <div class="kpi">
+      <div class="k"><div class="n">咖啡豆</div><div class="v">18.6<small>kg</small></div></div>
+      <div class="k"><div class="n">牛奶</div><div class="v">32.4<small>L</small></div></div>
+      <div class="k"><div class="n">糖浆</div><div class="v">4.8<small>L</small></div></div>
+    </div>
+  </div>
+
+  <!-- 原料消耗明细 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>原料消耗明细</h3>
+      <span class="sub">共 4 种原料</span>
+    </div>
+    <div class="dtbl">
+      <div class="th2"><span>原料名称</span><span>消耗量</span><span>计量单位</span></div>
+      <div class="tr2"><span>咖啡豆</span><span>18.6</span><span>kg</span></div>
+      <div class="tr2"><span>牛奶</span><span>32.4</span><span>L</span></div>
+      <div class="tr2"><span>糖浆</span><span>4.8</span><span>L</span></div>
+      <div class="tr2"><span>巧克力酱</span><span>2.3</span><span>kg</span></div>
+    </div>
+  </div>
+
+  <!-- 消耗趋势 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>消耗趋势</h3>
+      <span class="sel" style="flex:0 0 auto; padding:5px 10px; font-size:12px; box-shadow:none;">按日
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+
+    <svg class="chart" viewBox="0 0 339 122" preserveAspectRatio="none" aria-label="消耗趋势图">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2434C8" stop-opacity=".22"/>
+          <stop offset="100%" stop-color="#2434C8" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="0" y1="98" x2="339" y2="98" stroke="#E3E7FF" stroke-width="1"/>
+      <line x1="0" y1="60" x2="339" y2="60" stroke="#F0F3FC" stroke-width="1"/>
+      <path d="M18,82 L68,61 L118,77 L168,39 L218,50 L268,29 L318,45 L318,98 L18,98 Z" fill="url(#g1)"/>
+      <polyline points="18,82 68,61 118,77 168,39 218,50 268,29 318,45"
+        fill="none" stroke="#2434C8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#2434C8">
+        <circle cx="18" cy="82" r="3"/><circle cx="68" cy="61" r="3"/><circle cx="118" cy="77" r="3"/>
+        <circle cx="168" cy="39" r="3"/><circle cx="218" cy="50" r="3"/><circle cx="268" cy="29" r="3"/>
+        <circle cx="318" cy="45" r="3.6"/>
+      </g>
+      <g fill="#9AA1BC" font-size="10" font-family="Inter,sans-serif" text-anchor="middle">
+        <text x="18" y="115">10-12</text><text x="68" y="115">10-13</text><text x="118" y="115">10-14</text>
+        <text x="168" y="115">10-15</text><text x="218" y="115">10-16</text><text x="268" y="115">10-17</text>
+        <text x="318" y="115">10-18</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="brow">
+    <a class="abtn ghost wide" href="#">查看商品配方消耗明细 →</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>转派工单 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh;
+    padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="dtop">
+    <a class="back" href="ticket-detail.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">转派工单</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 工单摘要 -->
+  <div class="sect" style="margin-top:9px;padding:10px 12px">
+    <div style="font-size:11px;color:var(--gray);letter-spacing:.3px">WO-20261022-001</div>
+    <div class="tktitle" style="font-size:14.5px;margin-top:3px">咖啡机无法出杯</div>
+  </div>
+
+  <!-- 当前归属（只读） -->
+  <div class="sect">
+    <h3>当前接收组织</h3>
+    <div style="font-size:14px;font-weight:700;margin-top:7px">上海维修组</div>
+    <div style="font-size:12px;color:var(--gray);margin-top:3px">当前处理人：张三</div>
+  </div>
+
+  <!-- 转派表单 -->
+  <div class="sect">
+    <div class="field">
+      <label class="flabel">目标接收组织<span class="req">*</span></label>
+      <span class="fsel ph" id="selOrg" style="position:relative">
+        <span class="lbtxt">选择组织</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </div>
+
+    <div class="field">
+      <label class="flabel">目标处理人</label>
+      <span class="fsel ph" id="selUser" style="position:relative">
+        <span class="lbtxt">选择人员</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <div class="fhint">转派后将同步记录原组织与原处理人</div>
+    </div>
+
+    <div class="field">
+      <label class="flabel">转派原因<span class="req">*</span></label>
+      <textarea class="ftarea" id="reason" style="min-height:70px">该设备需专业电控维修资质，转由深圳维修组处理。</textarea>
+    </div>
+
+    <div class="field">
+      <label class="flabel">转派后</label>
+      <div class="rgrp" id="modeGrp">
+        <span class="radio on" data-v="assign"><span class="dot"></span>
+          <span><b>直接分配给指定人员</b><div class="sub">目标处理人立即成为当前处理人</div></span></span>
+        <span class="radio" data-v="pool"><span class="dot"></span>
+          <span><b>转入目标组织待认领池</b><div class="sub">由目标组织成员自行认领</div></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部操作 -->
+  <div class="dobot">
+    <div class="row2">
+      <a class="abtn ghost" href="ticket-detail.html">取消</a>
+      <button class="abtn" id="okBtn">确认转派</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">转派成功</div>
+
+<script>
+function bindDrop(id, arr){
+  var el = document.getElementById(id);
+  var d = document.createElement('div');
+  d.className = 'drop'; d.style.display = 'none';
+  d.innerHTML = arr.map(function(v){ return '<span data-v="' + v + '">' + v + '</span>'; }).join('');
+  el.appendChild(d);
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+    var s = e.target.closest('.drop span');
+    if(s){
+      d.querySelectorAll('span').forEach(function(x){ x.classList.remove('on'); });
+      s.classList.add('on');
+      el.querySelector('.lbtxt').textContent = s.dataset.v;
+      el.classList.remove('ph');
+      d.style.display = 'none';
+      return;
+    }
+    document.querySelectorAll('.drop').forEach(function(x){ if(x !== d) x.style.display = 'none'; });
+    d.style.display = (d.style.display === 'none') ? 'block' : 'none';
+  });
+  return el;
+}
+bindDrop('selOrg', ['深圳维修组', '上海维修组', '北京维修组', '广州维修组']);
+bindDrop('selUser', ['王五（电控高级技师）', '李四（设备工程师）', '赵六（维修专员）']);
+document.addEventListener('click', function(){
+  document.querySelectorAll('.drop').forEach(function(x){ x.style.display = 'none'; });
+});
+
+document.getElementById('modeGrp').addEventListener('click', function(e){
+  var r = e.target.closest('.radio'); if(!r) return;
+  this.querySelectorAll('.radio').forEach(function(x){ x.classList.remove('on'); });
+  r.classList.add('on');
+});
+
+document.getElementById('okBtn').addEventListener('click', function(){
+  var org = document.getElementById('selOrg').querySelector('.lbtxt').textContent;
+  if(org === '选择组织'){ 
+    var t = document.getElementById('toast');
+    t.textContent = '请选择目标接收组织';
+    t.classList.add('on');
+    setTimeout(function(){ t.classList.remove('on'); }, 1500);
+    return;
+  }
+  if(!document.getElementById('reason').value.trim()){
+    var t2 = document.getElementById('toast');
+    t2.textContent = '请填写转派原因';
+    t2.classList.add('on');
+    setTimeout(function(){ t2.classList.remove('on'); }, 1500);
+    return;
+  }
+  var t3 = document.getElementById('toast');
+  t3.textContent = '已转派至 ' + org;
+  t3.classList.add('on');
+  setTimeout(function(){ t3.classList.remove('on'); }, 1500);
+  setTimeout(function(){ location.href = 'ticket-detail.html'; }, 900);
+});
+</script>
+</body>
+</html>

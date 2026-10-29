@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>点位商品销售统计 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh; padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+  .pcard .ln b{ color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="dtop">
+    <a class="back" href="stats.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">点位商品销售统计</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="filters">
+    <div class="flt">
+      <span class="lb">点位</span>
+      <span class="sel">北京国贸店
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">时间</span>
+      <span class="sel">近7天
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">商品分类</span>
+      <span class="sel">全部分类
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+  </div>
+
+  <!-- 汇总 -->
+  <div class="dcard">
+    <div class="kpi2" style="margin-top:0;">
+      <div class="k"><div class="n">销售额</div><div class="v">¥ 6,850</div></div>
+      <div class="k"><div class="n">销售数量</div><div class="v">248<small>件</small></div></div>
+    </div>
+  </div>
+
+  <!-- 商品销售明细 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>商品销售明细</h3>
+      <span class="sub">共 3 个商品</span>
+    </div>
+
+    <div class="pcard">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+      <span>
+        <div class="nm">美式咖啡</div>
+        <div class="ln">销量 <b>68 杯</b> · 销售额 <b>¥ 1,020</b></div>
+        <div class="ln">占点位销售额 <b>14.9%</b></div>
+      </span>
+    </div>
+
+    <div class="pcard">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+      <span>
+        <div class="nm">拿铁</div>
+        <div class="ln">销量 <b>52 杯</b> · 销售额 <b>¥ 1,040</b></div>
+        <div class="ln">占点位销售额 <b>15.2%</b></div>
+      </span>
+    </div>
+
+    <div class="pcard">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+      <span>
+        <div class="nm">卡布奇诺</div>
+        <div class="ln">销量 <b>35 杯</b> · 销售额 <b>¥ 700</b></div>
+        <div class="ln">占点位销售额 <b>10.2%</b></div>
+      </span>
+    </div>
+  </div>
+
+  <div class="brow">
+    <a class="abtn ghost" href="#">查看销售趋势</a>
+    <a class="abtn" href="#">导出报表</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>商品销量排行 · VendSolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vend.css">
+<style>
+  .screen{ width:393px; max-width:100%; min-height:100dvh; padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="dtop">
+    <a class="back" href="stats.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
+    <div class="title">商品销量排行</div>
+    <span class="right"></span>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="filters">
+    <div class="flt">
+      <span class="lb">时间</span>
+      <span class="sel">近7天
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">点位</span>
+      <span class="sel">全部点位
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="flt">
+      <span class="lb">商品分类</span>
+      <span class="sel">全部分类
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+  </div>
+
+  <!-- 排序指标 -->
+  <div class="tabs2" id="sortTabs">
+    <span class="tab2 on">销售数量</span>
+    <span class="tab2">销售额</span>
+    <span class="tab2">订单数</span>
+  </div>
+
+  <!-- 排行表 -->
+  <div class="dcard">
+    <div class="dhead">
+      <h3>商品销量排行</h3>
+      <span class="sub">共 5 条 · 按销售数量</span>
+    </div>
+    <div class="tbl">
+      <div class="th"><span>排名</span><span>商品</span><span>销量</span><span>销售额</span></div>
+
+      <div class="tr">
+        <span class="rk top">1</span>
+        <span class="pn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span><b>美式咖啡</b></span>
+        <span class="qt">326 杯</span>
+        <span class="am">¥ 4,890</span>
+      </div>
+      <div class="tr">
+        <span class="rk">2</span>
+        <span class="pn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span><b>拿铁</b></span>
+        <span class="qt">268 杯</span>
+        <span class="am">¥ 5,360</span>
+      </div>
+      <div class="tr">
+        <span class="rk">3</span>
+        <span class="pn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span><b>卡布奇诺</b></span>
+        <span class="qt">193 杯</span>
+        <span class="am">¥ 3,860</span>
+      </div>
+      <div class="tr">
+        <span class="rk">4</span>
+        <span class="pn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><line x1="8" y1="13" x2="16" y2="13"/></svg></span><b>橙汁</b></span>
+        <span class="qt">152 瓶</span>
+        <span class="am">¥ 2,280</span>
+      </div>
+      <div class="tr">
+        <span class="rk">5</span>
+        <span class="pn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span><b>冰美式</b></span>
+        <span class="qt">143 杯</span>
+        <span class="am">¥ 2,145</span>
+      </div>
+    </div>
+    <a class="loadmore" href="#">加载更多</a>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.tabs2').forEach(function(g){
+    g.addEventListener('click', function(e){
+      var c = e.target.closest('.tab2'); if(!c) return;
+      g.querySelectorAll('.tab2').forEach(function(x){ x.classList.remove('on'); });
+      c.classList.add('on');
+      var s = document.querySelector('.dcard .sub');
+      if(s) s.textContent = '共 5 条 · 按' + c.textContent.trim();
+    });
+  });
+</script>
+</body>
+</html>
