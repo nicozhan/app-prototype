@@ -25,11 +25,11 @@ open figma-pixel.html  # 改造前 Figma 1:1 对照稿（归档，不参与统�
 
 ```
 /            入口选择页 index.html  →  App Demo（navigation.html）
-                                   →  Web 后台（外部地址，新标签打开）
+                                   →  Web 后台 Demo（vend-solution-reports.html，新标签打开）
 ```
 
 - **Railway 设置**：新建项目 → Deploy from GitHub repo → 选本仓库，其余保持默认。不需要环境变量、不需要构建命令，`railway.json` 已指定 `startCommand` 与健康检查 `/healthz`。
-- **改 Web 后台地址**：`index.html` 里搜 `platform.vendsolution.com`，卡片 `href` 与下面显示的域名文本各改一处。
+- **Web 后台是原型页**：`vend-solution-reports.html`（报表与分析，单文件自包含）从早期 Web 后台原型迁入，不连真实接口。要换成线上后台，改 `index.html` 里 Web 卡片的 `href` 与下方域名文本即可。
 - **不想公开访问**：Railway 服务 → Settings → 生成域名后，可用 Variables 或 Railway 的 Access Control 限制；原型不含真实数据，但包含内部业务结构。
 - `server.js` 已屏蔽 `.git` / `.workbuddy` / `shots` / `new` / `jpgk-platform` 等非页面目录，且防止路径穿越。
 
@@ -39,6 +39,7 @@ open figma-pixel.html  # 改造前 Figma 1:1 对照稿（归档，不参与统�
 
 ```
 ├── index.html                # 入口选择页（App Demo / Web 后台）
+├── vend-solution-reports.html # Web 后台原型（报表与分析，单文件）
 ├── server.js                 # Railway 静态服务（无依赖）
 ├── package.json              # 启动脚本
 ├── railway.json              # Railway 部署配置
