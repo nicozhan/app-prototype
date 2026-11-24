@@ -2,97 +2,237 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
 <title>点位销量排行 · VendSolution</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vend.css">
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  .screen{ width:393px; max-width:100%; min-height:100dvh; padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
-  .drow .amt{ margin-left:auto; font-size:14px; font-weight:800; white-space:nowrap; }
+  /* 汇总块 */
+  .rs-sum{
+    padding:16px;border-radius:var(--r-card);background:var(--brand);color:#fff
+  }
+  .rs-ctx{display:flex;align-items:center;gap:5px;font-size:11px;line-height:16px;color:rgba(255,255,255,.74)}
+  .rs-lb{margin-top:12px;font-size:12px;line-height:17px;color:rgba(255,255,255,.78)}
+  .rs-total{
+    margin-top:1px;font-size:30px;line-height:38px;font-weight:800;
+    letter-spacing:-.8px;font-variant-numeric:tabular-nums
+  }
+  .rs-kpis{
+    margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,.2);
+    display:grid;grid-template-columns:1fr 1fr;gap:10px
+  }
+  .rs-kpi{display:flex;align-items:baseline;gap:6px;min-width:0}
+  .rs-kpi span{font-size:11px;line-height:16px;color:rgba(255,255,255,.7);white-space:nowrap}
+  .rs-kpi strong{
+    margin-left:auto;font-size:15px;line-height:20px;font-weight:700;
+    font-variant-numeric:tabular-nums;white-space:nowrap
+  }
+  .rs-kpi small{font-size:10px;font-weight:400;opacity:.72}
+
+  /* 筛选 */
+  .rs-filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .rs-flt{
+    display:flex;align-items:center;gap:8px;padding:8px 10px;text-align:left;
+    border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface)
+  }
+  .rs-flt:active{background:var(--surface-2)}
+  .rs-flt>svg:first-child{color:var(--brand);flex:0 0 auto}
+  .rs-flt .chev{margin-left:auto;color:var(--text-3);flex:0 0 auto}
+  .rs-flcopy{min-width:0}
+  .rs-flb{display:block;font-size:10px;line-height:14px;font-weight:600;color:var(--text-3)}
+  .rs-flv{
+    display:block;margin-top:1px;font-size:12px;line-height:17px;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+
+  /* 排行行 */
+  .rs-row{
+    display:grid;grid-template-columns:24px minmax(0,1fr) auto;column-gap:10px;
+    padding:12px 14px;border-top:1px solid var(--line);align-items:center
+  }
+  .rs-row:active{background:#fafbfd}
+  .rs-rank{justify-content:center;padding:0;min-width:24px;height:22px;font-size:11px;font-variant-numeric:tabular-nums}
+  .rs-rank.top{background:var(--brand);color:#fff}
+  .rs-body{display:block;min-width:0}
+  .rs-name{
+    display:block;font-size:14px;line-height:20px;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  .rs-bar{display:block;margin-top:6px;height:4px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+  .rs-bar i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+  .rs-meta{
+    display:block;margin-top:6px;font-size:11px;line-height:16px;color:var(--text-2);
+    font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  .rs-right{text-align:right;flex:0 0 auto}
+  .rs-val{
+    display:block;font-size:15px;line-height:20px;font-weight:700;
+    font-variant-numeric:tabular-nums;white-space:nowrap
+  }
+  .rs-go{
+    display:inline-flex;align-items:center;gap:1px;margin-top:5px;
+    font-size:11px;line-height:16px;font-weight:600;color:var(--brand)
+  }
+
+  /* 弹层 */
+  .rs-desc{margin-top:4px;font-size:12px;line-height:17px;color:var(--text-2)}
+  .rs-opts{margin-top:12px}
+  .rs-opt{
+    width:100%;min-height:50px;display:flex;align-items:center;gap:10px;text-align:left;
+    border-bottom:1px solid var(--line);font-size:14px;font-weight:600
+  }
+  .rs-opt:last-child{border-bottom:0}
+  .rs-opt .mark{
+    width:20px;height:20px;flex:0 0 auto;border-radius:50%;box-shadow:inset 0 0 0 1.5px #c3c9da;
+    display:flex;align-items:center;justify-content:center;color:transparent
+  }
+  .rs-opt.active{color:var(--brand)}
+  .rs-opt.active .mark{background:var(--brand);box-shadow:none;color:#fff}
+
+  .rs-count{font-size:11px;line-height:16px;color:var(--text-2);white-space:nowrap}
+  .rs-note{margin-top:12px;text-align:center;font-size:11px;line-height:17px;color:var(--text-3)}
 </style>
 </head>
 <body>
-<div class="screen">
-  <div class="dtop">
-    <a class="back" href="stats.html">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
-    <div class="title">点位销量排行</div>
-    <span class="right"></span>
-  </div>
+<main class="app">
 
-  <!-- 筛选 -->
-  <div class="filters">
-    <div class="flt">
-      <span class="lb">时间</span>
-      <span class="sel">近7天
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-    </div>
-    <div class="flt">
-      <span class="lb">区域</span>
-      <span class="sel">全部区域
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-    </div>
-    <div class="flt">
-      <span class="lb">排序</span>
-      <span class="sel">销售额
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-    </div>
-  </div>
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
-  <!-- 点位销售额分布 -->
-  <div class="dcard">
-    <div class="dhead">
-      <h3>点位销售额分布</h3>
-      <span class="sub">近7天</span>
-    </div>
-    <div class="bars">
-      <div class="bar">
-        <div class="bl"><b>北京国贸店</b><span>¥ 6,850</span></div>
-        <div class="bt"><div class="bf" style="width:100%;"></div></div>
-      </div>
-      <div class="bar">
-        <div class="bl"><b>上海办公园区</b><span>¥ 5,620</span></div>
-        <div class="bt"><div class="bf" style="width:82%;"></div></div>
-      </div>
-      <div class="bar">
-        <div class="bl"><b>深圳科技园</b><span>¥ 4,980</span></div>
-        <div class="bt"><div class="bf" style="width:73%;"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 点位明细 -->
-  <div class="dcard">
-    <div class="dhead">
-      <h3>点位明细</h3>
-      <span class="sub">共 3 个点位</span>
-    </div>
-    <div style="margin-top:6px;">
-      <a class="drow" href="site-product.html">
-        <span>
-          <div class="t">北京国贸店</div>
-          <div class="s">¥6,850 · 186 笔订单 · 248 件商品</div>
-        </span>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a class="drow" href="site-product.html">
-        <span>
-          <div class="t">上海办公园区</div>
-          <div class="s">¥5,620 · 152 笔订单 · 219 件商品</div>
-        </span>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a class="drow" href="site-product.html">
-        <span>
-          <div class="t">深圳科技园</div>
-          <div class="s">¥4,980 · 141 笔订单 · 205 件商品</div>
-        </span>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  <header class="navbar">
+    <div class="nav-left">
+      <a class="icon-btn" href="stats.html" aria-label="返回统计" onclick="return appBack(event)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       </a>
     </div>
+    <h1>点位销量排行</h1>
+    <div class="nav-right">
+      <button class="icon-btn accent" type="button" id="exportBtn" aria-label="导出排行">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4M5 13v7h14v-7"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="body">
+
+    <section class="rs-sum" aria-label="销售汇总">
+      <div class="rs-ctx">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+        <span id="summaryContext">近7天 · 全部区域</span>
+      </div>
+      <div class="rs-lb">总销售额</div>
+      <div class="rs-total" id="totalSales">¥17,450</div>
+      <div class="rs-kpis">
+        <div class="rs-kpi"><span>订单量</span><strong><b id="totalOrders">479</b> <small>笔</small></strong></div>
+        <div class="rs-kpi"><span>商品销量</span><strong><b id="totalUnits">672</b> <small>件</small></strong></div>
+      </div>
+    </section>
+
+    <section class="rs-filters" aria-label="数据筛选">
+      <button class="rs-flt" type="button" data-filter="time">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+        <span class="rs-flcopy">
+          <span class="rs-flb">统计时间</span>
+          <span class="rs-flv" id="timeValue">近7天</span>
+        </span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <button class="rs-flt" type="button" data-filter="region">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span class="rs-flcopy">
+          <span class="rs-flb">区域</span>
+          <span class="rs-flv" id="regionValue">全部区域</span>
+        </span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </section>
+
+    <div class="segmented mt-12" id="metricTabs" aria-label="排序维度">
+      <button class="active" type="button" data-metric="sales">销售额</button>
+      <button type="button" data-metric="orders">订单量</button>
+      <button type="button" data-metric="units">商品销量</button>
+    </div>
+
+    <section class="card mt-12">
+      <div class="card-head bordered">
+        <h2 class="card-title" id="rankTitle">销售额排行</h2>
+        <span class="rs-count" id="siteCount">3 个点位</span>
+      </div>
+      <div id="rankList"></div>
+    </section>
+
+    <div class="rs-note">数据更新于今天 09:30 · 点击点位查看商品明细</div>
+
   </div>
-</div>
+
+  <div class="overlay" id="filterOverlay" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+    <section class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head">
+        <h2 id="filterTitle">选择筛选条件</h2>
+      </div>
+      <p class="rs-desc" id="filterDesc"></p>
+      <div class="rs-opts" id="optionList"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</main>
+<script>
+(function(){
+  const sites=[
+    {name:'北京国贸店',region:'华北',sales:6850,orders:186,units:248},
+    {name:'上海办公园区',region:'华东',sales:5620,orders:152,units:219},
+    {name:'深圳科技园',region:'华南',sales:4980,orders:141,units:205}
+  ];
+  const metricMap={sales:{label:'销售额',unit:''},orders:{label:'订单量',unit:' 笔'},units:{label:'商品销量',unit:' 件'}};
+  const filterOptions={time:['近7天','近30天','本月'],region:['全部区域','华北','华东','华南']};
+  let metric='sales',time='近7天',region='全部区域',activeFilter=null,toastTimer;
+  const $=id=>document.getElementById(id);
+  const money=value=>'¥'+value.toLocaleString('zh-CN');
+  const metricValue=(key,value)=>key==='sales'?money(value):value.toLocaleString('zh-CN')+metricMap[key].unit;
+  function toast(text){const el=$('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+  function visibleSites(){return sites.filter(site=>region==='全部区域'||site.region===region).sort((a,b)=>b[metric]-a[metric])}
+  function render(){
+    const rows=visibleSites(),max=rows.length?Math.max(...rows.map(site=>site[metric])):1;
+    const totals=rows.reduce((sum,site)=>({sales:sum.sales+site.sales,orders:sum.orders+site.orders,units:sum.units+site.units}),{sales:0,orders:0,units:0});
+    $('summaryContext').textContent=time+' · '+region;$('timeValue').textContent=time;$('regionValue').textContent=region;
+    $('totalSales').textContent=money(totals.sales);$('totalOrders').textContent=totals.orders;$('totalUnits').textContent=totals.units;
+    $('rankTitle').textContent=metricMap[metric].label+'排行';$('siteCount').textContent=rows.length+' 个点位';
+    document.querySelectorAll('[data-metric]').forEach(button=>button.classList.toggle('active',button.dataset.metric===metric));
+    if(!rows.length){$('rankList').innerHTML='<div class="empty"><p>当前区域暂无点位数据</p></div>';return}
+    $('rankList').innerHTML=rows.map((site,index)=>{
+      const meta=metric==='sales'?site.orders+' 笔订单 · '+site.units+' 件商品':metric==='orders'?money(site.sales)+' · '+site.units+' 件商品':money(site.sales)+' · '+site.orders+' 笔订单';
+      return '<a class="rs-row" href="site-product.html" aria-label="查看 '+site.name+' 商品明细">'
+        +'<span class="badge rs-rank '+(index===0?'top':'')+'">'+(index+1)+'</span>'
+        +'<span class="rs-body"><span class="rs-name">'+site.name+'</span>'
+        +'<span class="rs-bar"><i style="width:'+Math.max(8,Math.round(site[metric]/max*100))+'%"></i></span>'
+        +'<span class="rs-meta">'+meta+'</span></span>'
+        +'<span class="rs-right"><span class="rs-val">'+metricValue(metric,site[metric])+'</span>'
+        +'<span class="rs-go">明细<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></span></span>'
+        +'</a>'
+    }).join('');
+  }
+  function openFilter(type){
+    activeFilter=type;const current=type==='time'?time:region;
+    $('filterTitle').textContent=type==='time'?'选择统计时间':'选择区域';
+    $('filterDesc').textContent=type==='time'?'排行与汇总将使用同一时间口径。':'选择区域后，仅展示该区域下的点位。';
+    $('optionList').innerHTML=filterOptions[type].map(value=>'<button class="rs-opt '+(value===current?'active':'')+'" data-option="'+value+'"><span class="mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></span>'+value+'</button>').join('');
+    $('filterOverlay').classList.add('open');
+  }
+  document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>openFilter(button.dataset.filter)));
+  $('metricTabs').addEventListener('click',event=>{const button=event.target.closest('[data-metric]');if(!button)return;metric=button.dataset.metric;render()});
+  $('optionList').addEventListener('click',event=>{
+    const button=event.target.closest('[data-option]');if(!button||!activeFilter)return;
+    if(activeFilter==='time')time=button.dataset.option;else region=button.dataset.option;
+    $('filterOverlay').classList.remove('open');render();toast('已应用：'+button.dataset.option);activeFilter=null;
+  });
+  $('filterOverlay').addEventListener('click',event=>{if(event.target===$('filterOverlay'))$('filterOverlay').classList.remove('open')});
+  $('exportBtn').addEventListener('click',()=>toast('排行榜已导出（演示）'));
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')$('filterOverlay').classList.remove('open')});
+  render();
+})();
+</script>
+<script src="app-ui.js"></script>
 </body>
 </html>

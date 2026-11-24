@@ -1,0 +1,15 @@
+{
+  "name": "vendsolution-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VendSolution App 原型 Demo + 入口选择页",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

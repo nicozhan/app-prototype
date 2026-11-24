@@ -2,54 +2,74 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
 <title>商品详情 · VendSolution</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vend.css">
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  .heroimg{ margin:20px 20px 0; padding:26px; display:flex; justify-content:center; }
-  .heroimg img{ width:208px; height:208px; border-radius:14px; object-fit:cover; }
-  .pinfo{ padding:18px 20px 0; }
-  .pinfo h1{ font-size:20px; font-weight:800; line-height:1.3; letter-spacing:-.2px; }
-  .price{ display:flex; align-items:baseline; gap:10px; margin-top:10px; }
-  .price .now{ font-size:20px; font-weight:800; color:var(--blue); }
-  .price .was{ font-size:14px; color:var(--gray); text-decoration:line-through; }
-  .pinfo .badge{ display:inline-block; margin-top:12px; }
-  .ptabs{ display:flex; gap:24px; padding:18px 20px 0; font-size:14px; font-weight:600; color:var(--gray); }
-  .ptabs .on{ color:var(--blue); border-bottom:2.5px solid var(--blue); padding-bottom:9px; }
-  .fields{ padding:16px 20px 0; display:flex; flex-direction:column; gap:12px; }
-  .field{ padding:14px 16px; }
-  .field .k{ font-size:12px; color:var(--gray); margin-bottom:6px; }
-  .field .v{ font-size:15px; font-weight:600; }
+  .pd-hero{padding:22px 16px;display:flex;justify-content:center}
+  .pd-hero img{width:206px;height:206px;border-radius:14px;object-fit:contain;background:var(--surface-2)}
+
+  .pd-info{padding:16px 4px 0}
+  .pd-name{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.3px}
+  .pd-price{margin-top:10px;display:flex;align-items:baseline;gap:9px}
+  .pd-now{font-size:22px;line-height:28px;font-weight:800;letter-spacing:-.4px;color:var(--brand);font-variant-numeric:tabular-nums}
+  .pd-was{font-size:13px;line-height:19px;color:var(--text-3);text-decoration:line-through;font-variant-numeric:tabular-nums}
+  .pd-info .badge{margin-top:10px}
 </style>
 </head>
 <body>
-<div class="screen">
-  <div class="topbar">
-    <a class="back" href="products.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
-    <div class="title">商品详情</div>
-    <button class="iconbtn" style="background:transparent;color:var(--ink);"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <a class="icon-btn" href="products.html" aria-label="返回" onclick="return appBack(event)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+    </div>
+    <h1>商品详情</h1>
+    <div class="nav-right">
+      <button class="icon-btn" type="button" aria-label="更多">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <span class="tab active">概览</span>
   </div>
 
-  <div class="heroimg card"><img src="assets/p_pepsi_copy_hero.png" alt="商品图"></div>
+  <div class="body">
 
-  <div class="pinfo">
-    <h1>Pepsi Zero Sugar Soda Wild Cherry &amp; Cream 12 fl oz, 12 Count Cans (Copy)</h1>
-    <div class="price"><span class="now">$12.99</span><span class="was">$15.99</span></div>
-    <span class="badge b-gray">草稿</span>
+    <section class="card pd-hero">
+      <img src="assets/p_pepsi_copy_hero.png" alt="商品图">
+    </section>
+
+    <section class="pd-info">
+      <h2 class="pd-name">Pepsi Zero Sugar Soda Wild Cherry &amp; Cream 12 fl oz, 12 Count Cans (Copy)</h2>
+      <div class="pd-price"><span class="pd-now">$12.99</span><span class="pd-was">$15.99</span></div>
+      <span class="badge">草稿</span>
+    </section>
+
+    <section class="card mt-16">
+      <div class="card-body">
+        <dl class="rows">
+          <div class="row top"><dt>描述</dt><dd>这是一个标品商品</dd></div>
+          <div class="row"><dt>SKU</dt><dd>SKU-001-COPY</dd></div>
+          <div class="row"><dt>保质期</dt><dd>12个月</dd></div>
+        </dl>
+      </div>
+    </section>
+
   </div>
 
-  <div class="ptabs"><span class="on">概览</span></div>
+  <footer class="footer">
+    <button class="btn btn-primary btn-block" type="button">编辑商品</button>
+  </footer>
 
-  <div class="fields">
-    <div class="field card"><div class="k">描述</div><div class="v">这是一个标品商品</div></div>
-    <div class="field card"><div class="k">SKU</div><div class="v">SKU-001-COPY</div></div>
-    <div class="field card"><div class="k">保质期</div><div class="v">12个月</div></div>
-  </div>
-
-  <button class="btn-primary">编辑商品</button>
-</div>
+</main>
+<script src="app-ui.js"></script>
 </body>
 </html>

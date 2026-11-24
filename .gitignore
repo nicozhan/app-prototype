@@ -4,6 +4,13 @@ new/
 
 # Figma 导出中间产物（非源码）
 *.json
+# 部署与依赖清单必须入库
+!package.json
+!package-lock.json
+!railway.json
+
+# 生产仓库（独立 git，1.5G，不属于本原型仓库）
+jpgk-platform/
 
 # 工具/个人私有数据
 .workbuddy/

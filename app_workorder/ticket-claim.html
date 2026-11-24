@@ -2,98 +2,115 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
 <title>待认领工单 · VendSolution</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vend.css">
+<link rel="stylesheet" href="../app-ui.css">
 <style>
-  .screen{ width:393px; max-width:100%; min-height:100dvh;
-    display:flex; flex-direction:column; }
-  .searchrow{ padding:8px 14px 0; }
-  .search{ padding:9px 12px; border-radius:11px; }
-  .search input{ flex:1; min-width:0; border:none; outline:none; background:transparent;
-    font-family:inherit; font-size:13px; color:var(--ink); }
-  .search input::placeholder{ color:#9AA1BC; }
-  .tabbar{ margin-top:auto; }
-  .wait.hot{ color:var(--orange); }
-  .wait.over{ color:var(--red); }
+.tk-back{display:inline-flex;align-items:center;gap:2px;height:44px;font-size:13px;font-weight:600;
+  color:var(--brand);white-space:nowrap}
+.tk-frow{display:flex;gap:7px}
+.tk-sel{flex:1;min-width:0;position:relative}
+.tk-sel .lbtxt{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tk-ibtn{width:40px;flex:0 0 40px;padding:0;color:var(--brand)}
+.tk-drop{position:absolute;left:0;top:calc(100% + 6px);z-index:20;min-width:100%;
+  padding:5px;border:1px solid var(--line);border-radius:var(--r-ctl);
+  background:var(--surface);box-shadow:0 10px 26px rgba(11,16,47,.12)}
+.tk-drop span{display:block;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:600;
+  color:var(--text-2);white-space:nowrap;cursor:pointer}
+.tk-drop span.on{background:var(--brand-weak);color:var(--brand)}
+.tk-filter{display:none;margin-top:10px}
+.tk-filter.open{display:block}
+.tk-acts{display:flex;gap:8px;padding-top:12px}
+.tk-acts .btn{flex:1}
+.tk-wait{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-2)}
+.tk-wait.hot{color:var(--warn)}
+.tk-wait.over{color:var(--danger)}
+.tk-dot{width:6px;height:6px;border-radius:50%;background:var(--text-3);display:inline-block;flex:0 0 auto}
+.tk-dot.warn{background:var(--warn)}
+.tk-dot.danger{background:var(--danger)}
+.tk-tabbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);
+  padding:5px 4px calc(5px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);background:var(--surface)}
+.tk-tab{height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:10px;line-height:14px;font-weight:600;color:var(--text-3);border-radius:var(--r-sm)}
+.tk-tab.on{color:var(--brand)}
 </style>
 </head>
 <body>
-<div class="screen">
+<main class="app">
 
-  <div class="dtop">
-    <a class="back" href="tickets.html">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回</a>
-    <div class="title">待认领工单</div>
-    <span class="right"></span>
-  </div>
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
-  <!-- 筛选行 -->
-  <div style="display:flex;gap:7px;padding:10px 14px 0">
-    <span class="fsel" id="selType" data-key="type" style="flex:1;padding:8px 10px;position:relative">
-      <span class="lbtxt">维修</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  <header class="navbar">
+    <span class="nav-left">
+      <a class="tk-back" href="tickets.html" onclick="return appBack(event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回
+      </a>
     </span>
-    <span class="fsel" id="selPri" data-key="pri" style="flex:1;padding:8px 10px;position:relative">
-      <span class="lbtxt">优先级</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </span>
-    <button class="toolbtn" id="fltBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-    </button>
-  </div>
+    <h1>待认领工单</h1>
+    <span class="nav-right"></span>
+  </header>
 
-  <!-- 高级筛选面板 -->
-  <div class="tfilter" id="tfilter" style="padding-top:9px">
-    <div class="fg">
-      <div class="fl">等待时长</div>
-      <div class="opts" id="waitOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="hot">30 分钟以上</span>
-        <span class="opt" data-v="over">60 分钟以上</span>
+  <div class="body">
+
+    <div class="tk-frow">
+      <span class="filter-select tk-sel" id="selType" data-key="type">
+        <span class="lbtxt">维修</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <span class="filter-select tk-sel" id="selPri" data-key="pri">
+        <span class="lbtxt">优先级</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+      <button class="filter-select tk-ibtn" id="fltBtn" type="button" aria-label="筛选">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      </button>
+    </div>
+
+    <div class="tk-filter" id="tfilter">
+      <div class="card">
+        <div class="card-body">
+          <div class="field-label">等待时长</div>
+          <div class="chips" id="waitOpts">
+            <button class="chip active" type="button" data-v="all">全部</button>
+            <button class="chip" type="button" data-v="hot">30 分钟以上</button>
+            <button class="chip" type="button" data-v="over">60 分钟以上</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 搜索 -->
-  <div class="searchrow">
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <div class="search mt-12">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="kw" placeholder="搜索标题 / 设备SN">
     </div>
+
+    <div class="mt-12" id="tklist"></div>
   </div>
 
-  <!-- 列表 -->
-  <div class="tklist" id="tklist" style="flex:1"></div>
+  <nav class="tk-tabbar">
+    <a class="tk-tab" href="../home.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>工作台</a>
+    <a class="tk-tab on" href="tickets.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>工单</a>
+    <a class="tk-tab" href="#">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>消息</a>
+    <a class="tk-tab" href="../my.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>我的</a>
+  </nav>
 
-  <!-- 底部导航 -->
-  <div class="tabbar">
-    <a class="tb" href="../home.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>工作台</a>
-    <a class="tb on" href="tickets.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>工单</a>
-    <a class="tb" href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>消息</a>
-    <a class="tb" href="../my.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>我的</a>
-  </div>
-</div>
+  <div class="toast" id="toast">认领成功</div>
 
-<div class="toast" id="toast">认领成功</div>
+</main>
 
 <script>
-var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-var DEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
-
 var LIST = [
-  { id:'WO-101', pri:'P1', cls:'pri-p1', lb:'P1 · 紧急', title:'咖啡机无法出杯',
+  { id:'WO-101', pri:'P1', lb:'P1 · 紧急', title:'咖啡机无法出杯',
     site:'上海 A 店', sn:'CF-001', wait:25, type:'维修' },
-  { id:'WO-102', pri:'P2', cls:'pri-p2', lb:'P2 · 普通', title:'制冷温度异常',
+  { id:'WO-102', pri:'P2', lb:'P2 · 普通', title:'制冷温度异常',
     site:'北京 B 店', sn:'VM-003', wait:40, type:'维修' },
-  { id:'WO-103', pri:'P1', cls:'pri-p1', lb:'P1 · 紧急', title:'支付模块无响应',
+  { id:'WO-103', pri:'P1', lb:'P1 · 紧急', title:'支付模块无响应',
     site:'深圳科技园', sn:'VM-007', wait:68, type:'维修' }
 ];
 
@@ -114,47 +131,49 @@ function render(){
     return true;
   });
   var el = document.getElementById('tklist');
-  if(!list.length){ el.innerHTML = '<div class="tkempty">暂无符合条件的待认领工单</div>'; return; }
+  if(!list.length){
+    el.innerHTML = '<div class="card"><div class="empty">'
+      + '<div class="empty-icon gray"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>'
+      + '<p>暂无符合条件的待认领工单</p></div></div>';
+    return;
+  }
   el.innerHTML = list.map(function(t){
-    var sev = t.pri === 'P1' ? 'p0' : 'p1';
     var w = waitCls(t.wait);
-    var wc = w === 'over' ? 'var(--red)' : (w === 'hot' ? 'var(--orange)' : 'var(--gray)');
-    return '<div class="acard ' + sev + '">'
-      +  '<div class="ain">'
-      +    '<div class="atop">'
-      +      '<span class="alvl"><span class="sdot"></span>' + t.lb + '</span>'
-      +      '<span class="ast2 s-claim"><span class="tdot"></span>待认领</span>'
+    var dot = w === 'over' ? 'danger' : (w === 'hot' ? 'warn' : '');
+    var pri = t.pri === 'P1' ? 'brand' : '';
+    return '<div class="card">'
+      +  '<div class="item no-thumb tall">'
+      +    '<div class="item-body">'
+      +      '<div class="item-name">' + t.title + '</div>'
+      +      '<div class="item-sub">' + t.site + ' · ' + t.sn + ' · ' + t.id + '</div>'
+      +      '<div class="item-meta">'
+      +        '<span class="badge ' + pri + '">' + t.lb + '</span>'
+      +        '<span class="tk-wait ' + w + '"><span class="tk-dot ' + dot + '"></span>等待 ' + t.wait + ' 分钟</span>'
+      +      '</div>'
       +    '</div>'
-      +    '<div class="atitle">' + t.title + '</div>'
-      +    '<div class="achips">'
-      +      '<span class="achip">' + PIN + t.site + '</span>'
-      +      '<span class="achip">' + DEV + t.sn + '</span>'
-      +      '<span class="achip" style="color:' + wc + '">等待 ' + t.wait + ' 分钟</span>'
-      +      '<span class="achip">' + t.id + '</span>'
-      +    '</div>'
-      +    '<div class="aacts">'
-      +      '<a class="abt2 ghost" href="ticket-detail.html">查看详情</a>'
-      +      '<a class="abt2 claim" href="#" data-id="' + t.id + '">认领工单</a>'
-      +    '</div>'
+      +    '<span class="badge brand">待认领</span>'
+      +  '</div>'
+      +  '<div class="card-foot tk-acts">'
+      +    '<a class="btn btn-ghost btn-sm" href="ticket-detail.html">查看详情</a>'
+      +    '<a class="btn btn-primary btn-sm claim" href="#" data-id="' + t.id + '">认领工单</a>'
       +  '</div>'
       + '</div>';
-  }).join('') ;
+  }).join('');
 }
 
 /* 下拉选择 */
 var TYPES = ['全部', '维修', '保养', '巡检'];
 var PRIS  = ['全部', 'P1', 'P2'];
 function buildDrop(el, arr, cb){
-  el.style.position = 'relative';
   var d = document.createElement('div');
-  d.className = 'drop'; d.style.display = 'none';
+  d.className = 'tk-drop'; d.style.display = 'none';
   d.innerHTML = arr.map(function(v){
     return '<span data-v="' + v + '">' + v + '</span>';
   }).join('');
   el.appendChild(d);
   el.addEventListener('click', function(e){
     e.stopPropagation();
-    var span = e.target.closest('.drop span');
+    var span = e.target.closest('.tk-drop span');
     if(span){
       d.querySelectorAll('span').forEach(function(x){ x.classList.remove('on'); });
       span.classList.add('on');
@@ -163,14 +182,14 @@ function buildDrop(el, arr, cb){
       d.style.display = 'none';
       return;
     }
-    document.querySelectorAll('.drop').forEach(function(x){ if(x !== d) x.style.display = 'none'; });
+    document.querySelectorAll('.tk-drop').forEach(function(x){ if(x !== d) x.style.display = 'none'; });
     d.style.display = (d.style.display === 'none') ? 'block' : 'none';
   });
 }
 buildDrop(document.getElementById('selType'), TYPES, function(v){ fType = (v === '全部' ? 'all' : v); render(); });
 buildDrop(document.getElementById('selPri'), PRIS, function(v){ fPri = (v === '全部' ? 'all' : v); render(); });
 document.addEventListener('click', function(){
-  document.querySelectorAll('.drop').forEach(function(x){ x.style.display = 'none'; });
+  document.querySelectorAll('.tk-drop').forEach(function(x){ x.style.display = 'none'; });
 });
 
 /* 筛选面板 */
@@ -178,9 +197,9 @@ document.getElementById('fltBtn').addEventListener('click', function(){
   document.getElementById('tfilter').classList.toggle('open');
 });
 document.getElementById('waitOpts').addEventListener('click', function(e){
-  var o = e.target.closest('.opt'); if(!o) return;
-  this.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
-  o.classList.add('on');
+  var o = e.target.closest('.chip'); if(!o) return;
+  this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('active'); });
+  o.classList.add('active');
   fWait = o.dataset.v; render();
 });
 
@@ -195,12 +214,13 @@ document.getElementById('tklist').addEventListener('click', function(e){
   e.preventDefault();
   var t = document.getElementById('toast');
   t.textContent = '认领成功 · ' + b.dataset.id;
-  t.classList.add('on');
-  setTimeout(function(){ t.classList.remove('on'); }, 1400);
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 1400);
   setTimeout(function(){ location.href = 'ticket-detail.html'; }, 700);
 });
 
 render();
 </script>
+<script src="../app-ui.js"></script>
 </body>
 </html>

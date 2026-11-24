@@ -2,87 +2,388 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>restock4- Mobile App MVP 0.1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>补货完成</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Inter',sans-serif; background:#c9cddb; -webkit-font-smoothing:antialiased; }
-  .screen { position:relative; overflow:hidden; flex-shrink:0; }
+:root{
+  --brand:#2434c8;--brand-deep:#1b299e;--brand-weak:#edf0ff;
+  --ink:#0b102f;--text-2:#697095;--text-3:#9aa1b7;
+  --bg:#f5f6fa;--surface:#fff;--surface-2:#f0f2f8;--line:#e4e7ef;
+  --ok:#008f63;--ok-bg:#e8f7f1;--danger:#d92d20;--danger-bg:#fff0ef;
+  --r-card:16px;--r-ctl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:#e7eaf3;color:var(--ink);-webkit-font-smoothing:antialiased}
+button,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,textarea:focus-visible{outline:3px solid rgba(36,52,200,.22);outline-offset:2px}
+svg{display:block;flex:0 0 auto}
+
+.app{position:relative;width:100%;max-width:390px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- 状态栏 / 顶栏 ---------- */
+.status{flex:0 0 28px;height:28px;display:flex;align-items:center;justify-content:space-between;padding:2px 20px 0;background:var(--surface);font-size:12px;font-weight:700}
+.status-icons{display:flex;align-items:center;gap:5px}
+.signal{width:16px;height:10px;display:flex;align-items:flex-end;gap:1.5px}
+.signal i{display:block;width:3px;border-radius:1px;background:var(--ink)}
+.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:6px}.signal i:nth-child(3){height:8px}.signal i:nth-child(4){height:10px}
+.battery{position:relative;width:21px;height:10px;padding:1px;border:1.5px solid var(--ink);border-radius:3px}
+.battery:after{content:"";position:absolute;right:-3px;top:2px;width:2px;height:4px;background:var(--ink);border-radius:0 1px 1px 0}
+.battery i{display:block;width:80%;height:100%;border-radius:1px;background:var(--ink)}
+
+.navbar{flex:0 0 52px;height:52px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px;background:var(--surface);border-bottom:1px solid var(--line)}
+.navbar h1{text-align:center;font-size:17px;line-height:24px;font-weight:700;letter-spacing:-.2px}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;color:var(--ink)}
+.icon-btn:active{background:var(--surface-2)}
+
+/* ---------- 内容 ---------- */
+.body{flex:1;min-height:0;overflow-y:auto;padding:12px 16px 16px;-webkit-overflow-scrolling:touch}
+.card{border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
+.card+.card{margin-top:10px}
+.card-head{padding:13px 14px 0;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title{font-size:15px;line-height:21px;font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:700}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.muted{background:var(--surface-2);color:var(--text-2)}
+
+/* 完成摘要 */
+.result{padding:20px 20px 18px;text-align:center}
+.result-icon{width:48px;height:48px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--ok-bg);color:var(--ok)}
+.result h2{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.4px}
+.result p{margin-top:5px;font-size:13px;line-height:19px;color:var(--text-2)}
+.result p b{font-size:16px;font-weight:800;color:var(--brand);letter-spacing:-.2px;font-variant-numeric:tabular-nums}
+
+/* 任务信息 */
+.rows{padding:4px 14px 6px}
+.row{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row dt{flex:0 0 auto;font-size:13px;line-height:19px;color:var(--text-2)}
+.row dd{min-width:0;font-size:13px;line-height:19px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 补货照片 */
+.photo-wrap{padding:11px 14px 14px}
+.photo{
+  position:relative;width:100%;height:152px;border-radius:12px;overflow:hidden;
+  background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  transition:box-shadow .15s
+}
+.photo:active{box-shadow:inset 0 0 0 2px var(--brand-weak)}
+.photo.has-shot{background:#111730}
+.photo .shot{position:absolute;inset:0;width:100%;height:100%}
+.photo [hidden]{display:none!important}
+.photo-empty{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.photo-shot{position:absolute;inset:0;display:block}
+.photo-icon{color:#a7aec3}
+.photo-t{font-size:13px;line-height:19px;font-weight:600;color:var(--text-2)}
+.photo-s{font-size:11px;line-height:16px;color:var(--text-3)}
+.photo .pill{position:absolute;left:8px;top:8px;z-index:2;height:22px;padding:0 9px;display:inline-flex;align-items:center;border-radius:999px;background:rgba(255,255,255,.92);font-size:10px;font-weight:700;font-style:normal;color:var(--brand)}
+.photo-hint{
+  position:absolute;right:8px;bottom:8px;z-index:2;height:24px;padding:0 9px;
+  display:inline-flex;align-items:center;gap:4px;border-radius:999px;
+  background:rgba(11,16,47,.62);font-size:10px;font-weight:700;color:#fff
+}
+.photo-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,16,47,.28),rgba(11,16,47,0) 40%,rgba(11,16,47,.42))}
+
+/* 补货详情 */
+.detail-sum{font-size:11px;line-height:16px;font-weight:600;color:var(--text-2)}
+.detail-row{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line)}
+.detail-row:last-child{border-bottom:0}
+.detail-k{min-width:0;font-size:13px;line-height:19px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-v{flex:0 0 auto;font-size:13px;line-height:19px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+.detail-v small{margin-left:2px;font-size:11px;font-weight:600;color:var(--text-2)}
+.detail-total{
+  margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--surface-2);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;line-height:17px;color:var(--text-2)
+}
+.detail-total b{font-size:14px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* 备注 */
+.note-wrap{padding:11px 14px 14px}
+.note{width:100%;min-height:84px;padding:11px 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface);font-size:13px;line-height:20px;resize:none;outline:0}
+.note::placeholder{color:var(--text-3)}
+.note:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+
+/* 底部主操作 */
+.footer{flex:0 0 auto;padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.98)}
+.btn-primary{width:100%;height:48px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r-ctl);background:var(--brand);color:#fff;font-size:15px;font-weight:700;letter-spacing:.5px}
+.btn-primary:active{background:var(--brand-deep)}
+.btn-ghost{width:100%;height:48px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r-ctl);background:var(--surface);color:var(--text-2);font-size:14px;font-weight:600;box-shadow:inset 0 0 0 1px var(--line)}
+
+/* 照片弹层 */
+.overlay{
+  position:absolute;inset:0;z-index:50;display:flex;align-items:flex-end;
+  background:rgba(11,16,47,.42);opacity:0;visibility:hidden;transition:opacity .2s
+}
+.overlay.open{opacity:1;visibility:visible}
+.sheet{
+  width:100%;max-height:88%;overflow-y:auto;padding:6px 16px calc(16px + env(safe-area-inset-bottom));
+  border-radius:22px 22px 0 0;background:var(--surface);
+  box-shadow:0 -8px 30px rgba(11,16,47,.12);transform:translateY(24px);transition:transform .22s
+}
+.overlay.open .sheet{transform:translateY(0)}
+.handle{width:40px;height:4px;margin:2px auto 10px;border-radius:4px;background:#dfe3ee}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sheet-head h2{font-size:18px;line-height:25px;font-weight:700;letter-spacing:-.25px}
+.close{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--surface-2);color:var(--text-2)}
+.sheet-note{margin-bottom:12px;font-size:13px;line-height:20px;color:var(--text-2)}
+.photo-opt{
+  width:100%;min-height:56px;display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);text-align:left
+}
+.photo-opt:active{background:var(--surface-2)}
+.photo-opt[hidden]{display:none}
+.photo-opt-icon{
+  flex:0 0 auto;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-weak);color:var(--brand)
+}
+.photo-opt-main{flex:1;min-width:0}
+.photo-opt-title{display:block;font-size:14px;line-height:20px;font-weight:600}
+.photo-opt-sub{display:block;margin-top:1px;font-size:11px;line-height:16px;color:var(--text-2)}
+.photo-opt.danger .photo-opt-icon{background:var(--danger-bg);color:var(--danger)}
+.photo-opt.danger .photo-opt-title{color:var(--danger)}
+.sheet-cancel{margin-top:4px}
+
+.toast{
+  position:absolute;left:50%;bottom:96px;z-index:70;max-width:78%;padding:9px 14px;border-radius:10px;
+  background:rgba(11,16,47,.9);color:#fff;font-size:13px;line-height:19px;font-weight:600;text-align:center;
+  opacity:0;visibility:hidden;transform:translate(-50%,8px);transition:opacity .2s,transform .2s
+}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+@media(min-width:520px){
+  .app{height:min(844px,calc(100dvh - 32px));margin-top:16px;border-radius:26px;box-shadow:0 18px 60px rgba(20,20,20,.14)}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="screen" style="width:370.00px;height:1374.00px;background-color:rgb(238,242,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.41px;height:853.02px;"><div style="position:absolute;left:0.00px;top:0.00px;width:370.41px;height:1311.62px;background-color:rgb(238,242,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.41px;height:1311.62px;background-color:rgb(248,249,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.41px;height:56.76px;background-color:rgba(255,255,255,0.95);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:16.00px;top:20.00px;width:338.42px;height:23.99px;"><div style="position:absolute;left:0.00px;top:1.99px;width:112.80px;height:20.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:19.99px;height:19.99px;overflow:hidden;"><img src="assets/n_1_63.png" style="position:absolute;left:4.17px;top:4.17px;width:5.83px;height:11.66px;display:block;" alt="">
-<img src="assets/n_1_64.png" style="position:absolute;left:4.17px;top:10.00px;width:11.66px;height:0.00px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:23.99px;top:0.00px;width:28.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(36,52,200);text-align:center;white-space:nowrap;overflow:visible;">返回</div>
-</div>
-<div style="position:absolute;left:136.71px;top:0.00px;width:64.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:24.00px;color:rgb(11,16,47);text-align:center;white-space:nowrap;overflow:visible;">补货完成</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:56.76px;width:370.41px;height:1254.86px;overflow:hidden;"><div style="position:absolute;left:20.00px;top:24.00px;width:330.00px;height:247.00px;background-color:rgb(36,52,200);box-shadow:0.00px 22.00px 58.00px 0.00px rgba(36,52,200,0.28);border-radius:32.00px;overflow:hidden;"><div style="position:absolute;left:234.43px;top:-47.99px;width:144.00px;height:144.00px;border-radius:9999px;"></div>
-<div style="position:absolute;left:-40.00px;top:151.93px;width:176.00px;height:176.00px;background-color:rgba(255,255,255,0.1);border-radius:9999px;"></div>
-<div style="position:absolute;left:125.00px;top:24.24px;width:74.00px;height:74.00px;background-color:rgb(255,255,255);box-shadow:0.00px 16.00px 34.00px 0.00px rgba(11,16,47,0.18);border-radius:9999px;"><div style="position:absolute;left:20.00px;top:19.00px;width:37.00px;height:37.00px;overflow:hidden;"><img src="assets/n_1_73.png" style="position:absolute;left:3.00px;top:8.00px;width:29.00px;height:21.00px;display:block;" alt="">
-</div>
-</div>
-<div style="position:absolute;left:102.00px;top:116.24px;width:138.00px;height:36.00px;font-family:'Inter',sans-serif;font-size:28.00px;font-weight:600;letter-spacing:-0.60px;line-height:36.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">补货完成！</div>
-<div style="position:absolute;left:37.00px;top:172.24px;width:256.00px;height:48.00px;background-color:rgba(255,255,255,0.12);border-radius:16.00px;"><div style="position:absolute;left:48.50px;top:12.00px;width:159.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:24.00px;color:rgba(255,255,255,0.9);text-align:center;white-space:nowrap;overflow:visible;">本次补货完成，共补39件</div>
-</div>
-</div>
-<div style="position:absolute;left:20.00px;top:271.00px;width:330.44px;height:303.00px;"><div style="position:absolute;left:0.00px;top:20.00px;width:330.44px;height:283.00px;background-color:rgb(255,255,255);box-shadow:0.00px 14.00px 34.00px 0.00px rgba(36,52,200,0.08);border-radius:27.20px;"><div style="position:absolute;left:20.00px;top:20.00px;width:290.44px;height:28.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:64.00px;height:28.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:28.00px;color:rgb(11,16,47);text-align:left;white-space:nowrap;overflow:visible;">任务信息</div>
-</div>
-<div style="position:absolute;left:20.00px;top:48.00px;width:290.44px;height:235.07px;"><div style="position:absolute;left:0.00px;top:16.00px;width:290.44px;height:32.77px;box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:0.00px;top:0.00px;width:56.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">任务编号</div>
-<div style="position:absolute;left:150.44px;top:0.00px;width:140.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(11,16,47);text-align:right;white-space:nowrap;overflow:visible;">WO-20260625-001</div>
-</div>
-<div style="position:absolute;left:0.00px;top:48.77px;width:290.44px;height:44.76px;box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:0.00px;top:12.00px;width:56.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">设备名称</div>
-<div style="position:absolute;left:180.44px;top:12.00px;width:110.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(11,16,47);text-align:right;white-space:nowrap;overflow:visible;">曼谷机场 T1-A01</div>
-</div>
-<div style="position:absolute;left:0.00px;top:93.53px;width:290.44px;height:44.76px;box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:0.00px;top:12.00px;width:42.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">补货员</div>
-<div style="position:absolute;left:220.44px;top:12.00px;width:70.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(11,16,47);text-align:right;white-space:nowrap;overflow:visible;">Leo Messi</div>
-</div>
-<div style="position:absolute;left:0.00px;top:138.30px;width:290.44px;height:44.76px;box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:0.00px;top:12.00px;width:56.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">补货耗时</div>
-<div style="position:absolute;left:226.44px;top:12.00px;width:64.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(11,16,47);text-align:right;white-space:nowrap;overflow:visible;">05分21秒</div>
-</div>
-<div style="position:absolute;left:0.00px;top:183.06px;width:290.44px;height:52.01px;"><div style="position:absolute;left:0.00px;top:12.00px;width:56.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">完成时间</div>
-<div style="position:absolute;left:103.44px;top:12.00px;width:187.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(11,16,47);text-align:right;white-space:pre-wrap;overflow:visible;">2026-06-25 15:20</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.00px;top:574.00px;width:330.44px;height:386.00px;"><div style="position:absolute;left:0.00px;top:20.00px;width:330.44px;height:366.00px;background-color:rgb(255,255,255);box-shadow:0.00px 14.00px 34.00px 0.00px rgba(36,52,200,0.08);border-radius:27.20px;"><div style="position:absolute;left:20.00px;top:20.00px;width:290.44px;height:20.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:19.99px;height:19.99px;overflow:hidden;"><img src="assets/n_1_101.png" style="position:absolute;left:1.67px;top:1.67px;width:16.66px;height:16.66px;display:block;" alt="">
-<img src="assets/n_1_102.png" style="position:absolute;left:7.50px;top:8.33px;width:5.00px;height:3.33px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:27.99px;top:0.00px;width:98.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:900;line-height:20.00px;color:rgb(0,153,102);text-align:left;white-space:nowrap;overflow:visible;">已上传补货照片</div>
-</div>
-<div style="position:absolute;left:20.00px;top:40.00px;width:290.00px;height:306.00px;"><div style="position:absolute;left:0.00px;top:16.00px;width:290.00px;height:290.00px;background-color:rgb(61,61,61);border-radius:24.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:290.44px;height:223.99px;"></div>
-<div style="position:absolute;left:15.99px;top:15.99px;width:93.99px;height:27.98px;background-color:rgba(255,255,255,0.9);border-radius:9999px;"><div style="position:absolute;left:12.00px;top:6.99px;width:13.99px;height:13.99px;overflow:hidden;"><img src="assets/n_1_109.png" style="position:absolute;left:1.17px;top:2.33px;width:11.66px;height:9.33px;display:block;" alt="">
-<img src="assets/n_1_110.png" style="position:absolute;left:5.25px;top:5.83px;width:3.50px;height:3.50px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:33.99px;top:5.99px;width:48.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:900;line-height:16.00px;color:rgb(36,52,200);text-align:left;white-space:nowrap;overflow:visible;">货架照片</div>
-</div>
-<div style="position:absolute;left:250.46px;top:250.17px;width:23.99px;height:23.99px;overflow:hidden;"><img src="assets/n_1_113.png" style="position:absolute;left:3.00px;top:3.00px;width:17.99px;height:17.99px;display:block;" alt="">
-<img src="assets/n_1_114.png" style="position:absolute;left:7.00px;top:7.00px;width:4.00px;height:4.00px;display:block;" alt="">
-<img src="assets/n_1_115.png" style="position:absolute;left:6.00px;top:11.32px;width:14.99px;height:9.67px;display:block;" alt="">
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.00px;top:960.00px;width:330.54px;height:211.99px;"><div style="position:absolute;left:0.00px;top:20.00px;width:330.54px;height:191.99px;background-color:rgb(255,255,255);box-shadow:0.00px 14.00px 34.00px 0.00px rgba(36,52,200,0.08);border-radius:27.20px;"><div style="position:absolute;left:20.00px;top:20.00px;width:290.44px;height:27.99px;"><div style="position:absolute;left:0.00px;top:-0.00px;width:32.00px;height:28.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:28.00px;color:rgb(11,16,47);text-align:left;white-space:nowrap;overflow:visible;">备注</div>
-</div>
-<div style="position:absolute;left:20.00px;top:47.99px;width:290.54px;height:124.00px;"><div style="position:absolute;left:0.00px;top:12.00px;width:290.54px;height:112.00px;background-color:rgb(248,249,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14);border-radius:16.00px;"><div style="position:absolute;left:16.77px;top:16.77px;width:257.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:600;line-height:24.00px;color:rgb(105,112,149);text-align:left;white-space:pre-wrap;overflow:visible;">添加备注</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:1253.00px;width:370.41px;height:96.75px;background-color:rgba(255,255,255,0.95);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:19.99px;top:16.76px;width:330.43px;height:55.99px;background-color:rgb(36,52,200);border-radius:16.00px;"><div style="position:absolute;left:147.45px;top:15.30px;width:36.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:24.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">完 成</div>
-</div>
-</div>
-</div>
-</body></html>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <button class="icon-btn" aria-label="返回首页" onclick="appHome(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+    <h1>补货完成</h1>
+    <span></span>
+  </header>
+
+  <div class="body">
+
+    <section class="card result">
+      <div class="result-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L19 7"/></svg></div>
+      <h2>补货完成！</h2>
+      <p id="resultText">本次补货完成，共补 <b>39</b> 件</p>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h3 class="card-title">任务信息</h3></div>
+      <dl class="rows">
+        <div class="row"><dt>任务编号</dt><dd id="taskNo">WO-20260625-001</dd></div>
+        <div class="row"><dt>设备名称</dt><dd id="taskDevice">曼谷机场 T1-A01</dd></div>
+        <div class="row"><dt>补货员</dt><dd>Leo Messi</dd></div>
+        <div class="row"><dt>补货耗时</dt><dd id="taskDuration">05 分 21 秒</dd></div>
+        <div class="row"><dt>完成时间</dt><dd>2026-06-25 15:20</dd></div>
+      </dl>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3 class="card-title">补货照片</h3>
+        <span class="badge muted" id="photoBadge">未上传</span>
+      </div>
+      <div class="photo-wrap">
+        <button class="photo" id="photoBtn" type="button" aria-label="拍照或上传补货照片">
+          <em class="pill">货架照片</em>
+          <span class="photo-empty" id="photoEmpty">
+            <svg class="photo-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.4-2h5.2L16 6"/></svg>
+            <span class="photo-t">点击拍照或上传</span>
+            <span class="photo-s">补货后的货架照片，便于后台核验</span>
+          </span>
+          <span class="photo-shot" id="photoShot" hidden>
+            <svg class="shot" viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="phBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#33405f"/><stop offset="1" stop-color="#141a30"/></linearGradient>
+                <linearGradient id="phGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              </defs>
+              <rect width="320" height="160" fill="url(#phBg)"/>
+              <rect width="320" height="66" fill="url(#phGlow)"/>
+              <g stroke="#5d6b8c" stroke-width="2"><path d="M12 54h296M12 100h296M12 146h296"/></g>
+              <g>
+                <rect x="26" y="28" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="46" y="28" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="66" y="28" width="16" height="26" rx="3" fill="#2f9be0"/>
+                <rect x="92" y="28" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="112" y="28" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="132" y="28" width="16" height="26" rx="3" fill="#e14b3b"/>
+                <rect x="26" y="74" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="46" y="74" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="66" y="74" width="16" height="26" rx="3" fill="#4caf7d"/>
+                <rect x="92" y="74" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="112" y="74" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="132" y="74" width="16" height="26" rx="3" fill="#f0c33c"/>
+                <rect x="26" y="120" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="46" y="120" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="66" y="120" width="16" height="26" rx="3" fill="#4caf7d"/>
+                <rect x="92" y="120" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="112" y="120" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="132" y="120" width="16" height="26" rx="3" fill="#e14b3b"/>
+                <rect x="166" y="28" width="16" height="26" rx="3" fill="#4caf7d"/><rect x="186" y="28" width="16" height="26" rx="3" fill="#4caf7d"/><rect x="206" y="28" width="16" height="26" rx="3" fill="#f0c33c"/>
+                <rect x="166" y="74" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="186" y="74" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="206" y="74" width="16" height="26" rx="3" fill="#2f9be0"/>
+                <rect x="166" y="120" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="186" y="120" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="206" y="120" width="16" height="26" rx="3" fill="#4caf7d"/>
+                <rect x="246" y="28" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="266" y="28" width="16" height="26" rx="3" fill="#e14b3b"/><rect x="286" y="28" width="16" height="26" rx="3" fill="#e14b3b"/>
+                <rect x="246" y="74" width="16" height="26" rx="3" fill="#4caf7d"/><rect x="266" y="74" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="286" y="74" width="16" height="26" rx="3" fill="#f0c33c"/>
+                <rect x="246" y="120" width="16" height="26" rx="3" fill="#f0c33c"/><rect x="266" y="120" width="16" height="26" rx="3" fill="#2f9be0"/><rect x="286" y="120" width="16" height="26" rx="3" fill="#2f9be0"/>
+              </g>
+              <rect width="320" height="160" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="10"/>
+            </svg>
+          </span>
+          <span class="photo-shade" id="photoShade" hidden></span>
+          <span class="photo-hint" id="photoHint" hidden>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L20 8l-4-4L4 16v4Z"/></svg>
+            点击更换
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3 class="card-title">补货详情</h3>
+        <span class="detail-sum" id="detailSum">6 种商品</span>
+      </div>
+      <div class="rows" id="detailRows"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h3 class="card-title">备注</h3></div>
+      <div class="note-wrap"><textarea class="note" placeholder="添加备注" aria-label="备注"></textarea></div>
+    </section>
+
+  </div>
+
+  <footer class="footer"><button class="btn-primary" id="doneBtn">完 成</button></footer>
+
+  <div class="overlay" id="photoSheet" role="dialog" aria-modal="true" aria-labelledby="photoTitle">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head">
+        <h2 id="photoTitle">补货照片</h2>
+        <button class="close" id="sheetClose" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      </div>
+      <p class="sheet-note">拍摄补货后的货架整体照片，便于后台核验。可拍照，也可从相册选择已有照片。</p>
+      <button class="photo-opt" id="takePhoto" type="button">
+        <span class="photo-opt-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.4-2h5.2L16 6"/></svg></span>
+        <span class="photo-opt-main"><span class="photo-opt-title">拍照</span><span class="photo-opt-sub">调用相机拍摄货架</span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9aa1b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="photo-opt" id="pickPhoto" type="button">
+        <span class="photo-opt-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg></span>
+        <span class="photo-opt-main"><span class="photo-opt-title">从相册上传</span><span class="photo-opt-sub">选择手机中已有的照片</span></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9aa1b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="photo-opt danger" id="removePhoto" type="button" hidden>
+        <span class="photo-opt-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span>
+        <span class="photo-opt-main"><span class="photo-opt-title">删除照片</span><span class="photo-opt-sub">重新上传前可先删除</span></span>
+      </button>
+      <button class="btn-ghost sheet-cancel" id="sheetCancel" type="button">取消</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+</main>
+<script>
+(function(){
+  var mode=new URLSearchParams(location.search).get('mode')==='coffee'?'coffee':'retail';
+
+  var DATA={
+    retail:{
+      device:'曼谷机场 T1-A01',
+      taskNo:'WO-20260625-001',
+      duration:'05 分 21 秒',
+      result:'本次补货完成，共补 <b>39</b> 件',
+      sum:'6 种商品 · 39 件',
+      rows:[
+        {name:'可口可乐 330ml',qty:6},
+        {name:'雪碧 330ml',qty:8},
+        {name:'农夫山泉饮用天然水 550ml',qty:10},
+        {name:'乐事薯片 原味',qty:6},
+        {name:'巧克力 50g',qty:5},
+        {name:'益达口香糖 薄荷',qty:4}
+      ]
+    },
+    coffee:{
+      device:'中央广场咖啡机',
+      taskNo:'WO-20260625-004',
+      duration:'08 分 12 秒',
+      result:'本次补货完成，共补 <b>4</b> 种原料',
+      sum:'4 种原料',
+      rows:[
+        {name:'咖啡粉 · 意式拼配',qty:'500 g'},
+        {name:'咖啡豆 · 埃塞',qty:'800 g'},
+        {name:'牛奶',qty:'1000 ml'},
+        {name:'糖浆 · 香草',qty:'300 ml'}
+      ]
+    }
+  };
+
+  var data=DATA[mode];
+  document.getElementById('taskDevice').textContent=data.device;
+  document.getElementById('taskNo').textContent=data.taskNo;
+  document.getElementById('taskDuration').textContent=data.duration;
+  document.getElementById('resultText').innerHTML=data.result;
+  document.getElementById('detailSum').textContent=data.sum;
+  document.getElementById('detailRows').innerHTML=data.rows.map(function(row){
+    var value=typeof row.qty==='number'?'×'+row.qty+'<small>件</small>':row.qty;
+    return '<div class="detail-row"><span class="detail-k">'+row.name+'</span><span class="detail-v">'+value+'</span></div>';
+  }).join('')+'<div class="detail-total"><span>'+(mode==='coffee'?'原料合计':'商品合计')+'</span><b>'+data.sum+'</b></div>';
+
+  /* ---------- 补货照片 ---------- */
+  var photoBtn=document.getElementById('photoBtn'),
+      photoEmpty=document.getElementById('photoEmpty'),
+      photoShot=document.getElementById('photoShot'),
+      photoShade=document.getElementById('photoShade'),
+      photoHint=document.getElementById('photoHint'),
+      photoBadge=document.getElementById('photoBadge'),
+      removePhoto=document.getElementById('removePhoto'),
+      sheet=document.getElementById('photoSheet'),
+      toastEl=document.getElementById('toast'),
+      hasPhoto=false,toastTimer;
+
+  function toast(text){
+    clearTimeout(toastTimer);
+    toastEl.textContent=text;
+    toastEl.classList.add('show');
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show')},1800);
+  }
+  function renderPhoto(){
+    photoEmpty.hidden=hasPhoto;
+    photoShot.hidden=!hasPhoto;
+    photoShade.hidden=!hasPhoto;
+    photoHint.hidden=!hasPhoto;
+    removePhoto.hidden=!hasPhoto;
+    photoBtn.classList.toggle('has-shot',hasPhoto);
+    photoBadge.textContent=hasPhoto?'已上传 1 张':'未上传';
+    photoBadge.className='badge '+(hasPhoto?'ok':'muted');
+  }
+  function openSheet(){sheet.classList.add('open')}
+  function closeSheet(){sheet.classList.remove('open')}
+
+  photoBtn.addEventListener('click',openSheet);
+  document.getElementById('sheetClose').addEventListener('click',closeSheet);
+  document.getElementById('sheetCancel').addEventListener('click',closeSheet);
+  sheet.addEventListener('click',function(event){if(event.target===sheet)closeSheet()});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape')closeSheet()});
+
+  document.getElementById('takePhoto').addEventListener('click',function(){
+    closeSheet();
+    hasPhoto=true;renderPhoto();
+    toast('照片已上传');
+  });
+  document.getElementById('pickPhoto').addEventListener('click',function(){
+    closeSheet();
+    hasPhoto=true;renderPhoto();
+    toast('已从相册上传 1 张');
+  });
+  removePhoto.addEventListener('click',function(){
+    closeSheet();
+    hasPhoto=false;renderPhoto();
+    toast('照片已删除');
+  });
+
+  document.getElementById('doneBtn').addEventListener('click',function(){appHome()});
+  renderPhoto();
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

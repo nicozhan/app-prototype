@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080B1C">
+<title>扫码 · 识别设备</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 扫码 · 页面前缀 sc- */
+.sc{background:#080b1c;color:#fff}
+.sc .status{position:relative;z-index:4;background:transparent;color:#fff}
+
+/* 取景层 */
+.sc-stage{position:absolute;inset:0;z-index:0;overflow:hidden;background:#080b1c}
+.sc-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease}
+.sc.cam-on .sc-video{opacity:1}
+.sc-fallback{
+  position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 50% 32%,#1b2350 0%,#0b1027 56%,#070a18 100%);
+  transition:opacity .35s ease
+}
+.sc-fallback::after{
+  content:"";position:absolute;inset:0;opacity:.45;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:26px 26px
+}
+.sc.cam-on .sc-fallback{opacity:0}
+.sc-fade{
+  position:absolute;left:0;right:0;bottom:0;height:320px;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,11,28,0),rgba(8,11,28,.5) 42%,rgba(8,11,28,.95) 92%)
+}
+
+/* 顶栏 */
+.sc-nav{position:relative;z-index:4;flex:0 0 52px;height:52px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px}
+.sc-icon{width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:#fff}
+.sc-icon:active{background:rgba(255,255,255,.14)}
+.sc-icon[aria-pressed="true"]{background:rgba(255,255,255,.18)}
+.sc-title{text-align:center;font-size:17px;line-height:24px;font-weight:700;letter-spacing:-.2px}
+
+/* 取景框 */
+.sc-frame{
+  position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:3;
+  width:236px;height:236px;border-radius:16px;
+  box-shadow:0 0 0 9999px rgba(6,9,24,.56)
+}
+.sc-corner{position:absolute;width:26px;height:26px;border:3px solid #fff}
+.sc-corner.tl{left:-1px;top:-1px;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.sc-corner.tr{right:-1px;top:-1px;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
+.sc-corner.bl{left:-1px;bottom:-1px;border-right:0;border-top:0;border-radius:0 0 0 14px}
+.sc-corner.br{right:-1px;bottom:-1px;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.sc-line{
+  position:absolute;left:12px;right:12px;top:12px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(96,120,255,0),#7d8fff,rgba(96,120,255,0));
+  box-shadow:0 0 14px rgba(125,143,255,.9);
+  animation:sc-scan 2.6s cubic-bezier(.45,0,.55,1) infinite
+}
+@keyframes sc-scan{
+  0%{top:12px;opacity:.15}
+  14%{opacity:1}
+  88%{opacity:1}
+  100%{top:210px;opacity:.15}
+}
+
+/* 相机状态：启动中 / 不可用时给一个演示入口 */
+.sc-badge{
+  position:absolute;left:50%;top:calc(38% + 136px);transform:translateX(-50%);z-index:4;
+  display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);
+  color:rgba(255,255,255,.88);font-size:11px;line-height:16px;font-weight:600;white-space:nowrap;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)
+}
+.sc.cam-on .sc-badge{display:none}
+.sc-badge:not([disabled]):active{background:rgba(255,255,255,.22)}
+.sc-badge[disabled]{cursor:default}
+.sc-pulse{width:6px;height:6px;border-radius:50%;background:#7d8fff;box-shadow:0 0 0 0 rgba(125,143,255,.7);animation:sc-pulse 1.6s ease-out infinite}
+@keyframes sc-pulse{0%{box-shadow:0 0 0 0 rgba(125,143,255,.6)}70%{box-shadow:0 0 0 7px rgba(125,143,255,0)}100%{box-shadow:0 0 0 0 rgba(125,143,255,0)}}
+.sc.no-cam .sc-pulse{display:none}
+
+/* 底部说明与操作 */
+.sc-panel{position:relative;z-index:4;margin-top:auto;padding:0 16px calc(22px + env(safe-area-inset-bottom))}
+.sc-hint{font-size:18px;line-height:25px;font-weight:700;letter-spacing:-.3px;text-align:center}
+.sc-sub{margin-top:5px;font-size:12px;line-height:18px;color:rgba(255,255,255,.64);text-align:center}
+.sc-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.sc-act{
+  height:46px;padding:0 12px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.13);color:#fff;
+  font-size:14px;font-weight:600;white-space:nowrap;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)
+}
+.sc-act:active{background:rgba(255,255,255,.24)}
+.sc-act svg{width:18px;height:18px}
+
+/* 识别成功 */
+.sc-result{
+  position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(6,9,24,.7);
+  opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease
+}
+.sc-result.open{opacity:1;visibility:visible}
+.sc-result-card{
+  width:100%;max-width:272px;padding:22px 20px 20px;border-radius:20px;background:var(--surface);
+  color:var(--ink);text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.35)
+}
+.sc-ok{
+  width:52px;height:52px;margin:0 auto 12px;border-radius:50%;background:var(--ok-bg);color:var(--ok);
+  display:flex;align-items:center;justify-content:center
+}
+.sc-ok svg{width:26px;height:26px}
+.sc-result-card .t{font-size:16px;line-height:23px;font-weight:700}
+.sc-result-card .d{margin-top:3px;font-size:13px;line-height:19px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.sc-result-card .s{margin-top:10px;font-size:12px;line-height:17px;color:var(--text-3)}
+</style>
+</head>
+<body>
+<main class="app sc" id="app">
+
+  <div class="sc-stage">
+    <video class="sc-video" id="cam" playsinline muted autoplay></video>
+    <div class="sc-fallback"></div>
+    <div class="sc-fade"></div>
+    <div class="sc-frame" aria-hidden="true">
+      <i class="sc-corner tl"></i><i class="sc-corner tr"></i><i class="sc-corner bl"></i><i class="sc-corner br"></i>
+      <span class="sc-line"></span>
+    </div>
+    <button class="sc-badge" id="camBadge" type="button" disabled aria-label="相机状态">
+      <i class="sc-pulse"></i>
+      <span id="camBadgeText">正在启动相机…</span>
+    </button>
+  </div>
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="sc-nav">
+    <button class="sc-icon" type="button" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+    <span class="sc-title">扫码</span>
+    <button class="sc-icon" id="torchBtn" type="button" aria-label="闪光灯" aria-pressed="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg></button>
+  </header>
+
+  <div class="sc-panel">
+    <p class="sc-hint">扫描柜门二维码</p>
+    <p class="sc-sub">将设备门上的二维码放入框内，识别后自动进入设备详情</p>
+    <div class="sc-acts">
+      <button class="sc-act" id="albumBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m4 18 5-5 4 4 3-2 4 4"/></svg>
+        相册
+      </button>
+      <button class="sc-act" id="manualBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></svg>
+        手动输入编号
+      </button>
+    </div>
+  </div>
+
+  <div class="sc-result" id="result" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+    <div class="sc-result-card">
+      <span class="sc-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span>
+      <p class="t" id="resTitle">识别成功</p>
+      <p class="d" id="resName">曼谷机场 T1-A01 · VM-1001</p>
+      <p class="s">正在进入设备详情…</p>
+    </div>
+  </div>
+
+  <div class="overlay" id="manualSheet" role="dialog" aria-modal="true" aria-labelledby="manualTitle">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head">
+        <h2 id="manualTitle">手动输入设备编号</h2>
+        <button class="close" type="button" data-close aria-label="关闭">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <p class="sheet-note">二维码损坏或反光无法识别时，可直接输入柜门铭牌上的设备编号。</p>
+        <label class="field">
+          <span class="field-label">设备编号</span>
+          <input class="input" id="manualInput" type="text" value="VM-1001" placeholder="例如 VM-1001" autocomplete="off">
+        </label>
+        <div class="sheet-btns">
+          <button class="btn btn-ghost" type="button" data-close>取消</button>
+          <button class="btn btn-primary" type="button" id="manualConfirm">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="albumInput" accept="image/*" hidden>
+</main>
+<script>
+(function(){
+  var app=document.getElementById('app');
+  var video=document.getElementById('cam');
+  var toastEl=document.getElementById('toast');
+  var state='scanning', stream=null, autoTimer=null, toastTimer=null;
+
+  function toast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show')},2000);
+  }
+  function stopCam(){
+    if(!stream)return;
+    try{stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
+    stream=null;
+  }
+
+  /* 识别成功 → 进入开门柜单门 · 设备页 */
+  function go(id,name){
+    if(state!=='scanning')return;
+    state='success';
+    clearTimeout(autoTimer);
+    stopCam();
+    document.getElementById('resName').textContent=(name||'扫码设备')+' · '+id;
+    document.getElementById('result').classList.add('open');
+    setTimeout(function(){
+      location.href='device-single-door.html?id='+encodeURIComponent(id)
+        +'&name='+encodeURIComponent(name||'扫码设备')+'&status=online';
+    },1000);
+  }
+  function codeToId(raw){
+    var m=String(raw||'').match(/VM-\d{4,}/i);
+    return m?m[0].toUpperCase():'VM-1001';
+  }
+
+  /* 系统自带条码识别（Chrome 支持 BarcodeDetector 时启用） */
+  function detectLoop(){
+    if(!('BarcodeDetector' in window))return;
+    var detector;
+    try{detector=new BarcodeDetector({formats:['qr_code']})}catch(e){return}
+    (function tick(){
+      if(state!=='scanning')return;
+      if(!video.videoWidth){setTimeout(tick,500);return}
+      detector.detect(video).then(function(codes){
+        if(codes&&codes.length)go(codeToId(codes[0].rawValue),'扫码设备');
+      }).catch(function(){});
+      setTimeout(tick,420);
+    })();
+  }
+
+  var camBadge=document.getElementById('camBadge');
+  var camBadgeText=document.getElementById('camBadgeText');
+  var camReady=false;
+
+  function noCamera(){
+    if(camReady||state!=='scanning')return;
+    app.classList.add('no-cam');
+    camBadge.disabled=false;
+    camBadgeText.textContent='相机未开启 · 点此演示识别';
+  }
+
+  function startCamera(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){noCamera();return}
+    navigator.mediaDevices.getUserMedia({
+      audio:false,
+      video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1280}}
+    }).then(function(s){
+      if(state!=='scanning'){s.getTracks().forEach(function(t){t.stop()});return}
+      stream=s;
+      video.srcObject=s;
+      var p=video.play();
+      if(p&&p.catch)p.catch(function(){});
+      camReady=true;
+      app.classList.remove('no-cam');
+      app.classList.add('cam-on');
+      detectLoop();
+      /* 演示：取景就绪后模拟识别到柜门二维码（真实设备上由上面的条码识别接管） */
+      autoTimer=setTimeout(function(){ if(state==='scanning')go('VM-1001','曼谷机场 T1-A01') },4500);
+    }).catch(noCamera);
+  }
+
+  /* 闪光灯 */
+  document.getElementById('torchBtn').addEventListener('click',function(){
+    var btn=this;
+    if(!stream){toast('相机未开启，无法使用闪光灯');return}
+    var track=stream.getVideoTracks()[0];
+    var caps=track&&track.getCapabilities?track.getCapabilities():{};
+    if(!caps||!caps.torch){toast('当前设备不支持闪光灯');return}
+    var on=btn.getAttribute('aria-pressed')!=='true';
+    track.applyConstraints({advanced:[{torch:on}]}).then(function(){
+      btn.setAttribute('aria-pressed',on?'true':'false');
+    }).catch(function(){toast('闪光灯切换失败')});
+  });
+
+  /* 演示识别入口（相机不可用时点状态条） */
+  camBadge.addEventListener('click',function(){
+    if(camReady)return;
+    go('VM-1001','曼谷机场 T1-A01');
+  });
+
+  /* 相册识别 */
+  var albumInput=document.getElementById('albumInput');
+  document.getElementById('albumBtn').addEventListener('click',function(){albumInput.click()});
+  albumInput.addEventListener('change',function(){
+    if(!albumInput.files||!albumInput.files.length)return;
+    toast('正在识别图片…');
+    setTimeout(function(){go('VM-1001','曼谷机场 T1-A01')},1200);
+  });
+
+  /* 手动输入编号 */
+  var sheet=document.getElementById('manualSheet');
+  document.getElementById('manualBtn').addEventListener('click',function(){
+    sheet.classList.add('open');
+    setTimeout(function(){document.getElementById('manualInput').focus()},200);
+  });
+  sheet.querySelectorAll('[data-close]').forEach(function(btn){
+    btn.addEventListener('click',function(){sheet.classList.remove('open')});
+  });
+  sheet.addEventListener('click',function(e){if(e.target===sheet)sheet.classList.remove('open')});
+  document.getElementById('manualConfirm').addEventListener('click',function(){
+    var val=document.getElementById('manualInput').value.trim().toUpperCase();
+    sheet.classList.remove('open');
+    go(val||'VM-1001','扫码设备');
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')sheet.classList.remove('open');
+  });
+  window.addEventListener('pagehide',stopCam);
+  /* 从设备页返回时恢复正常取景状态 */
+  window.addEventListener('pageshow',function(e){ if(e.persisted) location.reload(); });
+
+  /* 相机迟迟未就绪（权限未处理 / 无可用设备）时，给出手动兜底入口 */
+  setTimeout(noCamera,3200);
+  startCamera();
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

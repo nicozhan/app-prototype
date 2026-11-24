@@ -2,143 +2,180 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
 <title>告警 · VendSolution</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vend.css">
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  .screen{ width:393px; max-width:100%; min-height:100dvh;
-    padding-bottom:calc(28px + env(safe-area-inset-bottom)); }
-  .searchrow{ padding:8px 14px 0; }
-  .search{ padding:9px 12px; border-radius:11px; }
-  .search input{ flex:1; min-width:0; border:none; outline:none; background:transparent;
-    font-family:inherit; font-size:13px; color:var(--ink); }
-  .search input::placeholder{ color:#9AA1BC; }
-  .aclear{ display:flex; align-items:center; justify-content:center; gap:6px;
-    width:calc(100% - 22px); margin:2px 11px 10px; padding:9px; background:var(--bg);
-    color:var(--blue); border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; }
-  .aclear svg{ width:13px; height:13px; }
-  /* 自定义时间段（精确到年月日时分秒） */
-  .adaterange{ display:none; margin-top:8px; }
-  .adaterange.open{ display:flex; flex-direction:column; gap:7px; }
-  .adr-field{ display:block; background:var(--bg-soft);
-    border:1px solid var(--line); border-radius:10px; padding:6px 9px; }
-  .adr-field span{ display:block; font-size:10px; font-weight:600; color:var(--gray); margin-bottom:2px; letter-spacing:.2px; }
-  .adr-field input{ width:100%; min-width:0; display:block; border:none; outline:none; background:transparent;
-    font-family:inherit; font-size:13px; font-weight:600; color:var(--ink); padding:0;
-    font-variant-numeric:tabular-nums; }
-  .adr-field input::-webkit-date-and-time-value{ text-align:left; }
-  .adr-hint{ font-size:10.5px; color:var(--gray); margin-top:0; line-height:1.5; }
-  .adr-hint b{ color:var(--blue); font-weight:700; }
-  .adr-hint i{ font-style:normal; font-variant-numeric:tabular-nums; }
+/* 告警列表 · 页面前缀 al- */
+.al-filter-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:3px;
+  height:36px;padding:0 6px;border-radius:var(--r-sm);
+  font-size:13px;font-weight:600;color:var(--brand);white-space:nowrap
+}
+.al-filter-btn:active{background:var(--brand-weak)}
+.al-filter-btn svg{width:14px;height:14px}
+
+.al-filter{margin-bottom:10px}
+.al-group+.al-group{margin-top:12px}
+.al-label{margin-bottom:6px;font-size:12px;line-height:17px;font-weight:600;color:var(--text-2)}
+.al-wrap{flex-wrap:wrap;overflow:visible}
+
+.al-date{display:none;margin-top:10px}
+.al-date.open{display:block}
+.al-hint{margin-top:8px;font-size:11px;line-height:16px;color:var(--text-3)}
+.al-hint i{font-style:normal;font-weight:600;color:var(--text-2)}
+.al-hint b{font-weight:700;color:var(--brand)}
+.al-clear{margin-top:12px}
+
+.al-seg{margin-top:2px}
+.al-seg button .al-count{margin-left:4px;font-size:11px;font-weight:700;color:var(--text-3)}
+.al-seg button.active .al-count{color:var(--brand)}
+
+.al-list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.al-card{
+  display:block;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--line);
+  border-radius:var(--r-card);background:var(--surface);color:var(--ink)
+}
+.al-card:active{background:var(--surface-2)}
+.al-card.p0{border-left-color:var(--danger)}
+.al-card.p1{border-left-color:var(--warn)}
+.al-card.p2{border-left-color:var(--brand)}
+.al-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.al-title{margin-top:7px;font-size:16px;line-height:22px;font-weight:700;letter-spacing:-.2px}
+.al-tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.al-tag{
+  display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:7px;
+  background:var(--surface-2);font-size:11px;font-weight:600;color:var(--text-2)
+}
+.al-tag svg{width:11px;height:11px;color:var(--text-3)}
+.al-tag.cat{background:var(--brand-weak);color:var(--brand)}
+.al-tag.cat svg{color:var(--brand)}
+.al-foot{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.al-time{font-size:11px;line-height:16px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.al-go{font-size:12px;font-weight:700;color:var(--brand);white-space:nowrap}
 </style>
 </head>
 <body>
-<div class="screen">
+<main class="app">
 
-  <!-- 页头 -->
-  <div class="ttop">
-    <div class="title">告警</div>
-    <button class="fltbtn" id="fltBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选
-    </button>
-  </div>
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
-  <!-- 筛选面板 -->
-  <div class="tfilter" id="tfilter">
-    <div class="fg">
-      <div class="fl">告警类型</div>
-      <div class="opts" id="typeOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="设备离线">设备离线</span>
-        <span class="opt" data-v="温度过高">温度过高</span>
-        <span class="opt" data-v="出货异常">出货异常</span>
-        <span class="opt" data-v="库存不足">库存不足</span>
-        <span class="opt" data-v="支付异常">支付异常</span>
-        <span class="opt" data-v="日结异常">日结异常</span>
-      </div>
-    </div>
-    <div class="fg">
-      <div class="fl">等级</div>
-      <div class="opts" id="lvlOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="P0">P0</span>
-        <span class="opt" data-v="P1">P1</span>
-        <span class="opt" data-v="P2">P2</span>
-      </div>
-    </div>
-    <div class="fg">
-      <div class="fl">状态</div>
-      <div class="opts" id="stOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="todo">待处理</span>
-        <span class="opt" data-v="doing">处理中</span>
-        <span class="opt" data-v="done">已完成</span>
-        <span class="opt" data-v="closed">已关闭</span>
-      </div>
-    </div>
-    <div class="fg">
-      <div class="fl">时间</div>
-      <div class="opts" id="timeOpts">
-        <span class="opt on" data-v="all">全部</span>
-        <span class="opt" data-v="today">今天</span>
-        <span class="opt" data-v="7d">近 7 天</span>
-        <span class="opt" data-v="30d">近 30 天</span>
-        <span class="opt" data-v="custom">自定义</span>
-      </div>
-      <div class="adaterange" id="dateRange">
-        <label class="adr-field">
-          <span>开始时间 · 年/月/日 时:分:秒</span>
-          <input type="datetime-local" id="dStart" step="1">
-        </label>
-        <label class="adr-field">
-          <span>结束时间 · 年/月/日 时:分:秒</span>
-          <input type="datetime-local" id="dEnd" step="1">
-        </label>
-        <div class="adr-hint" id="drHint">精确到秒；留空表示该端不限</div>
-      </div>
-    </div>
-    <button class="aclear" id="clearBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>清除过滤条件
-    </button>
-  </div>
+  <header class="navbar">
+    <span class="nav-left"><button class="icon-btn" type="button" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button></span>
+    <h1>告警</h1>
+    <span class="nav-right">
+      <button class="al-filter-btn" id="fltBtn" type="button" aria-expanded="false" aria-controls="tfilter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选
+      </button>
+    </span>
+  </header>
 
-  <!-- 分类分段：全部 / 设备告警 / 运营告警 -->
-  <div class="tmain" id="catTabs">
-    <span class="mt on" data-v="all">全部 <small id="cAll"></small></span>
-    <span class="mt" data-v="dev">设备告警 <small id="cDev"></small></span>
-    <span class="mt" data-v="ops">运营告警 <small id="cOps"></small></span>
-  </div>
+  <div class="body">
 
-  <!-- 搜索 -->
-  <div class="searchrow">
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <!-- 筛选面板 -->
+    <section class="card al-filter" id="tfilter" hidden>
+      <div class="card-body">
+
+        <div class="al-group">
+          <div class="al-label">告警类型</div>
+          <div class="chips al-wrap" id="typeOpts">
+            <button class="chip active" type="button" data-v="all">全部</button>
+            <button class="chip" type="button" data-v="设备离线">设备离线</button>
+            <button class="chip" type="button" data-v="温度过高">温度过高</button>
+            <button class="chip" type="button" data-v="出货异常">出货异常</button>
+            <button class="chip" type="button" data-v="库存不足">库存不足</button>
+            <button class="chip" type="button" data-v="支付异常">支付异常</button>
+            <button class="chip" type="button" data-v="日结异常">日结异常</button>
+          </div>
+        </div>
+
+        <div class="al-group">
+          <div class="al-label">等级</div>
+          <div class="chips al-wrap" id="lvlOpts">
+            <button class="chip active" type="button" data-v="all">全部</button>
+            <button class="chip" type="button" data-v="P0">P0</button>
+            <button class="chip" type="button" data-v="P1">P1</button>
+            <button class="chip" type="button" data-v="P2">P2</button>
+          </div>
+        </div>
+
+        <div class="al-group">
+          <div class="al-label">状态</div>
+          <div class="chips al-wrap" id="stOpts">
+            <button class="chip active" type="button" data-v="all">全部</button>
+            <button class="chip" type="button" data-v="todo">待处理</button>
+            <button class="chip" type="button" data-v="doing">处理中</button>
+            <button class="chip" type="button" data-v="done">已完成</button>
+            <button class="chip" type="button" data-v="closed">已关闭</button>
+          </div>
+        </div>
+
+        <div class="al-group">
+          <div class="al-label">时间</div>
+          <div class="chips al-wrap" id="timeOpts">
+            <button class="chip active" type="button" data-v="all">全部</button>
+            <button class="chip" type="button" data-v="today">今天</button>
+            <button class="chip" type="button" data-v="7d">近 7 天</button>
+            <button class="chip" type="button" data-v="30d">近 30 天</button>
+            <button class="chip" type="button" data-v="custom">自定义</button>
+          </div>
+
+          <div class="al-date" id="dateRange">
+            <label class="field">
+              <span class="field-label">开始时间 · 年/月/日 时:分:秒</span>
+              <input class="input num" type="datetime-local" id="dStart" step="1">
+            </label>
+            <label class="field">
+              <span class="field-label">结束时间 · 年/月/日 时:分:秒</span>
+              <input class="input num" type="datetime-local" id="dEnd" step="1">
+            </label>
+            <div class="al-hint" id="drHint">精确到秒；留空表示该端不限</div>
+          </div>
+        </div>
+
+        <button class="btn btn-ghost btn-sm btn-block al-clear" id="clearBtn" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          清除过滤条件
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 分类分段 -->
+    <div class="segmented al-seg" id="catTabs">
+      <button class="active" type="button" data-v="all">全部<span class="al-count" id="cAll"></span></button>
+      <button type="button" data-v="dev">设备告警<span class="al-count" id="cDev"></span></button>
+      <button type="button" data-v="ops">运营告警<span class="al-count" id="cOps"></span></button>
+    </div>
+
+    <!-- 搜索 -->
+    <div class="search mt-12">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="kw" placeholder="搜索告警名称 / 设备SN / 告警ID">
     </div>
-  </div>
 
-  <!-- 告警列表 -->
-  <div class="tklist" id="alist"></div>
-</div>
+    <!-- 告警列表 -->
+    <div class="al-list" id="alist"></div>
+
+  </div>
+</main>
 
 <script>
 var DEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
 var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 
-/* 严重度：P0 严重 / P1 警告 / P2 提示；状态点样式映射 */
+/* 严重度：P0 严重（danger）/ P1 警告（warn）/ P2 提示（brand） */
 var SEV = {
-  P0:{ cls:'p0', txt:'P0 · 严重' },
-  P1:{ cls:'p1', txt:'P1 · 警告' },
-  P2:{ cls:'p2', txt:'P2 · 提示' }
+  P0:{ cls:'p0', badge:'danger', txt:'P0 · 严重' },
+  P1:{ cls:'p1', badge:'warn',   txt:'P1 · 警告' },
+  P2:{ cls:'p2', badge:'brand',  txt:'P2 · 提示' }
 };
-var STC = { todo:'s-todo', doing:'s-doing', done:'s-done', closed:'s-closed' };
+/* 状态点：待处理 danger / 处理中 brand / 已完成 ok / 已关闭 灰 */
+var STC = { todo:'danger', doing:'brand', done:'ok', closed:'off' };
 
 var D = 24*60*60*1000;
 
-/* 前 3 条为真实示例（设备告警 / 设备离线 / P2 / SN0010155 / 已完成），其余为演示数据 */
 var ALERTS = [
   { id:'60e340a2-fe34-4255-9511-2899ffeab032', cat:'dev', kind:'设备离线', name:'设备离线',
     lvl:'P2', sn:'SN0010155', site:'—', time:'2026/10/25 14:27',
@@ -166,19 +203,17 @@ var ALERTS = [
     st:'已完成', stKey:'done', wo:null }
 ];
 
-/* ts 统一按「展示时间」解析：保证时间筛选与列表显示一致（此前按当前时间相对计算，会导致自定义日期筛空） */
+/* ts 统一按「展示时间」解析，保证时间筛选与列表显示一致 */
 function tsFromTime(s){
   var m = String(s).match(/(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})(?::(\d{2}))?/);
   return m ? new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], m[6]?+m[6]:0).getTime() : Date.now();
 }
 ALERTS.forEach(function(a){ a.ts = tsFromTime(a.time); });
 
-/* 数据实际时间跨度：用于自定义区默认值与范围提示 */
 var TS_MIN = ALERTS.length ? Math.min.apply(null, ALERTS.map(function(a){ return a.ts; })) : Date.now();
 var TS_MAX = ALERTS.length ? Math.max.apply(null, ALERTS.map(function(a){ return a.ts; })) : Date.now();
 
 var cat='all', kind='all', lvl='all', st='all', time='all', kw='';
-/* 自定义时间段（毫秒时间戳），null 表示该端不限 */
 var customStart=null, customEnd=null;
 
 function filtered(){
@@ -220,47 +255,42 @@ function render(){
   var list = filtered();
   var el = document.getElementById('alist');
   if(!list.length){
-    el.innerHTML = '<div class="tkempty">暂无符合条件的告警</div>';
+    el.innerHTML = '<div class="empty">'
+      + '<div class="empty-icon gray"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>'
+      + '<p>暂无符合条件的告警</p></div>';
     updateHint(0);
     return;
   }
   el.innerHTML = list.map(function(a){
     var sev = SEV[a.lvl];
     var typeTxt = a.cat==='dev' ? '设备告警' : '运营告警';
-    var typeCls = a.cat==='dev' ? 'achip dev' : 'achip ops';
-    var chips = '<span class="' + typeCls + '">' + typeTxt + '</span>';
-    if(a.sn && a.sn!=='—') chips += '<span class="achip">' + DEV + a.sn + '</span>';
-    if(a.site && a.site!=='—') chips += '<span class="achip">' + PIN + a.site + '</span>';
-    return '<a class="acard ' + sev.cls + '" href="alert-detail.html">'
-         +   '<div class="ain">'
-         +     '<div class="atop">'
-         +       '<span class="alvl"><span class="sdot"></span>' + sev.txt + '</span>'
-         +       '<span class="ast2 ' + STC[a.stKey] + '"><span class="tdot"></span>' + a.st + '</span>'
-         +     '</div>'
-         +     '<div class="atitle">' + a.name + '</div>'
-         +     '<div class="achips">' + chips + '</div>'
-         +     '<div class="afoot"><span class="atime">' + a.time + '</span><span class="abtn">查看 →</span></div>'
+    var tags = '<span class="al-tag cat">' + typeTxt + '</span>';
+    if(a.sn && a.sn!=='—') tags += '<span class="al-tag">' + DEV + a.sn + '</span>';
+    if(a.site && a.site!=='—') tags += '<span class="al-tag">' + PIN + a.site + '</span>';
+    return '<a class="al-card ' + sev.cls + '" href="alert-detail.html">'
+         +   '<div class="al-top">'
+         +     '<span class="badge ' + sev.badge + '">' + sev.txt + '</span>'
+         +     '<span class="badge"><span class="dot ' + STC[a.stKey] + '"></span>' + a.st + '</span>'
          +   '</div>'
+         +   '<div class="al-title">' + a.name + '</div>'
+         +   '<div class="al-tags">' + tags + '</div>'
+         +   '<div class="al-foot"><span class="al-time">' + a.time + '</span><span class="al-go">查看 →</span></div>'
          + '</a>';
   }).join('');
   updateHint(list.length);
 }
 
-/* 自定义时间段：提示 + 工具函数（精确到秒） */
 function pad2(n){ return ('0'+n).slice(-2); }
-/* 毫秒时间戳 → datetime-local 值：YYYY-MM-DDTHH:mm:ss */
 function toDT(ts){
   var d = new Date(ts);
   return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())
        + 'T'+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());
 }
-/* 毫秒时间戳 → 展示文案：YYYY/MM/DD HH:mm:ss */
 function fmtDT(ts){
   var d = new Date(ts);
   return d.getFullYear()+'/'+pad2(d.getMonth()+1)+'/'+pad2(d.getDate())
        + ' '+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());
 }
-/* datetime-local 值 → 毫秒时间戳（秒可缺省，缺省按 00 计） */
 function parseDT(v){
   if(!v) return null;
   var p = String(v).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/);
@@ -273,36 +303,40 @@ function updateHint(n){
   if(!h) return;
   var active = (time==='custom');
   if(!active || (customStart===null && customEnd===null)){
-    h.className = 'adr-hint';
+    h.className = 'al-hint';
     h.innerHTML = '精确到秒；留空表示该端不限（当前数据 <i>' + fmtDT(TS_MIN) + '</i> – <i>' + fmtDT(TS_MAX) + '</i>）';
     return;
   }
   var txt = (customStart!==null ? '<i>'+fmtDT(customStart)+'</i>' : '不限')
           + ' – ' + (customEnd!==null ? '<i>'+fmtDT(customEnd)+'</i>' : '不限');
-  h.className = 'adr-hint';
+  h.className = 'al-hint';
   h.innerHTML = '已选 ' + txt + '，命中 <b>' + (n===undefined?'—':n) + '</b> 条';
 }
 
 /* 分类分段 */
 document.getElementById('catTabs').addEventListener('click', function(e){
-  var m = e.target.closest('.mt'); if(!m) return;
-  this.querySelectorAll('.mt').forEach(function(x){ x.classList.remove('on'); });
-  m.classList.add('on');
+  var m = e.target.closest('button'); if(!m) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+  m.classList.add('active');
   cat = m.dataset.v;
   render();
 });
 
 /* 筛选面板开关 */
-document.getElementById('fltBtn').addEventListener('click', function(){
-  document.getElementById('tfilter').classList.toggle('open');
+var fltBtn = document.getElementById('fltBtn');
+fltBtn.addEventListener('click', function(){
+  var p = document.getElementById('tfilter');
+  var open = p.hasAttribute('hidden');
+  if(open){ p.removeAttribute('hidden'); } else { p.setAttribute('hidden',''); }
+  fltBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
 });
 
 /* 各筛选组 */
 function bindOpts(id, cb){
   document.getElementById(id).addEventListener('click', function(e){
-    var o = e.target.closest('.opt'); if(!o) return;
-    this.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
-    o.classList.add('on');
+    var o = e.target.closest('.chip'); if(!o) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('active'); });
+    o.classList.add('active');
     cb(o.dataset.v);
     render();
   });
@@ -316,7 +350,6 @@ bindOpts('timeOpts',   function(v){
   if(v==='custom'){
     dr.classList.add('open');
     var s = document.getElementById('dStart'), e = document.getElementById('dEnd');
-    /* 首次进入自定义：用数据实际跨度预填，便于直接在合理区间上调整（含时分秒） */
     if(!s.value && !e.value){
       s.value = toDT(TS_MIN);
       e.value = toDT(TS_MAX);
@@ -331,10 +364,10 @@ bindOpts('timeOpts',   function(v){
 function setOpt(groupId, v){
   var g = document.getElementById(groupId);
   if(!g) return;
-  g.querySelectorAll('.opt').forEach(function(x){ x.classList.toggle('on', x.dataset.v === v); });
+  g.querySelectorAll('.chip').forEach(function(x){ x.classList.toggle('active', x.dataset.v === v); });
 }
 
-/* 时间变更：起止颠倒自动交换；两端皆空则回到「全部」；精确到秒 */
+/* 时间变更：起止颠倒自动交换；两端皆空则回到「全部」 */
 function onDateChange(){
   var s = document.getElementById('dStart'), e = document.getElementById('dEnd');
   var st = parseDT(s.value), et = parseDT(e.value);
@@ -364,10 +397,10 @@ document.getElementById('clearBtn').addEventListener('click', function(){
   document.getElementById('dStart').value='';
   document.getElementById('dEnd').value='';
   document.getElementById('dateRange').classList.remove('open');
-  document.querySelectorAll('#tfilter .opts').forEach(function(g){
-    g.querySelectorAll('.opt').forEach(function(x,i){ x.classList.toggle('on', i===0); });
+  document.querySelectorAll('#tfilter .chips').forEach(function(g){
+    g.querySelectorAll('.chip').forEach(function(x,i){ x.classList.toggle('active', i===0); });
   });
-  document.querySelectorAll('#catTabs .mt').forEach(function(x,i){ x.classList.toggle('on', i===0); });
+  document.querySelectorAll('#catTabs button').forEach(function(x,i){ x.classList.toggle('active', i===0); });
   render();
 });
 
@@ -379,5 +412,6 @@ document.getElementById('kw').addEventListener('input', function(){
 
 render();
 </script>
+<script src="app-ui.js"></script>
 </body>
 </html>

@@ -2,191 +2,137 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>restock- Mobile App MVP 0.1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>补货 · VendSolution</title>
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Inter',sans-serif; background:#c9cddb; -webkit-font-smoothing:antialiased; }
-  .screen { position:relative; overflow:hidden; flex-shrink:0; }
+.rsk-device{padding:2px 2px 0}
+.rsk-kicker{font-size:12px;line-height:17px;font-weight:700;letter-spacing:1.4px;color:var(--brand)}
+.rsk-name{font-size:21px;line-height:28px;font-weight:800;letter-spacing:-.5px;margin-top:1px}
+.rsk-meta{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.rsk-chips{margin:12px 0 2px}
+.rsk-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rsk-layer{font-size:12px;line-height:17px;font-weight:700;letter-spacing:.6px;color:var(--brand)}
+.rsk-title{
+  margin-top:4px;font-size:15px;line-height:21px;font-weight:600;letter-spacing:-.1px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.rsk-foot{margin-top:10px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.rsk-stock{flex:1;min-width:0}
+.rsk-stock-t{font-size:11px;line-height:16px;font-weight:600;color:var(--text-2);font-variant-numeric:tabular-nums}
+.rsk-bar{margin-top:5px;height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.rsk-bar i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+.rsk-bar i.warn{background:var(--warn)}
+.rsk-bar i.ok{background:var(--ok)}
+.rsk-foot .qty{flex:0 0 auto}
+.rsk-foot{gap:14px}
+.rsk-foot-btn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
 </head>
 <body>
-<div class="screen" style="width:370.00px;height:1225.00px;background-color:rgb(238,242,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.00px;height:1081.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:370.00px;height:1213.00px;background-color:rgb(238,242,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.00px;height:1213.00px;background-color:rgb(248,249,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:370.41px;height:56.75px;"></div>
-<div style="position:absolute;left:0.00px;top:56.75px;width:370.00px;height:1156.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:370.00px;height:137.00px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:20.00px;top:20.00px;width:330.43px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:72.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:700;letter-spacing:2.88px;line-height:16.00px;color:rgba(36,52,200,0.6);text-align:left;white-space:nowrap;overflow:visible;">VM-1001</div>
-</div>
-<div style="position:absolute;left:20.00px;top:36.00px;width:330.43px;height:36.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:169.00px;height:32.00px;font-family:'Inter',sans-serif;font-size:22.00px;font-weight:900;letter-spacing:-0.48px;line-height:32.00px;color:rgb(11,16,47);text-align:left;white-space:nowrap;overflow:visible;">曼谷机场 T1-A01</div>
-</div>
-<div style="position:absolute;left:20.00px;top:72.00px;width:83.00px;height:30.00px;"><div style="position:absolute;left:0.00px;top:5.00px;width:83.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:600;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">ID: VM-1001</div>
-</div>
-<div style="position:absolute;left:20.00px;top:102.00px;width:330.00px;height:30.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:197.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:600;line-height:20.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">上次补货：2026-06-25 14:30</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:137.00px;width:370.00px;height:129.50px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.05);"><div style="position:absolute;left:20.00px;top:20.77px;width:330.43px;height:87.97px;"><div style="position:absolute;left:0.00px;top:0.00px;width:159.21px;height:87.97px;background-color:rgb(36,52,200);box-shadow:0.00px 14.00px 34.00px 0.00px rgba(36,52,200,0.22);border-radius:21.60px;"><div style="position:absolute;left:16.00px;top:16.00px;width:127.22px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:48.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:600;line-height:16.00px;color:rgba(255,255,255,0.7);text-align:left;white-space:nowrap;overflow:visible;">需要补货</div>
-</div>
-<div style="position:absolute;left:16.00px;top:32.00px;width:127.22px;height:40.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:75.00px;height:36.00px;font-family:'Inter',sans-serif;font-size:30.00px;font-weight:900;line-height:36.00px;color:rgb(255,255,255);text-align:left;white-space:nowrap;overflow:visible;">6 <span style="font-family:'Inter',sans-serif;font-size:16.00px;font-weight:700;line-height:24.00px;color:rgba(255,255,255,0.65);">种商品</span></div>
-</div>
-</div>
-<div style="position:absolute;left:171.21px;top:0.00px;width:159.22px;height:87.97px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.2),0.00px 14.00px 34.00px 0.00px rgba(36,52,200,0.08);border-radius:21.60px;"><div style="position:absolute;left:17.00px;top:17.00px;width:127.23px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:48.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:600;line-height:16.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">上次补货</div>
-</div>
-<div style="position:absolute;left:17.00px;top:33.00px;width:127.23px;height:40.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:63.00px;height:36.00px;font-family:'Inter',sans-serif;font-size:30.00px;font-weight:900;line-height:36.00px;color:rgb(11,16,47);text-align:left;white-space:nowrap;overflow:visible;">42 <span style="font-family:'Inter',sans-serif;font-size:16.00px;font-weight:700;line-height:24.00px;color:rgb(105,112,149);">件</span></div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:266.50px;width:370.00px;height:124.75px;background-color:rgba(248,249,255,0.95);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:20.00px;top:12.00px;width:330.43px;height:47.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:278.43px;height:47.99px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14),0.00px 8.00px 22.00px 0.00px rgba(36,52,200,0.06);border-radius:16.00px;"><div style="position:absolute;left:16.77px;top:14.00px;width:19.99px;height:19.99px;overflow:hidden;"><img src="assets/n_1_233.png" style="position:absolute;left:2.50px;top:2.50px;width:13.33px;height:13.33px;display:block;" alt="">
-<img src="assets/n_1_234.png" style="position:absolute;left:13.91px;top:13.91px;width:3.58px;height:3.58px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:48.76px;top:14.00px;width:212.90px;height:19.99px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:1.50px;width:212.90px;height:17.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:600;color:rgb(105,112,149);text-align:left;white-space:pre-wrap;overflow:visible;">搜索商品</div>
-</div>
-</div>
-<div style="position:absolute;left:290.43px;top:0.00px;width:39.99px;height:47.99px;background-color:rgb(255,255,255);box-shadow:0.00px 8.00px 22.00px 0.00px rgba(36,52,200,0.06);border-radius:16.00px;"><div style="position:absolute;left:12.00px;top:16.00px;width:15.99px;height:15.99px;overflow:hidden;"><img src="assets/n_1_239.png" style="position:absolute;left:8.00px;top:2.00px;width:0.00px;height:12.00px;display:block;" alt="">
-<img src="assets/n_1_240.png" style="position:absolute;left:2.00px;top:8.00px;width:12.00px;height:0.00px;display:block;" alt="">
-<img src="assets/n_1_241.png" style="position:absolute;left:2.00px;top:2.00px;width:12.00px;height:12.00px;display:block;" alt="">
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.00px;top:59.99px;width:330.43px;height:51.99px;"><div style="position:absolute;left:0.00px;top:12.00px;width:330.43px;height:39.99px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:1.99px;width:112.00px;height:36.00px;background-color:rgba(36,52,200,0.5);box-shadow:0.00px 1.00px 2.00px -1.00px rgba(0,0,0,0.1),0.00px 1.00px 3.00px 0.00px rgba(0,0,0,0.1);border-radius:9999px;"><div style="position:absolute;left:16.00px;top:8.00px;width:80.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">低库存（6）</div>
-</div>
-<div style="position:absolute;left:120.00px;top:1.99px;width:105.00px;height:36.00px;background-color:rgb(255,255,255);border-radius:9999px;"><div style="position:absolute;left:16.00px;top:8.00px;width:73.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(36,52,200);text-align:center;white-space:nowrap;overflow:visible;">全部（18）</div>
-</div>
-<div style="position:absolute;left:233.00px;top:1.99px;width:104.00px;height:36.00px;background-color:rgb(255,255,255);border-radius:9999px;"><div style="position:absolute;left:16.00px;top:8.00px;width:72.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(36,52,200);text-align:center;white-space:nowrap;overflow:visible;">补满（12）</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:391.25px;width:370.00px;height:674.00px;"><div style="position:absolute;left:20.23px;top:16.00px;width:329.54px;height:133.00px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14),0.00px 12.00px 30.00px 0.00px rgba(36,52,200,0.07);border-radius:22.00px;"><div style="position:absolute;left:16.77px;top:14.77px;width:296.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:90.00px;height:90.00px;background-color:rgb(234,234,234);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.3);border-radius:16.00px;"><div style="position:absolute;left:4.00px;top:4.00px;width:15.99px;height:15.99px;overflow:hidden;"></div>
-</div>
-<div style="position:absolute;left:102.00px;top:0.00px;width:194.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:48.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:62.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:33.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:13.00px;font-weight:700;letter-spacing:2.16px;line-height:16.00px;color:rgba(36,52,200,0.55);text-align:left;white-space:nowrap;overflow:visible;">#1层</div>
-</div>
-<div style="position:absolute;left:0.00px;top:16.00px;width:196.00px;height:46.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:196.00px;height:42.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:42.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:18.00px;color:rgb(11,16,47);text-align:left;white-space:pre-wrap;overflow:visible;">可口可乐Caa-Col co rosuar siorry5odo PPop Friyuydgo...</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:104.23px;top:-3.54px;width:92.00px;height:20.00px;background-color:rgb(223,223,223);border-radius:9999px;"><div style="position:absolute;left:8.00px;top:2.00px;width:76.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(105,112,149);text-align:right;white-space:nowrap;overflow:visible;">OUT OF STOCK</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:48.00px;width:196.00px;height:70.00px;"><div style="position:absolute;left:0.00px;top:12.00px;width:160.00px;height:58.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:57.97px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:52.00px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:52.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">库存：2/10</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:15.99px;width:149.00px;height:14.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:140.00px;height:10.00px;background-color:rgb(241,241,241);border-radius:9999px;"><div style="position:absolute;left:2.00px;top:2.00px;width:40.18px;height:6.00px;background-color:rgb(255,122,0);border-radius:9999px;"></div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:32.99px;width:204.92px;height:28.00px;"></div>
-<div style="position:absolute;left:147.23px;top:11.23px;width:50.00px;height:40.00px;background-color:rgb(255,122,0);border-radius:9999px;"><div style="position:absolute;left:13.00px;top:12.00px;width:24.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:900;line-height:16.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">+10</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.23px;top:163.00px;width:329.54px;height:133.00px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14),0.00px 12.00px 30.00px 0.00px rgba(36,52,200,0.07);border-radius:22.00px;"><div style="position:absolute;left:16.77px;top:14.77px;width:296.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:90.00px;height:90.00px;background-color:rgb(234,234,234);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.3);border-radius:16.00px;"><div style="position:absolute;left:4.00px;top:4.00px;width:15.99px;height:15.99px;overflow:hidden;"></div>
-</div>
-<div style="position:absolute;left:102.00px;top:0.00px;width:194.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:48.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:62.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:33.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:13.00px;font-weight:700;letter-spacing:2.16px;line-height:16.00px;color:rgba(36,52,200,0.55);text-align:left;white-space:nowrap;overflow:visible;">#1层</div>
-</div>
-<div style="position:absolute;left:0.00px;top:16.00px;width:196.00px;height:46.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:196.00px;height:42.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:42.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:18.00px;color:rgb(11,16,47);text-align:left;white-space:pre-wrap;overflow:visible;">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:170.23px;top:-3.54px;width:26.00px;height:20.00px;background-color:rgb(255,225,225);border-radius:9999px;"><div style="position:absolute;left:8.00px;top:2.00px;width:10.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(231,0,11);text-align:right;white-space:nowrap;overflow:visible;">低</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:48.00px;width:196.00px;height:70.00px;"><div style="position:absolute;left:0.00px;top:12.00px;width:160.00px;height:58.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:57.97px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:52.00px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:52.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">库存：2/10</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:15.99px;width:149.00px;height:14.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:140.00px;height:10.00px;background-color:rgb(241,241,241);border-radius:9999px;"><div style="position:absolute;left:2.00px;top:2.00px;width:40.18px;height:6.00px;background-color:rgb(255,122,0);border-radius:9999px;"></div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:32.99px;width:204.92px;height:28.00px;"></div>
-<div style="position:absolute;left:147.23px;top:11.23px;width:50.00px;height:40.00px;background-color:rgb(255,122,0);border-radius:9999px;"><div style="position:absolute;left:16.50px;top:12.00px;width:17.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:900;line-height:16.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">+8</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.23px;top:310.00px;width:329.54px;height:133.00px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14),0.00px 12.00px 30.00px 0.00px rgba(36,52,200,0.07);border-radius:22.00px;"><div style="position:absolute;left:16.77px;top:14.77px;width:296.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:90.00px;height:90.00px;background-color:rgb(234,234,234);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.3);border-radius:16.00px;"><div style="position:absolute;left:4.00px;top:4.00px;width:15.99px;height:15.99px;overflow:hidden;"></div>
-</div>
-<div style="position:absolute;left:102.00px;top:0.00px;width:194.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:48.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:62.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:33.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:13.00px;font-weight:700;letter-spacing:2.16px;line-height:16.00px;color:rgba(36,52,200,0.55);text-align:left;white-space:nowrap;overflow:visible;">#1层</div>
-</div>
-<div style="position:absolute;left:0.00px;top:16.00px;width:196.00px;height:46.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:196.00px;height:42.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:42.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:18.00px;color:rgb(11,16,47);text-align:left;white-space:pre-wrap;overflow:visible;">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:48.00px;width:196.00px;height:70.00px;"><div style="position:absolute;left:0.00px;top:12.00px;width:160.00px;height:58.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:57.97px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:53.00px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:53.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">库存：8/10</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:15.99px;width:149.00px;height:14.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:140.00px;height:10.00px;background-color:rgb(241,241,241);border-radius:9999px;"><div style="position:absolute;left:2.00px;top:2.00px;width:108.00px;height:6.00px;background-color:rgb(255,122,0);border-radius:9999px;"></div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:32.99px;width:204.92px;height:28.00px;"></div>
-<div style="position:absolute;left:147.23px;top:11.23px;width:50.00px;height:40.00px;background-color:rgb(255,122,0);border-radius:9999px;"><div style="position:absolute;left:17.00px;top:12.00px;width:16.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:900;line-height:16.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">+2</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:20.23px;top:457.00px;width:329.54px;height:133.00px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.14),0.00px 12.00px 30.00px 0.00px rgba(36,52,200,0.07);border-radius:22.00px;"><div style="position:absolute;left:16.77px;top:14.77px;width:296.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:90.00px;height:90.00px;background-color:rgb(234,234,234);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.3);border-radius:16.00px;"><div style="position:absolute;left:4.00px;top:4.00px;width:15.99px;height:15.99px;overflow:hidden;"></div>
-</div>
-<div style="position:absolute;left:102.00px;top:0.00px;width:194.00px;height:118.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:48.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:62.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:16.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:33.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:13.00px;font-weight:700;letter-spacing:2.16px;line-height:16.00px;color:rgba(36,52,200,0.55);text-align:left;white-space:nowrap;overflow:visible;">#1层</div>
-</div>
-<div style="position:absolute;left:0.00px;top:16.00px;width:196.00px;height:46.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:196.00px;height:42.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:0.00px;width:196.00px;height:42.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:18.00px;color:rgb(11,16,47);text-align:left;white-space:pre-wrap;overflow:visible;">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:48.00px;width:196.00px;height:70.00px;"><div style="position:absolute;left:0.00px;top:12.00px;width:160.00px;height:58.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:57.97px;"><div style="position:absolute;left:0.00px;top:0.00px;width:204.92px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:58.00px;height:15.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:58.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:10.00px;font-weight:700;line-height:16.00px;color:rgb(105,112,149);text-align:left;white-space:nowrap;overflow:visible;">库存：10/10</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:15.99px;width:149.00px;height:14.00px;"><div style="position:absolute;left:0.00px;top:4.00px;width:140.00px;height:10.00px;background-color:rgb(241,241,241);border-radius:9999px;"><div style="position:absolute;left:2.00px;top:2.00px;width:136.00px;height:6.00px;background-color:rgb(0,188,125);border-radius:9999px;"></div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:32.99px;width:204.92px;height:28.00px;"></div>
-<div style="position:absolute;left:147.23px;top:11.23px;width:50.00px;height:40.00px;background-color:rgb(0,188,125);border-radius:9999px;"><div style="position:absolute;left:17.50px;top:12.00px;width:15.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:900;line-height:16.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">+1</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:0.00px;width:370.42px;height:56.76px;background-color:rgba(255,255,255,0.95);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:16.00px;top:20.00px;width:338.42px;height:23.99px;"><div style="position:absolute;left:0.00px;top:1.99px;width:112.80px;height:20.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:19.99px;height:19.99px;overflow:hidden;"><img src="assets/n_1_359.png" style="position:absolute;left:4.17px;top:4.17px;width:5.83px;height:11.66px;display:block;" alt="">
-<img src="assets/n_1_360.png" style="position:absolute;left:4.17px;top:10.00px;width:11.66px;height:0.00px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:23.99px;top:0.00px;width:28.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:20.00px;color:rgb(36,52,200);text-align:center;white-space:nowrap;overflow:visible;">返回</div>
-</div>
-<div style="position:absolute;left:145.21px;top:0.00px;width:48.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:24.00px;color:rgb(11,16,47);text-align:center;white-space:nowrap;overflow:visible;">补货中</div>
-<div style="position:absolute;left:314.43px;top:0.00px;width:23.99px;height:23.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:23.99px;height:23.99px;overflow:hidden;"><img src="assets/n_1_365.png" style="position:absolute;left:2.00px;top:2.00px;width:19.99px;height:19.99px;display:block;" alt="">
-<img src="assets/n_1_366.png" style="position:absolute;left:16.99px;top:12.00px;width:0.01px;height:0.00px;display:block;" alt="">
-<img src="assets/n_1_367.png" style="position:absolute;left:12.00px;top:12.00px;width:0.01px;height:0.00px;display:block;" alt="">
-<img src="assets/n_1_368.png" style="position:absolute;left:7.00px;top:12.00px;width:0.01px;height:0.00px;display:block;" alt="">
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:1140.00px;width:370.41px;height:84.76px;background-color:rgba(255,255,255,0.95);box-shadow:inset 0 0 0 1.00px rgba(36,52,200,0.14);"><div style="position:absolute;left:20.00px;top:12.77px;width:330.43px;height:51.99px;"><div style="position:absolute;left:0.00px;top:0.00px;width:159.98px;height:51.99px;background-color:rgb(227,231,255);box-shadow:inset 0 0 0 0.77px rgba(36,52,200,0.2);border-radius:16.00px;"><div style="position:absolute;left:37.99px;top:16.00px;width:19.99px;height:19.99px;overflow:hidden;"><img src="assets/n_1_373.png" style="position:absolute;left:4.17px;top:10.00px;width:11.66px;height:0.00px;display:block;" alt="">
-<img src="assets/n_1_374.png" style="position:absolute;left:10.00px;top:4.17px;width:0.00px;height:11.66px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:65.98px;top:16.00px;width:56.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(36,52,200);text-align:center;white-space:nowrap;overflow:visible;">添加商品</div>
-</div>
-<div style="position:absolute;left:171.98px;top:0.00px;width:158.45px;height:51.99px;background-color:rgb(36,52,200);border-radius:16.00px;"><div style="position:absolute;left:65.23px;top:16.00px;width:28.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:800;line-height:20.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">完成</div>
-</div>
-</div>
-</div>
-</div>
-</body></html>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left"><button class="nav-text" type="button" onclick="appBack(event)">返回</button></span>
+    <h1>补货中</h1>
+    <span class="nav-right"><button class="icon-btn" aria-label="更多"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg></button></span>
+  </header>
+
+  <div class="body">
+
+    <section class="rsk-device">
+      <div class="rsk-kicker">VM-1001</div>
+      <div class="rsk-name">曼谷机场 T1-A01</div>
+      <div class="rsk-meta">ID: VM-1001</div>
+      <div class="rsk-meta">上次补货：2026-06-25 14:30</div>
+    </section>
+
+    <section class="stats mt-12" aria-label="补货统计">
+      <div class="stat primary"><div class="stat-label">需要补货</div><div class="stat-value">6<small>种商品</small></div></div>
+      <div class="stat"><div class="stat-label">上次补货</div><div class="stat-value">42<small>件</small></div></div>
+    </section>
+
+    <div class="search mt-12">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input placeholder="搜索商品" aria-label="搜索商品">
+      <span class="scan"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M7 12h10"/></svg></span>
+    </div>
+
+    <nav class="chips rsk-chips" aria-label="库存筛选">
+      <span class="chip active">低库存（6）</span>
+      <span class="chip">全部（18）</span>
+      <span class="chip">补满（12）</span>
+    </nav>
+
+    <div class="card mt-8">
+      <div class="card-body">
+        <div class="rsk-head"><span class="rsk-layer">#1层</span><span class="badge danger">OUT OF STOCK</span></div>
+        <div class="rsk-title">可口可乐Caa-Col co rosuar siorry5odo PPop Friyuydgo...</div>
+        <div class="rsk-foot">
+          <div class="rsk-stock">
+            <div class="rsk-stock-t">库存：2/10</div>
+            <div class="rsk-bar"><i class="warn" style="width:20%"></i></div>
+          </div>
+          <span class="qty">+10</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="rsk-head"><span class="rsk-layer">#1层</span><span class="badge warn">低</span></div>
+        <div class="rsk-title">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle</div>
+        <div class="rsk-foot">
+          <div class="rsk-stock">
+            <div class="rsk-stock-t">库存：2/10</div>
+            <div class="rsk-bar"><i class="warn" style="width:20%"></i></div>
+          </div>
+          <span class="qty">+8</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="rsk-head"><span class="rsk-layer">#1层</span></div>
+        <div class="rsk-title">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle</div>
+        <div class="rsk-foot">
+          <div class="rsk-stock">
+            <div class="rsk-stock-t">库存：8/10</div>
+            <div class="rsk-bar"><i style="width:80%"></i></div>
+          </div>
+          <span class="qty">+2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="rsk-head"><span class="rsk-layer">#1层</span></div>
+        <div class="rsk-title">Pepsi Cola Zero Sugar Soda Pop, 2 Liter Size Bottle</div>
+        <div class="rsk-foot">
+          <div class="rsk-stock">
+            <div class="rsk-stock-t">库存：10/10</div>
+            <div class="rsk-bar"><i class="ok" style="width:100%"></i></div>
+          </div>
+          <span class="qty done">+1</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="rsk-foot-btn">
+      <div class="btn btn-secondary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>添加商品</div>
+      <div class="btn btn-primary">完成</div>
+    </div>
+  </footer>
+
+</main>
+<script src="app-ui.js"></script>
+</body>
+</html>

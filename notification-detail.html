@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>告警详情 · VendSolution</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 通知详情 · 页面前缀 nd- */
+.nd-back{
+  display:inline-flex;align-items:center;gap:2px;height:44px;
+  font-size:13px;font-weight:600;color:var(--brand);white-space:nowrap
+}
+.nd-back svg{width:17px;height:17px}
+
+.nd-hero{
+  padding:14px;border:1px solid var(--line);border-radius:var(--r-card);
+  background:var(--surface)
+}
+.nd-hero.p0{background:var(--danger-bg);border-color:var(--danger)}
+.nd-hero.p1{background:var(--warn-bg);border-color:var(--warn)}
+.nd-hero.p2{background:var(--brand-weak);border-color:var(--brand-line)}
+.nd-hero .badge{background:var(--surface)}
+.nd-title{margin-top:8px;font-size:20px;line-height:27px;font-weight:800;letter-spacing:-.4px;color:var(--ink)}
+.nd-meta{margin-top:3px;font-size:12px;line-height:17px;color:var(--text-2)}
+
+.nd-desc{font-size:13px;line-height:20px;color:var(--ink)}
+.nd-st{font-weight:700}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left">
+      <a class="nd-back" href="notifications.html" onclick="return appBack(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>返回
+      </a>
+    </span>
+    <h1>告警详情</h1>
+    <span class="nav-right"></span>
+  </header>
+
+  <div class="body">
+
+    <!-- 状态头：等级 + 标题 + 机器 + 点位 -->
+    <section class="nd-hero p0" id="sevHead">
+      <span class="badge danger lg" id="dVl">P0</span>
+      <h2 class="nd-title" id="dTitle">制冷系统故障</h2>
+      <div class="nd-meta" id="dMachine">Machine VS-1028</div>
+      <div class="nd-meta" id="dSite">点位：Downtown Store</div>
+    </section>
+
+    <!-- 告警信息 -->
+    <section class="card mt-12">
+      <div class="card-head"><h2 class="card-title">告警信息</h2></div>
+      <div class="card-body tight">
+        <dl class="rows">
+          <div class="row"><dt>告警状态</dt><dd><span class="nd-st" id="dStatus">未恢复</span></dd></div>
+          <div class="row"><dt>首次发生</dt><dd id="dFirst">2026-10-30 09:32</dd></div>
+          <div class="row"><dt>最近发生</dt><dd id="dLast">2026-10-30 09:32</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 告警描述 -->
+    <section class="card">
+      <div class="card-head"><h2 class="card-title">告警描述</h2></div>
+      <div class="card-body">
+        <p class="nd-desc" id="dDesc">制冷系统检测到异常，可能影响设备正常销售。</p>
+      </div>
+    </section>
+
+    <!-- 告警历史 -->
+    <section class="card">
+      <div class="card-head"><h2 class="card-title">告警历史</h2></div>
+      <div class="card-body">
+        <div class="steps" id="dHist"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="footer">
+    <a class="btn btn-primary btn-block" href="app_workorder/tickets.html">生成工单</a>
+  </footer>
+
+</main>
+
+<script>
+/* 详情数据：按 id 取；缺省回退到 P0 示例（与列表 n1 一致） */
+var DETAILS = {
+  n1:{ title:'制冷系统故障', level:'P0', machine:'VS-1028', site:'Downtown Store', status:'未恢复',
+       firstAt:'2026-10-30 09:32', lastAt:'2026-10-30 09:32',
+       desc:'制冷系统检测到异常，可能影响设备正常销售。',
+       history:[ {t:'09:32', e:'告警首次触发'}, {t:'09:35', e:'告警升级至 P0'} ] },
+  n2:{ title:'原料库存不足', level:'P1', machine:'VS-1025', site:'Central Mall', status:'未恢复',
+       firstAt:'2026-10-30 09:15', lastAt:'2026-10-30 09:40',
+       desc:'Vanilla powder 库存低于预警阈值，请及时补货。',
+       history:[ {t:'09:15', e:'告警首次触发'}, {t:'09:20', e:'通知补货员'} ] },
+  n3:{ title:'设备通信异常', level:'P2', machine:'VS-1012', site:'Airport Branch', status:'已恢复',
+       firstAt:'2026-10-29 22:10', lastAt:'2026-10-29 22:35',
+       desc:'设备暂时无法正常上报数据，已自动重连恢复。',
+       history:[ {t:'22:10', e:'通信中断'}, {t:'22:35', e:'通信恢复'} ] }
+};
+var FALLBACK = DETAILS.n1;
+
+function getParam(name){
+  var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+var id = getParam('id');
+var d = DETAILS[id] || FALLBACK;
+var lvl = d.level.toLowerCase();
+var BADGE = { p0:'danger', p1:'warn', p2:'brand' };
+var CHECK = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+/* 状态头 */
+document.getElementById('sevHead').className = 'nd-hero ' + lvl;
+var vl = document.getElementById('dVl');
+vl.className = 'badge lg ' + BADGE[lvl];
+vl.textContent = d.level;
+document.getElementById('dTitle').textContent = d.title;
+document.getElementById('dMachine').textContent = 'Machine ' + d.machine;
+document.getElementById('dSite').textContent = '点位：' + d.site;
+
+/* 告警信息 */
+var st = document.getElementById('dStatus');
+st.textContent = d.status;
+st.style.color = (d.status === '已恢复') ? 'var(--ok)' : 'var(--danger)';
+document.getElementById('dFirst').textContent = d.firstAt;
+document.getElementById('dLast').textContent = d.lastAt;
+
+/* 描述 */
+document.getElementById('dDesc').textContent = d.desc;
+
+/* 历史（时间线，最新一条高亮） */
+document.getElementById('dHist').innerHTML = d.history.map(function(h, i){
+  var last = i === d.history.length - 1;
+  return '<div class="step ' + (last ? 'active' : 'done') + '">'
+       +   '<span class="step-dot">' + (last ? '' : CHECK) + '</span>'
+       +   '<div><div class="step-title">' + h.e + '</div>'
+       +   '<div class="step-sub num">' + h.t + '</div></div>'
+       + '</div>';
+}).join('');
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

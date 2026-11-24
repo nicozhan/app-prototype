@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>售卖机 · 货道补货</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 售卖机货道补货 · 页面前缀 vr- */
+.vr-device{flex:0 0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px 10px}
+.vr-device-main{min-width:0}
+.vr-device-name{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.4px}
+.vr-device-id{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vr-inv{
+  flex:0 0 auto;height:32px;margin-top:2px;padding:0 11px;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid var(--brand-line);border-radius:10px;background:var(--brand-weak);
+  font-size:12px;line-height:18px;font-weight:700;color:var(--brand)
+}
+.vr-inv:active{background:var(--brand-line)}
+.vr-stats{flex:0 0 auto;padding:0 16px}
+
+.vr-views{flex:0 0 auto;padding:10px 16px 0}
+.vr-views .segmented{width:100%}
+
+.vr-controls{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 16px 10px}
+.vr-controls .segmented{flex:1;min-width:0}
+.vr-controls .filter-select{min-width:88px}
+
+.vr-list-wrap{flex:1;min-height:0;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch}
+.vr-card{overflow:hidden}
+.vr-card .list>section:last-child .item:last-child{border-bottom:0}
+
+/* 分组标题 */
+.vr-group{
+  margin:0;padding:7px 14px 6px;border-bottom:1px solid var(--line);
+  background:var(--surface-2);font-size:11px;line-height:16px;font-weight:700;
+  letter-spacing:.4px;color:var(--text-3)
+}
+
+/* 列表行内元素 */
+.vr-slot{font-weight:600;color:var(--ink)}
+.vr-out{color:var(--danger);font-weight:600}
+.vr-qty{
+  min-width:48px;height:40px;padding:0 11px;border-radius:11px;
+  background:var(--brand-weak);color:var(--brand);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;font-variant-numeric:tabular-nums
+}
+.vr-qty.done{min-width:40px;padding:0;background:var(--ok-bg);color:var(--ok)}
+.vr-empty{padding:44px 20px}
+.vr-empty .empty-icon{background:var(--ok-bg);color:var(--ok)}
+.vr-empty-sm{padding:32px 12px;text-align:center;font-size:13px;font-weight:600;color:var(--text-2)}
+
+/* 按商品视图 */
+.vr-lanes{display:inline-flex;align-items:center;gap:5px;min-width:0}
+.vr-lane-tag{
+  flex:0 0 auto;height:18px;padding:0 6px;display:inline-flex;align-items:center;
+  border-radius:6px;background:var(--surface-2);color:var(--text-2);
+  font-size:11px;line-height:18px;font-weight:700;font-variant-numeric:tabular-nums
+}
+.vr-lane-more{flex:0 0 auto;font-size:11px;font-weight:600;color:var(--text-3)}
+
+/* 货道分配弹层 */
+.vr-lane-row{
+  width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--line);text-align:left
+}
+.vr-lane-row:last-of-type{border-bottom:0}
+.vr-lane-row:active{background:var(--surface-2)}
+.vr-lane-no{display:block;font-size:14px;line-height:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.vr-lane-stock{display:block;margin-top:1px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vr-lane-gap{
+  flex:0 0 auto;height:28px;padding:0 10px;display:inline-flex;align-items:center;border-radius:8px;
+  background:var(--brand-weak);color:var(--brand);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums
+}
+.vr-lane-gap.done{background:var(--ok-bg);color:var(--ok)}
+.vr-sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+
+/* 补货数量弹层 */
+.vr-product{display:flex;align-items:center;gap:12px;padding:2px 0 14px}
+.vr-product .thumb{width:54px;height:54px;border-radius:12px}
+.vr-product-name{font-size:15px;line-height:21px;font-weight:600}
+.vr-product-meta{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vr-stock-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-top:1px solid var(--line);font-size:13px;color:var(--text-2)
+}
+.vr-stock-row strong{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.vr-qty-label{margin:6px 0 8px;font-size:13px;font-weight:600}
+.vr-stepper{
+  height:56px;display:grid;grid-template-columns:54px 1fr 54px;overflow:hidden;
+  border:1px solid var(--brand-line);border-radius:12px;background:var(--brand-weak)
+}
+.vr-stepper button{display:flex;align-items:center;justify-content:center;color:var(--brand)}
+.vr-stepper button:active{background:var(--brand-line)}
+.vr-stepper input{
+  width:100%;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);
+  background:var(--surface);text-align:center;font-size:21px;font-weight:800;
+  font-variant-numeric:tabular-nums;outline:0
+}
+.vr-quick-actions{display:flex;gap:8px;margin:14px 0}
+.vr-quick{flex:1;height:42px;border-radius:11px;background:var(--brand-weak);color:var(--brand);font-size:13px;font-weight:700}
+.vr-quick:active{background:var(--brand-line)}
+.vr-quick.remove{background:var(--danger-bg);color:var(--danger)}
+
+/* 添加商品 */
+.vr-results{margin-top:6px}
+.vr-result{
+  width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 32px;gap:11px;
+  align-items:center;padding:10px 0;border-bottom:1px solid var(--line);text-align:left
+}
+.vr-result:last-child{border-bottom:0}
+.vr-result .thumb{width:44px;height:44px}
+.vr-result-name{display:block;font-size:14px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vr-result-code{display:block;margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vr-add{
+  width:30px;height:30px;border-radius:50%;background:var(--brand-weak);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;justify-self:end
+}
+
+/* 选择行 */
+.vr-option{
+  height:52px;width:100%;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--line);font-size:15px;font-weight:600;text-align:left
+}
+.vr-option:last-child{border-bottom:0}
+.vr-option .check{color:var(--brand);visibility:hidden}
+.vr-option.active .check{visibility:visible}
+
+/* ---------- 扫码（相机模拟） ---------- */
+.scn{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;background:#0b102f}
+.scn.open{display:flex}
+.scn-cam{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:radial-gradient(130% 85% at 50% 28%,#1b2456 0%,#0c1130 72%)}
+.scn-top{flex:0 0 auto;height:56px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px}
+.scn-top h2{text-align:center;font-size:16px;line-height:22px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.scn-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;justify-self:center;border-radius:50%;background:rgba(255,255,255,.12);color:#fff}
+.scn-icon:active{background:rgba(255,255,255,.24)}
+.scn-icon.on{background:#fff;color:#0b102f}
+.scn-center{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px}
+.scn-frame{position:relative;width:212px;height:212px;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.13)}
+.scn-frame b{position:absolute;width:26px;height:26px;border:3px solid #fff}
+.scn-frame b:nth-child(1){top:-3px;left:-3px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.scn-frame b:nth-child(2){top:-3px;right:-3px;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.scn-frame b:nth-child(3){bottom:-3px;left:-3px;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.scn-frame b:nth-child(4){bottom:-3px;right:-3px;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.scn-laser{position:absolute;left:12px;right:12px;top:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(122,140,255,0),#8b9bff,#fff,#8b9bff,rgba(122,140,255,0));animation:scnline 2.6s ease-in-out infinite}
+@keyframes scnline{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(172px);opacity:1}}
+.scn-tip{margin:18px 0 0;text-align:center;font-size:12px;line-height:17px;color:rgba(255,255,255,.62)}
+.scn-demo{flex:0 0 auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;background:#141a3d}
+.scn-demo-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+.scn-demo-head b{font-size:12px;line-height:17px;font-weight:700;color:rgba(255,255,255,.92)}
+.scn-demo-head span{font-size:10px;line-height:15px;font-weight:600;color:rgba(255,255,255,.45)}
+.scn-code{width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;margin-top:8px;border-radius:12px;background:rgba(255,255,255,.07);text-align:left}
+.scn-code:active{background:rgba(255,255,255,.16)}
+.scn-code-main{min-width:0;flex:1}
+.scn-code-name{display:block;font-size:13px;line-height:18px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scn-code-num{display:block;margin-top:1px;font-size:11px;line-height:15px;font-weight:500;color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+.scn-tag{flex:0 0 auto;height:20px;padding:0 8px;display:inline-flex;align-items:center;border-radius:999px;font-size:10px;line-height:20px;font-weight:700}
+.scn-tag.ok{background:rgba(0,143,99,.24);color:#74e3b8}
+.scn-tag.warn{background:rgba(154,94,42,.3);color:#f2bc86}
+.scn-sheet{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:6px 16px calc(16px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;background:var(--surface);box-shadow:0 -10px 34px rgba(11,16,47,.28);transform:translateY(104%);transition:transform .24s ease}
+.scn-sheet.show{transform:translateY(0)}
+.scn-prod{display:flex;align-items:center;gap:12px;padding:4px 0 13px}
+.scn-prod .thumb{width:52px;height:52px;border-radius:12px}
+.scn-prod-name{font-size:15px;line-height:21px;font-weight:600}
+.scn-prod-code{margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.scn-state{display:flex;align-items:center;gap:7px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:17px;font-weight:700}
+.scn-state.ok{background:var(--ok-bg);color:var(--ok)}
+.scn-state.warn{background:var(--warn-bg);color:var(--warn)}
+.scn-state .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.scn-desc{margin:10px 0 0;font-size:12px;line-height:18px;color:var(--text-2)}
+.scn-actions{margin-top:14px;display:flex;gap:8px}
+.scn-actions .btn{flex:1}
+.scn-actions .btn-block{width:auto}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left">
+      <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+    </span>
+    <h1>补货</h1>
+    <span class="nav-right">
+      <button class="icon-btn accent" id="addBtn" aria-label="添加商品"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </span>
+  </header>
+
+  <section class="vr-device">
+    <div class="vr-device-main">
+      <div class="vr-device-name">地铁站售卖机</div>
+      <div class="vr-device-id">VM-3001</div>
+    </div>
+    <button class="vr-inv" id="inventoryBtn" type="button" aria-label="库存盘点">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h3v14H4zM10 5h3.5v14H10M17 5h3v14h-3"/></svg>
+      盘点
+    </button>
+  </section>
+
+  <section class="stats vr-stats" aria-label="补货统计">
+    <div class="stat primary"><div class="stat-label" id="statLabel">待补货道</div><div class="stat-value"><span id="skuCount">5</span></div></div>
+    <div class="stat"><div class="stat-label">预计补货 / 件</div><div class="stat-value"><span id="unitCount">31</span></div></div>
+  </section>
+
+  <div class="vr-views">
+    <div class="segmented" id="views" aria-label="补货展示方式">
+      <button class="active" data-view="lane">按货道</button>
+      <button data-view="product">按商品</button>
+    </div>
+  </div>
+
+  <div class="vr-controls">
+    <div class="segmented" id="segments"><button class="active" data-status="need">待补 <span id="needCount">5</span></button><button data-status="all">全部 <span id="allCount">8</span></button></div>
+    <button class="filter-select" id="rowBtn"><span id="rowLabel">全部行</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg></button>
+  </div>
+
+  <div class="vr-list-wrap"><div class="card vr-card"><div class="list" id="list"></div></div></div>
+
+  <footer class="footer"><button class="btn btn-primary btn-block" id="completeBtn">完成补货<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></footer>
+
+  <!-- 补货数量 -->
+  <div class="overlay" id="editOverlay" role="dialog" aria-modal="true" aria-labelledby="editTitle"><section class="sheet"><div class="handle"></div><div class="sheet-head"><h2 id="editTitle">补货数量</h2><button class="close" data-close="editOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div class="vr-product"><div class="thumb"><i id="editInitial"></i><img id="editImage" alt=""></div><div><div class="vr-product-name" id="editName"></div><div class="vr-product-meta" id="editSlot"></div></div></div><div class="vr-stock-row"><span>当前库存</span><strong id="editStock"></strong></div><div class="vr-qty-label">本次补货</div><div class="vr-stepper"><button id="minus" aria-label="减少"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12h14"/></svg></button><input id="qtyInput" type="text" inputmode="numeric" value="0" aria-label="本次补货数量"><button id="plus" aria-label="增加"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div><div class="vr-quick-actions"><button class="vr-quick" id="fillBtn">补满</button><button class="vr-quick remove" id="removeBtn">下架</button></div><button class="btn btn-primary btn-block" id="confirmBtn">确认</button></section></div>
+
+  <!-- 添加商品 -->
+  <div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle"><section class="sheet"><div class="handle"></div><div class="sheet-head"><h2 id="addTitle">添加商品</h2><button class="close" data-close="addOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="searchInput" placeholder="商品名称或 69 码" autocomplete="off"><button class="scan" id="scanBtn" aria-label="扫码"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M7 12h10"/></svg></button></div><div class="vr-results" id="searchResults"></div></section></div>
+
+  <!-- 选择行 -->
+  <div class="overlay" id="rowOverlay" role="dialog" aria-modal="true" aria-labelledby="rowTitle"><section class="sheet"><div class="handle"></div><div class="sheet-head"><h2 id="rowTitle">选择行</h2><button class="close" data-close="rowOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div id="rowOptions"></div></section></div>
+
+  <!-- 按商品：货道分配 -->
+  <div class="overlay" id="laneSheet" role="dialog" aria-modal="true" aria-labelledby="laneTitle"><section class="sheet"><div class="handle"></div><div class="sheet-head"><h2 id="laneTitle">货道分配</h2><button class="close" data-close="laneSheet" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div id="laneBody"></div></section></div>
+
+  <!-- 扫码（相机模拟） -->
+  <div class="scn" id="scanOverlay" role="dialog" aria-modal="true" aria-label="扫码添加商品">
+    <div class="scn-cam">
+      <div class="scn-top">
+        <button class="scn-icon" id="scanClose" aria-label="关闭扫描"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <h2>扫码添加</h2>
+        <button class="scn-icon" id="scanTorch" aria-label="补光灯"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg></button>
+      </div>
+      <div class="scn-center">
+        <div class="scn-frame"><b></b><b></b><b></b><b></b><span class="scn-laser"></span></div>
+        <p class="scn-tip">将商品条形码放入框内，自动识别</p>
+      </div>
+    </div>
+    <div class="scn-demo">
+      <div class="scn-demo-head"><b>演示条码</b><span>模拟器 · 点选即可扫码</span></div>
+      <div id="scanCodes"></div>
+    </div>
+    <div class="scn-sheet" id="scanSheet"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+</main>
+<script>
+(function(){
+  const imagePath='jpgk-platform/mobile/src/static/replenishment/';
+  // 严格货道：lane 形如 "1-1"，max 为货道容量，cur 为当前库存
+  // 同一商品可能占多个货道，「按商品」视图会合并成一款并汇总缺口
+  const items=[
+    {id:1,name:'可口可乐 330ml',row:1,lane:'1-1',base:8,cur:8,max:8,img:imagePath+'product-1.png'},
+    {id:2,name:'可口可乐 330ml',row:3,lane:'3-1',base:1,cur:1,max:8,img:imagePath+'product-1.png'},
+    {id:3,name:'雪碧 330ml',row:1,lane:'1-2',base:4,cur:4,max:8,img:imagePath+'product-2.png'},
+    {id:4,name:'雪碧 330ml',row:2,lane:'2-2',base:8,cur:8,max:8,img:imagePath+'product-2.png'},
+    {id:5,name:'红牛 250ml',row:2,lane:'2-1',base:0,cur:0,max:6,img:imagePath+'product-3.png'},
+    {id:6,name:'矿泉水 550ml',row:2,lane:'2-3',base:6,cur:6,max:12,img:imagePath+'product-4.png'},
+    {id:7,name:'乐事薯片 原味',row:3,lane:'3-3',base:10,cur:10,max:10,img:imagePath+'product-5.png'},
+    {id:8,name:'巧克力 50g',row:3,lane:'3-4',base:2,cur:2,max:10,img:imagePath+'product-6.png'}
+  ];
+  const extras=[
+    {id:101,name:'可口可乐 无糖 330ml',code:'6901234500017',row:4,lane:'4-1',base:0,cur:0,max:8,img:imagePath+'product-1.png'},
+    {id:102,name:'乌龙茶 500ml',code:'6901234500024',row:4,lane:'4-2',base:0,cur:0,max:12,img:imagePath+'product-4.png'}
+  ];
+  /* 产品库（演示数据）：exists=产品库已有；missing=产品库没有。售卖机按条码售卖，两者都可直接上架 */
+  const LIBRARY=[
+    {code:'6921168509256',name:'农夫山泉饮用天然水 550ml',state:'exists'},
+    {code:'6954767434674',name:'雪碧柠檬味汽水 600ml',state:'exists'},
+    {code:'6933266607185',name:'百事可乐 330ml',state:'missing'}
+  ];
+  const initial=item=>{const s=item.name.replace(/[^0-9A-Za-z\u4e00-\u9fa5]/g,'');return s.charAt(0)||'·'};
+  let statusFilter='need',rowFilter=0,viewMode='lane',selected=null,laneSelected=null,toastTimer;
+  const list=document.getElementById('list'),remaining=item=>Math.max(0,item.max-item.cur);
+  const CHECK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-9"/></svg>';
+  // 同一商品跨多个货道时聚合：按商品视图用
+  function productList(){
+    const map=new Map();
+    items.forEach(function(item){
+      if(!map.has(item.name))map.set(item.name,{name:item.name,img:item.img||'',items:[]});
+      map.get(item.name).items.push(item);
+    });
+    return Array.from(map.values()).map(function(p){
+      const cur=p.items.reduce(function(sum,i){return sum+i.cur},0);
+      const max=p.items.reduce(function(sum,i){return sum+i.max},0);
+      return {name:p.name,img:p.img,items:p.items,cur:cur,max:max,left:max-cur};
+    });
+  }
+  function updateStats(){
+    const needed=items.filter(function(item){return remaining(item)>0});
+    const pending=productList().filter(function(p){return p.left>0});
+    const count=viewMode==='lane'?needed.length:pending.length;
+    document.getElementById('skuCount').textContent=count;
+    document.getElementById('unitCount').textContent=needed.reduce(function(sum,item){return sum+remaining(item)},0);
+    document.getElementById('needCount').textContent=count;
+    document.getElementById('allCount').textContent=viewMode==='lane'?items.length:productList().length;
+    document.getElementById('statLabel').textContent=viewMode==='lane'?'待补货道':'待补商品';
+  }
+  function productRow(p){
+    const lanes=p.items.slice(0,2).map(function(i){return i.lane}).join(' / ')+(p.items.length>2?' +'+(p.items.length-2):'');
+    return '<button class="item" data-product="'+p.name+'" aria-label="查看 '+p.name+' 的货道">'
+      +'<span class="thumb"><i>'+initial(p)+'</i>'+(p.img?'<img src="'+p.img+'" alt="">':'')+'</span>'
+      +'<span class="item-body"><span class="item-name">'+p.name+'</span>'
+      +'<span class="item-meta"><span class="k">'+p.items.length+' 个货道</span><span>·</span><span class="vr-lanes">'+lanes+'</span><span>·</span><span>'+p.cur+'/'+p.max+'</span></span></span>'
+      +(p.left>0?'<span class="vr-qty">+'+p.left+'</span>':'<span class="vr-qty done">'+CHECK+'</span>')
+      +'</button>';
+  }
+  function row(item){const left=remaining(item);return '<button class="item" data-id="'+item.id+'" aria-label="编辑 '+item.name+' 补货数量"><span class="thumb"><i>'+initial(item)+'</i>'+(item.img?'<img src="'+item.img+'" alt="">':'')+'</span><span class="item-body"><span class="item-name">'+item.name+'</span><span class="item-meta"><span class="vr-slot">货道 '+item.lane+'</span><span>·</span><span>'+item.cur+'/'+item.max+'</span>'+(item.cur===0?'<span class="vr-out">缺货</span>':'')+'</span></span>'+(left>0?'<span class="vr-qty">+'+left+'</span>':'<span class="vr-qty done"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-9"/></svg></span>')+'</button>'}
+  const EMPTY='<div class="empty vr-empty"><div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></div><p>已补齐</p></div>';
+  function render(){
+    updateStats();
+    if(viewMode==='product'){
+      const products=productList().filter(function(p){
+        if(rowFilter&&!p.items.some(function(i){return i.row===rowFilter}))return false;
+        return statusFilter==='all'||p.left>0;
+      });
+      list.innerHTML=products.length?products.map(productRow).join(''):EMPTY;
+      return;
+    }
+    const visible=items.filter(item=>(!rowFilter||item.row===rowFilter)&&(statusFilter==='all'||remaining(item)>0));
+    if(!visible.length){list.innerHTML=EMPTY;return}
+    if(statusFilter==='all'&&!rowFilter){list.innerHTML=[1,2,3,4].map(r=>{const group=visible.filter(item=>item.row===r);return group.length?'<section><h2 class="vr-group">第 '+r+' 行</h2>'+group.map(row).join('')+'</section>':''}).join('');return}
+    list.innerHTML=visible.map(row).join('');
+  }
+  function renderRows(){const labels=['全部行','第 1 行','第 2 行','第 3 行','第 4 行'];document.getElementById('rowOptions').innerHTML=labels.map((label,index)=>'<button class="vr-option '+(rowFilter===index?'active':'')+'" data-row="'+index+'"><span>'+label+'</span><svg class="check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></button>').join('')}
+  function openLaneSheet(name){
+    const product=productList().find(function(p){return p.name===name});
+    if(!product)return;
+    laneSelected=product;
+    const head='<div class="vr-product"><div class="thumb"><i>'+initial(product)+'</i>'+(product.img?'<img src="'+product.img+'" alt="">':'')+'</div><div><div class="vr-product-name">'+product.name+'</div><div class="vr-product-meta">'+product.items.length+' 个货道 · '+product.cur+' / '+product.max+'</div></div></div>';
+    const rows=product.items.map(function(item){
+      const left=remaining(item);
+      return '<button class="vr-lane-row" data-lane-id="'+item.id+'"><span><span class="vr-lane-no">货道 '+item.lane+'</span><span class="vr-lane-stock">库存 '+item.cur+' / '+item.max+'</span></span>'+(left>0?'<span class="vr-lane-gap">+'+left+'</span>':'<span class="vr-lane-gap done">已满</span>')+'</button>';
+    }).join('');
+    document.getElementById('laneBody').innerHTML=head+rows+'<div class="vr-sheet-actions"><button class="btn btn-secondary" type="button" id="laneFill">全部补满</button><button class="btn btn-primary" type="button" id="laneDone">完成</button></div>';
+    openOverlay('laneSheet');
+  }
+  function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+  function openOverlay(id){document.getElementById(id).classList.add('open')}function closeOverlay(id){document.getElementById(id).classList.remove('open')}
+  function openEdit(id){selected=items.find(item=>item.id===id);if(!selected)return;document.getElementById('editName').textContent=selected.name;document.getElementById('editSlot').textContent='货道 '+selected.lane;document.getElementById('editStock').textContent=selected.cur+' / '+selected.max;document.getElementById('editInitial').textContent=initial(selected);const imgEl=document.getElementById('editImage');if(selected.img){imgEl.style.display='';imgEl.src=selected.img}else{imgEl.style.display='none'}document.getElementById('qtyInput').value='0';openOverlay('editOverlay')}
+  function clampQty(){const cap=selected?remaining(selected):0,input=document.getElementById('qtyInput'),digits=input.value.replace(/\D/g,''),value=digits?Math.min(cap,parseInt(digits,10)):0;input.value=String(value);return value}
+  function apply(action){if(!selected)return;if(action==='remove')selected.cur=selected.base;else if(action==='fill')selected.cur=selected.max;else selected.cur=Math.min(selected.max,selected.cur+clampQty());closeOverlay('editOverlay');render();toast(action==='remove'?'已下架':action==='fill'?'已补满':'已确认补货')}
+  function renderSearch(){const query=document.getElementById('searchInput').value.trim().toLowerCase(),found=extras.filter(item=>!items.some(x=>x.id===item.id)&&(!query||item.name.toLowerCase().includes(query)||item.code.includes(query)));document.getElementById('searchResults').innerHTML=found.length?found.map(item=>'<button class="vr-result" data-add="'+item.id+'"><span class="thumb"><img src="'+item.img+'" alt=""></span><span><span class="vr-result-name">'+item.name+'</span><span class="vr-result-code">'+item.code+'</span></span><span class="vr-add"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>').join(''):'<div class="vr-empty-sm">未找到商品</div>'}
+  list.addEventListener('click',event=>{
+    const lane=event.target.closest('[data-id]');
+    if(lane){openEdit(Number(lane.dataset.id));return}
+    const product=event.target.closest('[data-product]');
+    if(product)openLaneSheet(product.dataset.product);
+  });
+  document.getElementById('segments').addEventListener('click',event=>{const button=event.target.closest('[data-status]');if(!button)return;statusFilter=button.dataset.status;document.querySelectorAll('[data-status]').forEach(el=>el.classList.toggle('active',el===button));render()});
+  document.getElementById('rowBtn').addEventListener('click',()=>{renderRows();openOverlay('rowOverlay')});
+  document.getElementById('rowOptions').addEventListener('click',event=>{const button=event.target.closest('[data-row]');if(!button)return;rowFilter=Number(button.dataset.row);document.getElementById('rowLabel').textContent=rowFilter?'第 '+rowFilter+' 行':'全部行';closeOverlay('rowOverlay');render()});
+  document.getElementById('views').addEventListener('click',event=>{const button=event.target.closest('[data-view]');if(!button)return;viewMode=button.dataset.view;document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el===button));render()});
+  document.getElementById('laneBody').addEventListener('click',function(event){
+    if(event.target.closest('#laneFill')){
+      if(laneSelected)laneSelected.items.forEach(function(item){item.cur=item.max});
+      closeOverlay('laneSheet');render();toast('已全部补满');
+      return;
+    }
+    if(event.target.closest('#laneDone')){closeOverlay('laneSheet');return}
+    const laneRow=event.target.closest('[data-lane-id]');
+    if(laneRow){closeOverlay('laneSheet');openEdit(Number(laneRow.dataset.laneId))}
+  });
+  document.getElementById('inventoryBtn').addEventListener('click',function(){location.href='inventory.html?device=VM-3001'});
+  document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeOverlay(button.dataset.close)));document.querySelectorAll('.overlay').forEach(overlay=>overlay.addEventListener('click',event=>{if(event.target===overlay)closeOverlay(overlay.id)}));
+  document.getElementById('minus').addEventListener('click',()=>{const input=document.getElementById('qtyInput');input.value=Math.max(0,clampQty()-1)});document.getElementById('plus').addEventListener('click',()=>{const input=document.getElementById('qtyInput');input.value=Math.min(remaining(selected),clampQty()+1)});document.getElementById('qtyInput').addEventListener('input',clampQty);
+  document.getElementById('fillBtn').addEventListener('click',()=>apply('fill'));document.getElementById('removeBtn').addEventListener('click',()=>apply('remove'));document.getElementById('confirmBtn').addEventListener('click',()=>apply('confirm'));
+  document.getElementById('addBtn').addEventListener('click',()=>{renderSearch();openOverlay('addOverlay')});document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('searchResults').addEventListener('click',event=>{const button=event.target.closest('[data-add]');if(!button)return;const item=extras.find(x=>x.id===Number(button.dataset.add));items.push(item);statusFilter='all';document.querySelectorAll('[data-status]').forEach(el=>el.classList.toggle('active',el.dataset.status==='all'));closeOverlay('addOverlay');render();toast('已添加 '+item.name)});
+  function openScan(){const sheet=document.getElementById('scanSheet');sheet.classList.remove('show');sheet.innerHTML='';document.getElementById('scanCodes').innerHTML=LIBRARY.map(p=>'<button class="scn-code" data-code="'+p.code+'"><span class="scn-code-main"><span class="scn-code-name">'+p.name+'</span><span class="scn-code-num">'+p.code+'</span></span><span class="scn-tag '+(p.state==='exists'?'ok':'warn')+'">'+(p.state==='exists'?'已有':'未收录')+'</span></button>').join('');document.getElementById('scanOverlay').classList.add('open')}
+  function closeScan(){document.getElementById('scanOverlay').classList.remove('open')}
+  function nextLane(){for(let r=1;r<=4;r++){for(let n=1;n<=6;n++){const lane=r+'-'+n;if(!items.some(it=>it.lane===lane))return{row:r,lane:lane}}}return{row:4,lane:'4-9'}}
+  function addScanned(p){closeScan();closeOverlay('addOverlay');const exist=items.find(it=>it.code===p.code);if(exist){openEdit(exist.id);toast(p.name+' 已在补货列表中');return}const slot=nextLane();const item={id:Date.now(),code:p.code,name:p.name,row:slot.row,lane:slot.lane,base:0,cur:0,max:8};items.push(item);statusFilter='all';document.querySelectorAll('[data-status]').forEach(el=>el.classList.toggle('active',el.dataset.status==='all'));render();openEdit(item.id);toast('已上架 货道 '+slot.lane)}
+  function scanResult(code){const p=LIBRARY.find(x=>x.code===code);if(!p)return;const head='<div class="scn-prod"><span class="thumb"><i>'+initial(p)+'</i></span><div><div class="scn-prod-name">'+p.name+'</div><div class="scn-prod-code">'+p.code+'</div></div></div>';const body=p.state==='exists'?'<div class="scn-state ok"><span class="dot"></span>产品库已有 · 直接上架补货</div>':'<div class="scn-state warn"><span class="dot"></span>产品库中没有此商品</div><p class="scn-desc">售卖机按条码售卖，将直接建档并上架，无需等待后台完善。</p>';const sheet=document.getElementById('scanSheet');sheet.innerHTML='<div class="handle"></div>'+head+body+'<div class="scn-actions"><button class="btn btn-primary btn-block" id="scanAdd">上架并补货</button></div>';sheet.classList.add('show');document.getElementById('scanAdd').addEventListener('click',()=>addScanned(p))}
+  document.getElementById('scanBtn').addEventListener('click',openScan);
+  document.getElementById('scanClose').addEventListener('click',closeScan);
+  document.getElementById('scanTorch').addEventListener('click',()=>document.getElementById('scanTorch').classList.toggle('on'));
+  document.getElementById('scanCodes').addEventListener('click',event=>{const button=event.target.closest('[data-code]');if(button)scanResult(button.dataset.code)});
+  document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if(document.getElementById('scanOverlay').classList.contains('open')){closeScan();return}document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'))});document.getElementById('completeBtn').addEventListener('click',()=>{location.href='restock-done.html'});
+  // 支持 ?view=product 直达「按商品」，便于演示分享
+  var initView=new URLSearchParams(location.search).get('view');
+  if(initView==='product'||initView==='lane'){
+    viewMode=initView;
+    document.querySelectorAll('[data-view]').forEach(function(el){el.classList.toggle('active',el.dataset.view===initView)});
+  }
+  render();
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

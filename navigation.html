@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>VendSolution · Demo App 导航</title>
+<!--
+  Demo App 导航中枢（外包壳）
+  ---------------------------------------------------------------
+  用途：把工作区里已有的所有原型页串成一个可交互的 demo app。
+  编辑指引：
+    1. 页面清单在 <script> 里的 MENU 数组，按业务分组，直接增删改对象即可。
+       { label:"显示名", type:"page", href:"xxx.html" }  -> 在 iframe 中打开外部原型
+       { label:"显示名", type:"builtin", view:"home" }    -> 切换到内置视图 home/messages/common
+    2. 首页设备数据在 DEVICES 数组；消息在 MESSAGES 数组；常用在 COMMON 数组。
+    3. 品牌色见 :root 里的 --primary / --orange。
+    4. 单文件、零外部依赖，直接双击浏览器打开即可。
+-->
+<style>
+:root{
+  --primary:#2434C8;--primary-dark:#1D2BA9;--primary-tint:#E3E7FF;
+  --orange:#FF7A00;--orange-bg:#FFF7ED;--text:#0B102F;--text-2:#697095;
+  --text-3:#969BAF;--page:#FFFFFF;--surface-2:#F5F6F8;--border:#E8EAF0;
+  --success:#22C55E;--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:#E9EBF2;color:var(--text);-webkit-font-smoothing:antialiased}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);outline-offset:2px}
+
+/* 手机外框 */
+.app{position:relative;width:100%;max-width:390px;height:100dvh;min-height:640px;margin:0 auto;background:var(--page);overflow:hidden;display:flex;flex-direction:column}
+
+/* 状态栏 */
+.statusbar{height:30px;flex:0 0 30px;display:flex;align-items:center;justify-content:space-between;padding:4px 22px 0;font-size:12px;font-weight:700}
+.statusicons{display:flex;align-items:center;gap:5px}
+
+/* 视图 */
+.view{position:absolute;inset:30px 0 74px 0;display:none;flex-direction:column;background:#fff}
+.view.active{display:flex}
+
+/* 顶部标题栏 */
+.header{flex:0 0 auto;padding:6px 16px 0;background:#fff}
+.topbar{height:52px;display:flex;align-items:center;gap:8px}
+.topbar h1{flex:1;font-size:23px;line-height:30px;font-weight:700;letter-spacing:-.3px}
+.header-actions{display:flex;align-items:center;gap:6px}
+.icon-button{position:relative;width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center}
+.icon-button:active{background:var(--surface-2)}
+.icon-button svg{width:23px;height:23px}
+.alert-badge{position:absolute;top:1px;right:-1px;min-width:18px;height:18px;padding:0 4px;border:2px solid #fff;border-radius:99px;background:var(--danger);color:#fff;font-size:10px;line-height:14px;font-weight:700;text-align:center}
+.scan-button{height:40px;padding:0 12px;border:0;border-radius:11px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;white-space:nowrap}
+.scan-button:active{background:var(--primary-dark)}
+.scan-button svg{width:19px;height:19px}
+
+/* 搜索 / 筛选 */
+.controls{padding:4px 16px 8px;flex:0 0 auto}
+.search{height:46px;padding:0 13px;border:1px solid transparent;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;gap:9px}
+.search:focus-within{border-color:var(--primary);background:#fff}
+.search svg{width:20px;height:20px;color:var(--text-2)}
+.search input{width:100%;min-width:0;height:44px;border:0;outline:0;background:transparent;color:var(--text);font-size:15px}
+.search input::placeholder{color:var(--text-2);opacity:1}
+.filters{height:36px;margin-top:6px;padding:3px;border-radius:10px;background:var(--surface-2);display:flex;gap:2px;overflow-x:auto}
+.filter{height:30px;flex:1;border:0;border-radius:8px;background:transparent;color:var(--text-2);font-size:12px;font-weight:500;white-space:nowrap}
+.filter.active{background:#fff;color:var(--primary);font-weight:600}
+
+/* 滚动区 */
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* 设备列表 */
+.device-row{min-height:98px;padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px;background:#fff;cursor:pointer}
+.device-row:active{background:#FAFAFC}
+.thumb{width:52px;height:60px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--primary);flex:0 0 auto}
+.thumb svg{width:30px;height:30px}
+.device-main{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.device-title{display:flex;align-items:center;gap:8px}
+.device-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;line-height:22px;font-weight:600}
+.connectivity{display:inline-flex;align-items:center;gap:4px;color:var(--text-2);font-size:12px;line-height:16px;white-space:nowrap}
+.connectivity .dot{width:6px;height:6px;border-radius:50%;background:var(--text-3)}
+.connectivity.online{color:#16803C}.connectivity.online .dot{background:var(--success)}
+.connectivity.offline{color:var(--text-3)}.connectivity.offline .dot{background:var(--text-3)}
+.device-meta,.last-restock{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2);font-size:13px;line-height:18px}
+.last-restock{font-size:12px;line-height:16px}
+.stock-line{display:flex;align-items:center;gap:9px}
+.stock-track{width:72px;height:5px;border-radius:99px;background:#ECEDF2;overflow:hidden}
+.stock-fill{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.stock-fill.low{background:var(--warn)}
+.stock-text{font-size:13px;line-height:18px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stock-text.low{color:var(--warn)}
+.device-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.restock-button{height:30px;margin:-4px 0;padding:0;border:0;background:transparent;color:var(--primary);font-size:13px;font-weight:600;white-space:nowrap}
+
+/* 消息 */
+.simple-header{flex:0 0 auto;padding:12px 20px 12px}
+.simple-header h1{font-size:26px;line-height:34px;font-weight:700;letter-spacing:-.4px}
+.message-list{border-top:1px solid var(--border)}
+.message{position:relative;width:100%;min-height:82px;padding:14px 20px;border:0;border-bottom:1px solid var(--border);background:#fff;text-align:left;display:block}
+.message:active{background:#FAFAFC}
+.message.unread{background:#FAFBFF}
+.message-top{display:flex;align-items:center;gap:8px}
+.message-title{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;line-height:22px;font-weight:600}
+.message-time{color:var(--text-2);font-size:12px;line-height:16px;white-space:nowrap}
+.message-body{display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2);font-size:13px;line-height:18px}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:0 0 auto}
+
+/* 常用 */
+.common-grid{padding:8px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.common-item{height:122px;padding:18px;border:0;border-radius:14px;background:var(--surface-2);color:var(--text);display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;text-align:left}
+.common-item:active{background:var(--primary-tint);color:var(--primary)}
+.common-icon{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center}
+.common-icon svg{width:23px;height:23px}
+.common-item strong{font-size:16px;line-height:22px;font-weight:600}
+
+/* 外部页面视图 */
+.pagebar{height:52px;flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:0 8px;border-bottom:1px solid var(--border);background:#fff}
+.pagebar .back{width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center}
+.pagebar .back:active{background:var(--surface-2)}
+.pagebar .back svg{width:23px;height:23px}
+.pagebar .title{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;font-weight:650}
+.pagebar .badge{font-size:11px;color:var(--text-3);background:var(--surface-2);padding:4px 8px;border-radius:99px;white-space:nowrap}
+.page-frame{flex:1;min-height:0;width:100%;border:0;background:#fff}
+
+/* 打开原型页时：隐藏外壳自己的状态栏与返回条，页面全屏显示自己的头部 */
+#pageView{inset:0 0 74px 0}
+.app.page-mode .statusbar{display:none}
+.app.page-mode .pagebar{display:none}
+
+/* 页面层级（对齐 Uber Eats / Shopify）
+   tab        一级目的地（首页 / 消息 / 常用 / 分区根）：保留底部 dock
+   focus      对象详情、单任务页：收起 dock，页面占满，靠页面自己的返回 + 唯一主 CTA
+   immersive  相机与执行中任务：再收掉手机框装饰，真正全屏 */
+.app[data-chrome="focus"] #pageView,
+.app[data-chrome="immersive"] #pageView{inset:0}
+.app[data-chrome="focus"] .navigation,
+.app[data-chrome="immersive"] .navigation{display:none}
+
+/* 底部 dock */
+.navigation{position:absolute;left:0;right:0;bottom:0;z-index:30;height:74px;padding:8px 14px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;pointer-events:none}
+.dock{height:58px;min-width:0;flex:1;padding:4px 6px;border:1px solid rgba(11,16,47,.06);border-radius:23px;background:#F4F4F5;box-shadow:0 4px 16px rgba(11,16,47,.07);display:flex;align-items:center;pointer-events:auto}
+.dock-button{position:relative;height:48px;min-width:0;flex:1;padding:0;border:0;border-radius:17px;background:transparent;color:#65676B;display:flex;align-items:center;justify-content:center;transition:background-color .14s ease,color .14s ease}
+.dock-button svg{width:24px;height:24px}
+.dock-button.active{background:var(--primary-tint);color:var(--primary)}
+.dock-button:active{background:#E8E9ED}
+.dock-button.active:active{background:var(--primary-tint)}
+.dock-unread{position:absolute;top:8px;right:17px;width:7px;height:7px;border:1.5px solid #F4F4F5;border-radius:50%;background:var(--brand)}
+.avatar-entry{width:54px;height:54px;padding:3px;border:1px solid rgba(11,16,47,.06);border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(11,16,47,.07);pointer-events:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.avatar-entry svg{width:100%;height:100%;border-radius:50%}
+
+/* 全屏菜单 */
+.fullscreen{position:absolute;inset:0;z-index:50;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .18s ease,transform .18s ease,visibility .18s ease}
+.fullscreen.open{opacity:1;visibility:visible;transform:translateY(0)}
+.menu-header{padding:max(10px,env(safe-area-inset-top)) 16px 8px;display:flex;align-items:center;justify-content:space-between;flex:0 0 auto}
+.menu-header h2{font-size:24px;line-height:32px;font-weight:700}
+.menu-tip{padding:0 20px 8px;color:var(--text-2);font-size:12px;line-height:18px;flex:0 0 auto}
+.menu-scroll{flex:1;min-height:0;overflow-y:auto;padding:4px 20px calc(28px + env(safe-area-inset-bottom))}
+.menu-group{margin-top:18px}
+.menu-group:first-child{margin-top:4px}
+.menu-group h3{margin-bottom:6px;color:var(--text-2);font-size:13px;line-height:18px;font-weight:600}
+.menu-item{width:100%;min-height:54px;padding:8px 0;border:0;border-bottom:1px solid var(--border);background:#fff;color:var(--text);display:flex;align-items:center;gap:13px;text-align:left}
+.menu-item:active{color:var(--primary)}
+.menu-item .mi-ico{width:22px;height:22px;color:var(--text-2);flex:0 0 auto}
+.menu-item span{flex:1;font-size:16px;line-height:22px;font-weight:500}
+.menu-item .chevron{width:18px;height:18px;color:var(--text-3)}
+
+/* toast */
+.toast{position:absolute;left:50%;bottom:92px;z-index:80;width:max-content;max-width:calc(100% - 40px);padding:11px 16px;border-radius:10px;background:var(--text);color:#fff;font-size:14px;line-height:20px;text-align:center;opacity:0;visibility:hidden;transform:translate(-50%,8px);transition:opacity .16s ease,transform .16s ease,visibility .16s ease}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+@media(min-width:600px){body{padding:20px 0}.app{height:844px;min-height:0;border-radius:24px;box-shadow:0 18px 60px rgba(20,20,20,.16)}}
+@media(max-height:740px){.device-row{min-height:92px}.topbar{height:48px}.navigation{height:68px;padding-top:6px}.dock{height:54px}.dock-button{height:44px}.avatar-entry{width:50px;height:50px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app" data-chrome="tab">
+
+  <div class="statusbar"><span>9:41</span><span class="statusicons"><span class="signal"><svg width="16" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg></span></span></div>
+
+  <!-- 首页：设备列表（内置） -->
+  <section class="view active" id="homeView" aria-label="首页设备列表">
+    <header class="header"><div class="topbar"><h1>首页</h1><div class="header-actions">
+      <button class="icon-button" type="button" data-page="alerts.html" aria-label="告警"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg><span class="alert-badge">3</span></button>
+      <button class="scan-button" type="button" data-page="scan.html" aria-label="扫码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 7V4a1 1 0 0 1 1-1h3M17 3h3a1 1 0 0 1 1 1v3M21 17v3a1 1 0 0 1-1 1h-3M7 21H4a1 1 0 0 1-1-1v-3M7 12h10"/></svg>扫码</button>
+    </div></div></header>
+    <section class="controls">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="deviceSearch" type="search" placeholder="设备名称、ID 或位置" aria-label="搜索设备"></div>
+      <div class="filters" id="filters"></div>
+    </section>
+    <div class="scroll"><div id="deviceList"></div></div>
+  </section>
+
+  <!-- 消息（内置） -->
+  <section class="view" id="messagesView" aria-label="消息">
+    <header class="simple-header"><h1>消息</h1></header>
+    <div class="scroll"><div class="message-list" id="messageList"></div></div>
+  </section>
+
+  <!-- 常用（内置） -->
+  <section class="view" id="commonView" aria-label="常用">
+    <header class="simple-header"><h1>常用</h1></header>
+    <div class="scroll"><div class="common-grid" id="commonGrid"></div></div>
+  </section>
+
+  <!-- 外部原型页视图 -->
+  <section class="view" id="pageView" aria-label="原型页面">
+    <div class="pagebar">
+      <button class="back" id="backButton" type="button" aria-label="返回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <span class="title" id="pageTitle">页面</span>
+      <span class="badge">原型页</span>
+    </div>
+    <iframe class="page-frame" id="pageFrame" title="原型页面" src="about:blank"></iframe>
+  </section>
+
+  <!-- 底部导航 -->
+  <nav class="navigation" aria-label="主导航">
+    <div class="dock">
+      <button class="dock-button active" type="button" data-view="home" aria-label="首页" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></button>
+      <button class="dock-button" type="button" data-view="messages" aria-label="消息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-4 3v-3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h5"/></svg><span class="dock-unread"></span></button>
+      <button class="dock-button" type="button" data-view="common" aria-label="常用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m20 13-7 7a2 2 0 0 1-2.8 0L4 13.8V4h9.8l6.2 6.2a2 2 0 0 1 0 2.8Z"/><circle cx="8.5" cy="8.5" r="1"/></svg></button>
+      <button class="dock-button" id="menuButton" type="button" aria-label="全部页面" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+    <button class="avatar-entry" id="profileButton" type="button" aria-label="我的"><svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="22" fill="#E3E7FF"/><circle cx="22" cy="17" r="7" fill="#2434C8"/><path d="M9 40c1.4-7.4 7-11 13-11s11.6 3.6 13 11" fill="#2434C8"/></svg></button>
+  </nav>
+
+  <!-- 全屏菜单：全部原型页 -->
+  <section class="fullscreen" id="fullMenu" aria-hidden="true" aria-label="全部页面">
+    <header class="menu-header"><h2>全部页面</h2><button class="icon-button" id="closeMenu" type="button" aria-label="关闭"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <p class="menu-tip">点选即可打开对应原型页 · 页面清单在源码 MENU 数组中编辑</p>
+    <div class="menu-scroll" id="menuContent"></div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var toastTimer, currentView="home", lastBuiltin="home", filter="all";
+
+  /* ---------- 编辑区 1：页面清单 ---------- */
+  var MENU=[
+    {title:"工作台",items:[
+      {label:"首页 · 设备列表",type:"builtin",view:"home"},
+      {label:"扫码识别设备",type:"page",href:"scan.html"},
+      {label:"消息",type:"builtin",view:"messages"},
+      {label:"常用",type:"builtin",view:"common"},
+      {label:"我的",type:"page",href:"my.html"}
+    ]},
+    {title:"登录 / 账户",items:[
+      {label:"登录（免密码演示）",type:"page",href:"login.html"},
+      {label:"我的",type:"page",href:"my.html"}
+    ]},
+    {title:"补货",items:[
+      {label:"开门柜单门 · 设备页",type:"page",href:"device-single-door.html"},
+      {label:"开门柜双门 · 设备页",type:"page",href:"device-double-door.html"},
+      {label:"咖啡机 · 设备页",type:"page",href:"device-coffee.html"},
+      {label:"售卖机 · 设备页",type:"page",href:"device-vending.html"},
+      {label:"售卖机 · 货道补货",type:"page",href:"vending-restock.html"},
+      {label:"库存盘点",type:"page",href:"inventory.html"},
+      {label:"补货 · 方案 C（基准）",type:"page",href:"cabinet-restock-c.html"},
+      {label:"补货 · 方案 A",type:"page",href:"cabinet-restock-a.html"},
+      {label:"补货 · 方案 B",type:"page",href:"cabinet-restock-b.html"},
+      {label:"补货列表（1:1）",type:"page",href:"restock-list.html"},
+      {label:"机器详情 · 中文",type:"page",href:"restock-door.html"},
+      {label:"补货表单",type:"page",href:"restock-form.html"},
+      {label:"补货完成",type:"page",href:"restock-done.html"}
+    ]},
+    {title:"告警 / 通知",items:[
+      {label:"告警列表",type:"page",href:"alerts.html"},
+      {label:"告警详情",type:"page",href:"alert-detail.html"},
+      {label:"通知中心",type:"page",href:"notifications.html"},
+      {label:"通知详情",type:"page",href:"notification-detail.html"}
+    ]},
+    {title:"维保工单",items:[
+      {label:"我的工单",type:"page",href:"app_workorder/tickets.html"},
+      {label:"待认领",type:"page",href:"app_workorder/ticket-claim.html"},
+      {label:"工单详情",type:"page",href:"app_workorder/ticket-detail.html"},
+      {label:"记录进展",type:"page",href:"app_workorder/ticket-progress.html"},
+      {label:"提交完工",type:"page",href:"app_workorder/ticket-complete.html"},
+      {label:"工单总览",type:"page",href:"app_workorder/index.html"}
+    ]},
+    {title:"经营 / 商品 / 设备",items:[
+      {label:"经营统计",type:"page",href:"stats.html"},
+      {label:"商品销量排行",type:"page",href:"rank-product.html"},
+      {label:"点位销量排行",type:"page",href:"rank-site.html"},
+      {label:"商品列表",type:"page",href:"products.html"},
+      {label:"商品详情",type:"page",href:"product-detail.html"},
+      {label:"设备列表",type:"page",href:"machines.html"}
+    ]},
+    {title:"设计工具",items:[
+      {label:"页面导航画廊",type:"page",href:"nav.html"},
+      {label:"设计规范",type:"page",href:"style-guide.html"},
+      {label:"App 复刻总览",type:"page",href:"figma-pixel.html"}
+    ]}
+  ];
+
+  /* ---------- 编辑区 2：内置数据 ---------- */
+  /* 6 台机器，type 决定跳转流程：
+     single-door 开门柜单门(补货进柜体页) | double-door 开门柜双门(左右门分别补货)
+     coffee 咖啡机(料仓) | vending 售卖机(严格货道)
+     connection 为列表筛选状态：online 在线 / offline 离线 / unknown 未知（无数据上报） */
+  var DEVICES=[
+    {id:"VM-1001",name:"机场 1 号柜",address:"曼谷机场 T1-A01",connection:"online",type:"single-door",typeLabel:"单门开门柜",stock:10,capacity:50,percent:20,last:"11-18 10:00",href:"device-single-door.html"},
+    {id:"VM-1004",name:"机场 3 号柜",address:"曼谷机场 T1 Gate 3",connection:"online",type:"double-door",typeLabel:"双门开门柜",stock:18,capacity:50,percent:36,last:"11-18 09:10",href:"device-double-door.html"},
+    {id:"CM-2001",name:"中央广场咖啡机",address:"Central Plaza 1F",connection:"online",type:"coffee",typeLabel:"咖啡机",stock:3,capacity:5,percent:60,last:"11-18 09:20",href:"device-coffee.html"},
+    {id:"VM-3001",name:"地铁站售卖机",address:"Metro Gate 2",connection:"online",type:"vending",typeLabel:"售卖机",stock:4,capacity:8,percent:50,last:"11-18 08:40",href:"device-vending.html"},
+    {id:"VM-1003",name:"办公楼大堂柜",address:"Tower B · 1F 大堂",connection:"offline",type:"single-door",typeLabel:"单门开门柜",stock:null,capacity:null,percent:null,last:"11-17 18:20",href:"device-single-door.html?id=VM-1003&name=办公楼大堂柜&status=offline"},
+    {id:"VM-3002",name:"商场西门售卖机",address:"Mall West Gate",connection:"unknown",type:"vending",typeLabel:"售卖机",stock:null,capacity:null,percent:null,last:null,href:"device-vending.html?id=VM-3002&name=商场西门售卖机&status=unknown"}
+  ];
+  var MESSAGES=[
+    {title:"机场 1 号柜库存不足",body:"VM-1001 · 当前库存 20%",time:"10:32",unread:true},
+    {title:"补货任务已完成",body:"商场西门柜 · 补货 18 件",time:"09:48",unread:true},
+    {title:"办公楼大堂柜离线",body:"VM-1003 · 离线 26 分钟",time:"08:15",unread:false},
+    {title:"新的维保工单",body:"WO-20261120-008 · 待处理",time:"昨天",unread:false}
+  ];
+  var COMMON=[
+    {key:"restock",label:"开始补货",href:"cabinet-restock-c.html"},
+    {key:"alerts",label:"告警中心",href:"alerts.html"},
+    {key:"tasks",label:"我的工单",href:"app_workorder/tickets.html"},
+    {key:"analytics",label:"经营分析",href:"stats.html"}
+  ];
+  var ICONS={
+    product:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>',
+    box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v13H3zM3 7l2-4h14l2 4M9 11h6"/></svg>',
+    alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+    chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+    wrench:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9Z"/></svg>',
+    user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+    gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>',
+    chevron:'<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m9 5 7 7-7 7"/></svg>'
+  };
+
+  function showToast(message){clearTimeout(toastTimer);$("toast").textContent=message;$("toast").classList.add("show");toastTimer=setTimeout(function(){$("toast").classList.remove("show")},2000)}
+
+  function renderFilters(){
+    var defs=[["online","在线"],["offline","离线"],["unknown","未知"],["all","全部"]];
+    $("filters").innerHTML=defs.map(function(d){return '<button class="filter'+(filter===d[0]?' active':'')+'" type="button" data-filter="'+d[0]+'">'+d[1]+'</button>'}).join('');
+  }
+  function stockHtml(d){
+    if(d.percent==null)return '<div class="stock-line"><span class="stock-track"></span><span class="stock-text">库存数据未上报</span></div>';
+    var low=d.percent<=20?' low':'';
+    return '<div class="stock-line"><span class="stock-track"><i class="stock-fill'+low+'" style="width:'+d.percent+'%"></i></span><span class="stock-text'+low+'">'+d.stock+'/'+d.capacity+' · '+d.percent+'%</span></div>';
+  }
+  var TYPE_ICONS={
+    "single-door":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M12 9v12"/></svg>',
+    "double-door":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M12 9v12"/></svg>',
+    "coffee":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z"/><path d="M17 9h1a3 3 0 0 1 0 6h-1M7 3v2M11 3v2"/></svg>',
+    "vending":'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/><circle cx="15.5" cy="15.5" r="1"/></svg>'
+  };
+  function renderDevices(){
+    var q=$("deviceSearch").value.trim().toLowerCase();
+    var list=DEVICES.filter(function(d){var inFilter=filter==='all'||d.connection===filter;return inFilter&&(!q||(d.name+' '+d.id+' '+d.address).toLowerCase().indexOf(q)>=0)});
+    $("deviceList").innerHTML=list.map(function(d){var icon=TYPE_ICONS[d.type]||TYPE_ICONS["single-door"],href=(d.href||'').replace(/&/g,'&amp;');return '<article class="device-row" data-open="'+href+'" role="button" tabindex="0"><div class="thumb">'+icon+'</div><div class="device-main"><div class="device-title"><span class="device-name">'+d.name+'</span><span class="connectivity '+d.connection+'"><i class="dot"></i>'+(d.connection==='online'?'在线':d.connection==='offline'?'离线':'未知')+'</span></div><div class="device-meta">'+d.typeLabel+' · ID '+d.id+'</div>'+stockHtml(d)+'<div class="device-bottom"><span class="last-restock">上次补货 '+(d.last||'—')+'</span><button class="restock-button" type="button" data-open="'+href+'">开始补货</button></div></div></article>'}).join('')||'<div style="padding:60px 20px;color:var(--text-2);text-align:center;font-size:14px">'+(q?'未找到设备':'该状态下暂无设备')+'</div>';
+  }
+  function renderMessages(){
+    $("messageList").innerHTML=MESSAGES.map(function(m){return '<button class="message'+(m.unread?' unread':'')+'" type="button" data-page="notification-detail.html"><span class="message-top">'+(m.unread?'<i class="unread-dot"></i>':'')+'<span class="message-title">'+m.title+'</span><span class="message-time">'+m.time+'</span></span><span class="message-body">'+m.body+'</span></button>'}).join('');
+  }
+  function renderCommon(){
+    $("commonGrid").innerHTML=COMMON.map(function(item){return '<button class="common-item" type="button" data-page="'+item.href+'"><span class="common-icon">'+ICONS[item.key]+'</span><strong>'+item.label+'</strong></button>'}).join('');
+  }
+  function renderMenu(){
+    $("menuContent").innerHTML=MENU.map(function(group){return '<section class="menu-group"><h3>'+group.title+'</h3>'+group.items.map(function(item){
+      var target=item.type==='builtin'?('data-view="'+item.view+'"'):('data-page="'+item.href+'"');
+      return '<button class="menu-item" type="button" '+target+'><span class="mi-ico">'+ICONS.home+'</span><span>'+item.label+'</span>'+ICONS.chevron+'</button>';
+    }).join('')+'</section>'}).join('');
+  }
+
+  /* 页面层级表：未列出的原型页一律按 focus 处理（详情页 / 单任务页收起 dock）
+     tab       分区根页，保留底部导航，用户随时能回首页
+     immersive 相机 / 执行中的补货与盘点，页面完全占满 */
+  var PAGE_CHROME={
+    'home.html':'tab',
+    'machines.html':'tab',
+    'products.html':'tab',
+    'stats.html':'tab',
+    'scan.html':'immersive',
+    'cabinet-restock-c.html':'immersive',
+    'vending-restock.html':'immersive',
+    'restock-form.html':'immersive',
+    'inventory.html':'immersive'
+  };
+  function chromeFor(href){
+    var key=String(href||'').split('?')[0].split('#')[0];
+    key=key.substring(key.lastIndexOf('/')+1);
+    return PAGE_CHROME[key]||'focus';
+  }
+  function applyChrome(level){
+    var app=document.querySelector('.app');
+    if(!app)return;
+    var next=(level==='tab'||level==='immersive')?level:'focus';
+    app.dataset.chrome=next;
+    /* 分区页（设备 / 商品 / 统计）从「全部」进入，dock 上把该入口标为当前位置 */
+    var menuBtn=$("menuButton");
+    if(menuBtn){
+      var inSection=next==='tab'&&currentView==='page';
+      menuBtn.classList.toggle('active',inSection);
+      if(inSection)menuBtn.setAttribute('aria-current','page');else menuBtn.removeAttribute('aria-current');
+    }
+  }
+
+  function switchView(name){
+    if(name!=='page'&&name!=='home'&&name!=='messages'&&name!=='common')return;
+    currentView=name;
+    if(name!=='page')lastBuiltin=name;
+    var app=document.querySelector('.app');
+    if(app)app.classList.toggle('page-mode',name==='page');
+    document.querySelectorAll('.view').forEach(function(view){view.classList.toggle('active',view.id===name+'View')});
+    document.querySelectorAll('[data-view]').forEach(function(button){
+      if(!button.classList.contains('menu-item')){
+        var active=button.dataset.view===name;
+        button.classList.toggle('active',active);
+        if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+      }
+    });
+    /* 回到内置 tab 视图时把 dock 要回来 */
+    if(name!=='page')applyChrome('tab');
+  }
+  /* 每次打开原型页都重建 iframe：历史栈从当前页重新开始，
+     页面内「返回」只会回上一页或请求回首页，不会串到之前打开过的其它页面 */
+  function bindPageFrame(frame){
+    frame.addEventListener('load',function(){
+      if(currentView!=='page')return;
+      var href='';
+      try{href=frame.contentWindow.location.href||''}catch(e){href=''}
+      if(href.indexOf('about:blank')===0){switchView(lastBuiltin||'home');return}
+      /* 页面内部跳转（分区页 → 详情页 / 补货执行页）时同步外壳层级，
+         否则从 tab 页下钻后 dock 会一直压在新页面上 */
+      applyChrome(chromeFor(href));
+    });
+  }
+  function mountPage(href){
+    var old=$("pageFrame");
+    var next=document.createElement('iframe');
+    next.id='pageFrame';
+    next.className=old.className;
+    next.title=old.title||'原型页面';
+    /* 扫码页需要相机权限，给 iframe 放开 camera */
+    next.setAttribute('allow','camera; microphone; fullscreen');
+    next.src=href;
+    old.parentNode.replaceChild(next,old);
+    bindPageFrame(next);
+    return next;
+  }
+  function openPage(href,title){
+    lastBuiltin=(currentView==='page')?lastBuiltin:currentView;
+    $("pageTitle").textContent=title||'原型页面';
+    mountPage(href);
+    switchView('page');
+    applyChrome(chromeFor(href));
+    closeMenu();
+  }
+  function goBack(){
+    $("pageFrame").src='about:blank';
+    switchView(lastBuiltin||'home');
+  }
+
+  /* 页面无历史（或已回到空白页）时，通过 postMessage 请求回到上一个内置视图，
+     避免把整个 App 套进 iframe */
+  window.addEventListener('message',function(event){
+    var type=event&&event.data&&event.data.type;
+    if(type==='app:home'){
+      switchView(lastBuiltin&&lastBuiltin!=='page'?lastBuiltin:'home');
+    }else if(type==='app:logout'){
+      location.href='login.html';
+    }
+  });
+  function openMenu(){$("fullMenu").classList.add('open');$("fullMenu").setAttribute('aria-hidden','false');$("menuButton").setAttribute('aria-expanded','true');setTimeout(function(){$("closeMenu").focus()},180)}
+  function closeMenu(){$("fullMenu").classList.remove('open');$("fullMenu").setAttribute('aria-hidden','true');$("menuButton").setAttribute('aria-expanded','false')}
+
+  /* 事件委托：视图切换 / 打开页面 / toast */
+  document.addEventListener('click',function(event){
+    var view=event.target.closest('[data-view]');
+    if(view){closeMenu();switchView(view.dataset.view);return}
+    var open=event.target.closest('[data-open]');
+    if(open){var openLabel=open.getAttribute('aria-label')||open.dataset.open.replace(/\.html$/,'');openPage(open.dataset.open,openLabel);return}
+    var page=event.target.closest('[data-page]');
+    if(page){var label=page.getAttribute('aria-label')||page.textContent.trim()||'原型页面';openPage(page.dataset.page,label);return}
+    var toast=event.target.closest('[data-toast]');
+    if(toast){showToast(toast.dataset.toast);return}
+    var filterBtn=event.target.closest('[data-filter]');
+    if(filterBtn){filter=filterBtn.dataset.filter;renderFilters();renderDevices();return}
+  });
+  $("menuButton").addEventListener('click',openMenu);
+  $("closeMenu").addEventListener('click',closeMenu);
+  $("fullMenu").addEventListener('click',function(event){if(event.target===$("fullMenu"))closeMenu()});
+  $("backButton").addEventListener('click',goBack);
+  $("profileButton").addEventListener('click',function(){openPage('my.html','我的')});
+  $("deviceSearch").addEventListener('input',renderDevices);
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'){if($("fullMenu").classList.contains('open'))closeMenu();else if(currentView==='page')goBack()}});
+
+  renderFilters();renderDevices();renderMessages();renderCommon();renderMenu();
+})();
+</script>
+</body>
+</html>

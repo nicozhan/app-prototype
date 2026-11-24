@@ -2,66 +2,268 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Login - Mobile App MVP 0.1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>登录 · VendSolution</title>
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Inter',sans-serif; background:#c9cddb; -webkit-font-smoothing:antialiased; }
-  .screen { position:relative; overflow:hidden; flex-shrink:0; }
+/* 登录页 · 页面前缀 lg- */
+.lg-body{display:flex;flex-direction:column;padding-top:8px}
+
+.lg-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;min-height:44px}
+.lg-logo{width:126px;height:auto;margin-top:2px}
+
+/* 语言选择器（相对定位，下拉层叠在内容之上） */
+.lg-lang{position:relative;flex:0 0 auto}
+.lg-langbtn{
+  height:36px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;
+  border-radius:999px;border:1px solid var(--brand-line);background:var(--surface);
+  color:var(--brand);font-size:12px;font-weight:600;white-space:nowrap
+}
+.lg-langbtn:active{background:var(--brand-weak)}
+.lg-langbtn svg{width:15px;height:15px}
+.lg-langbtn .arr{width:11px;height:11px;color:var(--text-3)}
+.lg-langmenu{
+  position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:172px;padding:5px;
+  display:none;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);
+  box-shadow:0 14px 34px rgba(11,16,47,.16)
+}
+.lg-langmenu.open{display:block}
+.lg-langitem{
+  width:100%;min-height:40px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border-radius:var(--r-sm);font-size:14px;color:var(--ink);text-align:left
+}
+.lg-langitem:hover{background:var(--surface-2)}
+.lg-langitem.on{color:var(--brand);font-weight:700;background:var(--brand-weak)}
+.lg-langitem .ck{width:15px;height:15px;flex:0 0 auto;visibility:hidden}
+.lg-langitem.on .ck{visibility:visible}
+
+.lg-main{margin:auto 0;padding:24px 0 12px}
+.lg-title{font-size:26px;line-height:34px;font-weight:800;letter-spacing:-.6px}
+.lg-sub{margin-top:4px;font-size:13px;line-height:19px;color:var(--text-2)}
+
+.lg-card{margin-top:18px}
+.lg-code{display:flex;align-items:center;gap:8px}
+.lg-code .input{flex:1;min-width:0}
+.lg-code-btn{
+  flex:0 0 auto;height:46px;padding:0 12px;border-radius:var(--r-ctl);
+  background:var(--brand-weak);color:var(--brand);font-size:13px;font-weight:700;white-space:nowrap
+}
+.lg-code-btn:active{background:var(--brand-line)}
+.lg-code-btn:disabled{background:var(--surface-2);color:var(--text-3);font-weight:600;cursor:not-allowed}
+
+.lg-remember{
+  margin-top:14px;min-height:32px;display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;color:var(--ink)
+}
+.lg-check{
+  width:20px;height:20px;flex:0 0 auto;border-radius:50%;background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center
+}
+.lg-check svg{width:12px;height:12px;visibility:visible}
+.lg-remember[aria-pressed="false"] .lg-check{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line);color:transparent}
+.lg-remember[aria-pressed="false"]{color:var(--text-2)}
+
+.lg-submit{margin-top:6px}
+
+.lg-legal{
+  margin-top:14px;text-align:center;font-size:12px;line-height:19px;color:var(--text-2);
+  text-wrap:pretty
+}
+.lg-legal b{font-weight:700;color:var(--brand)}
+.lg-version{
+  padding-top:24px;text-align:center;
+  font-size:11px;font-weight:600;letter-spacing:1.6px;color:var(--text-3)
+}
 </style>
 </head>
 <body>
-<div class="screen" style="width:393.00px;height:853.16px;background-color:rgb(238,242,255);"><div style="position:absolute;left:0.00px;top:0.00px;width:393.57px;height:853.16px;background-color:rgb(238,242,255);"><div style="position:absolute;left:24.00px;top:56.00px;width:345.57px;height:641.16px;"><div style="position:absolute;left:66.29px;top:0.00px;width:213.00px;height:104.00px;background-image:url('assets/n_1_9.png');background-size:cover;background-position:center;"></div>
-<div style="position:absolute;left:-0.02px;top:104.00px;width:345.61px;height:66.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:345.61px;height:38.00px;"><div style="position:absolute;left:113.30px;top:0.00px;width:119.00px;height:38.00px;font-family:'Inter',sans-serif;font-size:30.00px;font-weight:800;letter-spacing:-0.30px;line-height:37.50px;color:rgb(11,16,47);text-align:center;white-space:nowrap;overflow:visible;">欢迎回来 </div>
-</div>
-<div style="position:absolute;left:0.00px;top:38.00px;width:345.61px;height:28.00px;"><div style="position:absolute;left:67.80px;top:8.00px;width:210.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:20.00px;color:rgb(105,112,149);text-align:center;white-space:nowrap;overflow:visible;">登录后继续管理你的智能售卖业务</div>
-</div>
-</div>
-<div style="position:absolute;left:-0.21px;top:170.00px;width:346.00px;height:448.00px;"><div style="position:absolute;left:0.00px;top:36.00px;width:346.00px;height:83.98px;"><div style="position:absolute;left:0.00px;top:0.00px;width:346.00px;height:20.00px;"></div>
-<div style="position:absolute;left:0.00px;top:20.00px;width:346.00px;height:63.98px;"><div style="position:absolute;left:0.00px;top:8.00px;width:345.61px;height:55.98px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 1.27px rgba(36,52,200,0.14),0.00px 10.00px 28.00px 0.00px rgba(36,52,200,0.06);border-radius:16.00px;"><div style="position:absolute;left:17.27px;top:17.99px;width:20.00px;height:20.00px;overflow:hidden;"><img src="assets/n_1_21.png" style="position:absolute;left:1.67px;top:3.33px;width:16.66px;height:13.33px;display:block;" alt="">
-<img src="assets/n_1_22.png" style="position:absolute;left:1.67px;top:5.83px;width:16.66px;height:5.00px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:49.27px;top:15.99px;width:279.07px;height:24.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:2.00px;width:279.07px;height:20.00px;font-family:'Outfit',sans-serif;font-size:16.00px;font-weight:500;color:rgb(105,112,149);text-align:left;white-space:pre-wrap;overflow:visible;">Email</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:119.98px;width:345.61px;height:79.98px;"><div style="position:absolute;left:0.00px;top:16.00px;width:345.61px;height:63.98px;"><div style="position:absolute;left:0.00px;top:8.00px;width:345.61px;height:55.98px;background-color:rgb(255,255,255);box-shadow:inset 0 0 0 1.27px rgba(36,52,200,0.14),0.00px 10.00px 28.00px 0.00px rgba(36,52,200,0.06);border-radius:16.00px;"><div style="position:absolute;left:17.27px;top:17.99px;width:20.00px;height:20.00px;overflow:hidden;"><img src="assets/n_1_29.png" style="position:absolute;left:9.17px;top:12.50px;width:1.67px;height:1.67px;display:block;" alt="">
-<img src="assets/n_1_30.png" style="position:absolute;left:2.50px;top:8.33px;width:15.00px;height:10.00px;display:block;" alt="">
-<img src="assets/n_1_31.png" style="position:absolute;left:5.83px;top:1.67px;width:8.33px;height:6.67px;display:block;" alt="">
-</div>
-<div style="position:absolute;left:49.27px;top:15.99px;width:231.09px;height:24.00px;overflow:hidden;"><div style="position:absolute;left:0.00px;top:2.00px;width:231.09px;height:20.00px;font-family:'Outfit',sans-serif;font-size:16.00px;font-weight:500;color:rgb(105,112,149);text-align:left;white-space:pre-wrap;overflow:visible;">密码</div>
-</div>
-<div style="position:absolute;left:292.35px;top:10.00px;width:35.98px;height:35.98px;border-radius:9999px;"><div style="position:absolute;left:7.99px;top:7.99px;width:20.00px;height:20.00px;overflow:hidden;"><img src="assets/n_1_36.png" style="position:absolute;left:1.67px;top:4.17px;width:16.66px;height:11.66px;display:block;" alt="">
-<img src="assets/n_1_37.png" style="position:absolute;left:7.50px;top:7.50px;width:5.00px;height:5.00px;display:block;" alt="">
-</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:199.96px;width:345.61px;height:56.00px;"><div style="position:absolute;left:0.00px;top:20.00px;width:112.00px;height:20.00px;"><div style="position:absolute;left:0.00px;top:0.00px;width:20.00px;height:20.00px;background-color:rgb(36,52,200);box-shadow:0.00px 1.00px 2.00px -1.00px rgba(0,0,0,0.1),0.00px 1.00px 3.00px 0.00px rgba(0,0,0,0.1);border-radius:9999px;"><div style="position:absolute;left:3.00px;top:3.00px;width:13.99px;height:13.99px;overflow:hidden;"><img src="assets/n_1_42.png" style="position:absolute;left:2.33px;top:1.17px;width:9.32px;height:11.66px;display:block;" alt="">
-<img src="assets/n_1_43.png" style="position:absolute;left:5.24px;top:5.83px;width:3.50px;height:2.33px;display:block;" alt="">
-</div>
-</div>
-<div style="position:absolute;left:28.00px;top:0.00px;width:84.00px;height:20.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:600;line-height:20.00px;color:rgb(11,16,47);text-align:left;white-space:nowrap;overflow:visible;">记住登录状态</div>
-</div>
-<div style="position:absolute;left:275.61px;top:20.00px;width:70.00px;height:20.00px;"></div>
-</div>
-<div style="position:absolute;left:0.00px;top:255.96px;width:346.00px;height:75.97px;"><div style="position:absolute;left:0.00px;top:19.99px;width:345.61px;height:55.98px;background-color:rgb(36,52,200);box-shadow:0.00px 18.00px 44.00px 0.00px rgba(36,52,200,0.32);border-radius:16.00px;"><div style="position:absolute;left:156.79px;top:14.26px;width:32.00px;height:24.00px;font-family:'Inter',sans-serif;font-size:16.00px;font-weight:800;line-height:24.00px;color:rgb(255,255,255);text-align:center;white-space:nowrap;overflow:visible;">登录</div>
-</div>
-</div>
-</div>
-</div>
-<div style="position:absolute;left:24.00px;top:697.16px;width:345.57px;height:128.00px;"><div style="position:absolute;left:0.00px;top:32.00px;width:345.57px;height:48.00px;"><div style="position:absolute;left:44.80px;top:0.00px;width:255.98px;height:48.00px;"><div style="position:absolute;left:36.99px;top:0.00px;width:182.00px;height:48.00px;font-family:'Inter',sans-serif;font-size:14.00px;font-weight:400;line-height:24.00px;color:rgb(105,112,149);text-align:center;white-space:pre-wrap;overflow:visible;">登录即表示同意<span style="font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:24.00px;color:rgb(36,52,200);">《用户协议》
-</span>和<span style="font-family:'Inter',sans-serif;font-size:14.00px;font-weight:700;line-height:24.00px;color:rgb(36,52,200);">《隐私政策》</span></div>
-</div>
-</div>
-<div style="position:absolute;left:0.00px;top:80.00px;width:345.57px;height:48.00px;"><div style="position:absolute;left:122.79px;top:32.00px;width:100.00px;height:16.00px;font-family:'Inter',sans-serif;font-size:12.00px;font-weight:600;letter-spacing:2.16px;line-height:16.00px;color:rgb(105,112,149);text-align:center;white-space:nowrap;overflow:visible;">Version 0.1.0</div>
-</div>
-</div>
-</div>
-</div>
-</body></html>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <div class="body lg-body">
+
+    <div class="lg-top">
+      <img class="lg-logo" src="assets/n_1_9.png" alt="VendSolution">
+      <div class="lg-lang">
+        <button class="lg-langbtn" id="langBtn" type="button" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+          <span id="langLabel">简体中文</span>
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="lg-langmenu" id="langMenu" role="menu">
+          <button class="lg-langitem" type="button" role="menuitem" data-code="zh"><span>简体中文</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="lg-langitem" type="button" role="menuitem" data-code="zhHant"><span>繁體中文</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="lg-langitem" type="button" role="menuitem" data-code="en"><span>English</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="lg-langitem" type="button" role="menuitem" data-code="vi"><span>Tiếng Việt</span><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg-main">
+    <h1 class="lg-title" id="t-welcome">欢迎回来</h1>
+    <p class="lg-sub" id="t-subtitle">登录后继续管理你的智能售卖业务</p>
+
+    <section class="card lg-card">
+      <div class="card-body">
+        <label class="field" for="account">
+          <span class="field-label" id="t-email">账号 / 邮箱</span>
+          <input class="input" id="account" type="text" autocomplete="username" placeholder="请输入账号或邮箱">
+        </label>
+        <label class="field" for="code">
+          <span class="field-label" id="t-code">验证码</span>
+          <div class="lg-code">
+            <input class="input" id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 位验证码">
+            <button class="lg-code-btn" id="sendCode" type="button">获取验证码</button>
+          </div>
+        </label>
+        <button class="lg-remember" id="remember" type="button" aria-pressed="true">
+          <span class="lg-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span id="t-remember">记住登录状态</span>
+        </button>
+      </div>
+    </section>
+
+    <button class="btn btn-primary btn-block lg-submit" id="signin" type="button"><span id="t-signin">登录</span></button>
+
+    <p class="lg-legal" id="t-agree">登录即表示同意<b>《用户协议》</b>和<b>《隐私政策》</b></p>
+
+    <div class="lg-version">Version 0.1.0</div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</main>
+
+<script>
+(function(){
+  var I18N = {
+    zh:{ welcome:'欢迎回来', subtitle:'登录后继续管理你的智能售卖业务', email:'账号 / 邮箱', code:'验证码',
+         phAccount:'请输入账号或邮箱', phCode:'6 位验证码', send:'获取验证码', resend:'重新获取',
+         remember:'记住登录状态', signin:'登录',
+         agree:'登录即表示同意<b>《用户协议》</b>和<b>《隐私政策》</b>',
+         needAccount:'请输入账号或邮箱', needCode:'请输入验证码', sent:'验证码已发送',
+         sending:'秒后重发' },
+    zhHant:{ welcome:'歡迎回來', subtitle:'登入後繼續管理你的智慧販售業務', email:'帳號 / 電子郵件', code:'驗證碼',
+         phAccount:'請輸入帳號或電子郵件', phCode:'6 位驗證碼', send:'取得驗證碼', resend:'重新取得',
+         remember:'記住登入狀態', signin:'登入',
+         agree:'登入即表示同意<b>《使用者條款》</b>和<b>《隱私政策》</b>',
+         needAccount:'請輸入帳號或電子郵件', needCode:'請輸入驗證碼', sent:'驗證碼已發送',
+         sending:'秒後重發' },
+    en:{ welcome:'Welcome back', subtitle:'Log in to continue managing your smart vending business', email:'Account / Email', code:'Verification code',
+         phAccount:'Enter account or email', phCode:'6-digit code', send:'Get code', resend:'Resend',
+         remember:'Remember me', signin:'Sign in',
+         agree:'By logging in, you agree to the <b>Terms of Service</b> and <b>Privacy Policy</b>',
+         needAccount:'Enter your account or email', needCode:'Enter the verification code', sent:'Code sent',
+         sending:'s to resend' },
+    vi:{ welcome:'Chào mừng trở lại', subtitle:'Đăng nhập để tiếp tục quản lý kinh doanh bán hàng tự động thông minh', email:'Tài khoản / Email', code:'Mã xác minh',
+         phAccount:'Nhập tài khoản hoặc email', phCode:'Mã 6 chữ số', send:'Lấy mã', resend:'Gửi lại',
+         remember:'Ghi nhớ đăng nhập', signin:'Đăng nhập',
+         agree:'Bằng việc đăng nhập, bạn đồng ý với <b>Điều khoản dịch vụ</b> và <b>Chính sách bảo mật</b>',
+         needAccount:'Nhập tài khoản hoặc email', needCode:'Nhập mã xác minh', sent:'Đã gửi mã',
+         sending:'giây để gửi lại' }
+  };
+  var NAMES    = { zh:'简体中文', zhHant:'繁體中文', en:'English', vi:'Tiếng Việt' };
+  var HTMLLANG = { zh:'zh-CN', zhHant:'zh-Hant', en:'en', vi:'vi' };
+  var TITLES   = { zh:'登录 · VendSolution', zhHant:'登入 · VendSolution', en:'Login · VendSolution', vi:'Đăng nhập · VendSolution' };
+
+  var lang = localStorage.getItem('vs_lang') || 'zh';
+  if(!I18N[lang]) lang = 'zh';
+
+  var el = function(id){ return document.getElementById(id); };
+  var account = el('account'), code = el('code'), sendBtn = el('sendCode');
+  var countdown = 0, timer = null;
+
+  function apply(next){
+    var d = I18N[next];
+    lang = next;
+    el('t-welcome').textContent  = d.welcome;
+    el('t-subtitle').textContent = d.subtitle;
+    el('t-email').textContent    = d.email;
+    el('t-code').textContent     = d.code;
+    el('t-remember').textContent = d.remember;
+    el('t-signin').textContent   = d.signin;
+    el('t-agree').innerHTML      = d.agree;
+    account.placeholder = d.phAccount;
+    code.placeholder    = d.phCode;
+    sendBtn.textContent = countdown > 0 ? countdown + d.sending : d.send;
+    document.documentElement.lang = HTMLLANG[next];
+    document.title = TITLES[next];
+    el('langLabel').textContent = NAMES[next];
+    Array.prototype.forEach.call(document.querySelectorAll('.lg-langitem'), function(it){
+      it.classList.toggle('on', it.dataset.code === next);
+    });
+    el('langMenu').classList.remove('open');
+    el('langBtn').setAttribute('aria-expanded','false');
+    localStorage.setItem('vs_lang', next);
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 1800);
+  }
+
+  /* 语言切换 */
+  el('langBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    var m = el('langMenu');
+    var open = m.classList.toggle('open');
+    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  el('langMenu').addEventListener('click', function(e){
+    var it = e.target.closest('.lg-langitem');
+    if(!it) return;
+    apply(it.dataset.code);
+  });
+  document.addEventListener('click', function(){
+    el('langMenu').classList.remove('open');
+    el('langBtn').setAttribute('aria-expanded','false');
+  });
+
+  /* 验证码：免密码登录 */
+  sendBtn.addEventListener('click', function(){
+    if(countdown > 0) return;
+    countdown = 60;
+    sendBtn.disabled = true;
+    sendBtn.textContent = countdown + I18N[lang].sending;
+    toast(I18N[lang].sent);
+    timer = setInterval(function(){
+      countdown--;
+      if(countdown <= 0){
+        clearInterval(timer); timer = null; countdown = 0;
+        sendBtn.disabled = false;
+        sendBtn.textContent = I18N[lang].resend;
+      }else{
+        sendBtn.textContent = countdown + I18N[lang].sending;
+      }
+    }, 1000);
+  });
+
+  /* 记住登录状态 */
+  var remember = el('remember');
+  remember.addEventListener('click', function(){
+    var on = remember.getAttribute('aria-pressed') === 'true';
+    remember.setAttribute('aria-pressed', on ? 'false' : 'true');
+  });
+
+  /* 登录 */
+  el('signin').addEventListener('click', function(){
+    var acc = account.value.trim(), vc = code.value.trim();
+    if(!acc){ toast(I18N[lang].needAccount); account.focus(); return; }
+    if(vc.length < 4){ toast(I18N[lang].needCode); code.focus(); return; }
+    location.href = 'navigation.html';
+  });
+  code.addEventListener('keydown', function(e){ if(e.key === 'Enter') el('signin').click(); });
+
+  apply(lang);
+})();
+</script>
+</body>
+</html>

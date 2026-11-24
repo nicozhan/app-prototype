@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>库存盘点</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 库存盘点 · 页面前缀 iv- */
+.iv-dev{font-size:11px;line-height:16px;font-weight:700;color:var(--text-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.iv-mode{flex:0 0 auto;margin:12px 16px 10px}
+
+.iv-scroll{flex:1;min-height:0;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch}
+.iv-card{overflow:hidden}
+.iv-card .sec-title{padding:11px 14px 6px}
+
+/* 库存行 */
+.iv-row{
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;
+  padding:11px 14px;border-bottom:1px solid var(--line)
+}
+.iv-row:last-child{border-bottom:0}
+.iv-row .thumb{width:44px;height:44px}
+.iv-main{min-width:0;display:block}
+.iv-name{display:block;font-size:15px;line-height:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-meta{display:block;margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-side{display:flex;align-items:center;gap:6px}
+
+.iv-editor{
+  display:flex;align-items:center;overflow:hidden;
+  border:1px solid var(--line);border-radius:10px
+}
+.iv-editor button{
+  width:28px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-weak);color:var(--brand);font-size:17px;font-weight:600
+}
+.iv-editor button:active{background:var(--brand-line)}
+.iv-editor input{
+  width:40px;height:34px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);
+  background:var(--surface);text-align:center;font-size:14px;font-weight:700;
+  color:var(--ink);outline:0;font-variant-numeric:tabular-nums
+}
+
+.iv-diff{
+  min-width:46px;height:24px;padding:0 8px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;font-variant-numeric:tabular-nums
+}
+.iv-diff.up{background:var(--warn-bg);color:var(--warn)}
+.iv-diff.down{background:var(--ok-bg);color:var(--ok)}
+.iv-diff.zero{background:var(--surface-2);color:var(--text-3)}
+
+/* 记录 */
+.iv-rec{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.iv-rec:last-child{border-bottom:0}
+.iv-rec-badge{
+  width:40px;height:40px;flex:0 0 auto;border-radius:12px;
+  display:flex;align-items:center;justify-content:center
+}
+.iv-rec-badge.restock{background:var(--brand-weak);color:var(--brand)}
+.iv-rec-badge.count{background:var(--ok-bg);color:var(--ok)}
+.iv-rec-main{flex:1;min-width:0}
+.iv-rec-title{display:block;font-size:15px;line-height:21px;font-weight:600}
+.iv-rec-sub{display:block;margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2)}
+.iv-rec-side{flex:0 0 auto;text-align:right}
+.iv-rec-time{display:block;font-size:11px;line-height:16px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.iv-rec-tag{
+  display:inline-block;margin-top:3px;height:20px;padding:0 8px;border-radius:999px;
+  font-size:10px;line-height:20px;font-weight:700
+}
+.iv-rec-tag.restock{background:var(--brand-weak);color:var(--brand)}
+.iv-rec-tag.count{background:var(--ok-bg);color:var(--ok)}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left">
+      <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+    </span>
+    <h1>库存盘点</h1>
+    <span class="nav-right"><span class="iv-dev" id="deviceLabel"></span></span>
+  </header>
+
+  <div class="segmented iv-mode" id="mode"><button class="active" data-mode="count">盘点</button><button data-mode="record">记录</button></div>
+
+  <div class="iv-scroll"><div class="card iv-card" id="listWrap"></div></div>
+
+  <footer class="footer"><button class="btn btn-primary btn-block" id="submitBtn" disabled>保存盘点结果</button></footer>
+
+  <div class="toast" id="toast" role="status"></div>
+</main>
+<script>
+(function(){
+  const imagePath='jpgk-platform/mobile/src/static/replenishment/';
+  const device=new URLSearchParams(location.search).get('device')||'VM-1001';
+  document.getElementById('deviceLabel').textContent=device;
+  // 库存：sys 系统账面值，cur 实盘编辑值
+  let stock=[
+    {id:1,name:'可口可乐 330ml',slot:'1 层 A1',sys:2,cur:2,max:10,img:imagePath+'product-1.png'},
+    {id:2,name:'雪碧 330ml',slot:'1 层 A2',sys:4,cur:4,max:10,img:imagePath+'product-2.png'},
+    {id:3,name:'红牛 250ml',slot:'2 层 B1',sys:0,cur:0,max:8,img:imagePath+'product-3.png'},
+    {id:4,name:'矿泉水 550ml',slot:'2 层 C2',sys:6,cur:6,max:15,img:imagePath+'product-4.png'},
+    {id:5,name:'乐事薯片 原味',slot:'3 层 A1',sys:5,cur:5,max:12,img:imagePath+'product-5.png'},
+    {id:6,name:'巧克力 50g',slot:'3 层 B2',sys:6,cur:6,max:10,img:imagePath+'product-6.png'}
+  ];
+  // 记录：type = restock(补货) | count(盘点)
+  let records=[
+    {type:'restock',title:'完成补货',sub:'补货 18 件 · 6 个商品',time:'11-18 10:05'},
+    {type:'count',title:'盘点完成',sub:'实盘 42 件 · 差异 3 件',time:'11-17 18:40'},
+    {type:'restock',title:'完成补货',sub:'补货 12 件 · 4 个商品',time:'11-16 09:15'},
+    {type:'count',title:'盘点完成',sub:'实盘 38 件 · 差异 0 件',time:'11-15 17:22'}
+  ];
+  let mode='count',toastTimer;
+  const listWrap=document.getElementById('listWrap');
+  function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+  function diffOf(item){return item.cur-item.sys}
+  function diffClass(item){const d=diffOf(item);return d>0?'up':d<0?'down':'zero'}
+  function diffText(item){const d=diffOf(item);return d>0?'+'+d:d<0?String(d):'0'}
+  function anyChanged(){return stock.some(item=>item.cur!==item.sys)}
+  function renderCount(){
+    if(!stock.length){listWrap.innerHTML='<div class="empty"><p>暂无库存数据</p></div>';return}
+    listWrap.innerHTML='<div class="sec-title">实盘数量（'+stock.length+' 个商品）</div>'+stock.map(item=>{
+      return '<div class="iv-row"><span class="thumb"><img src="'+item.img+'" alt=""></span><span class="iv-main"><span class="iv-name">'+item.name+'</span><span class="iv-meta">'+item.slot+' · 账面 '+item.sys+'</span></span><span class="iv-side"><span class="iv-editor"><button data-dec="'+item.id+'" aria-label="减少">−</button><input data-input="'+item.id+'" type="text" inputmode="numeric" value="'+item.cur+'" aria-label="实盘数量"><button data-inc="'+item.id+'" aria-label="增加">+</button></span><span class="iv-diff '+diffClass(item)+'">'+diffText(item)+'</span></span></div>';
+    }).join('');
+  }
+  function renderRecords(){
+    if(!records.length){listWrap.innerHTML='<div class="empty"><p>暂无记录</p></div>';return}
+    listWrap.innerHTML=records.map(r=>{
+      const ico=r.type==='restock'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>':'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5M14 11v5"/></svg>';
+      const label=r.type==='restock'?'补货':'盘点';
+      return '<div class="iv-rec"><span class="iv-rec-badge '+r.type+'">'+ico+'</span><span class="iv-rec-main"><span class="iv-rec-title">'+r.title+'</span><span class="iv-rec-sub">'+r.sub+'</span></span><span class="iv-rec-side"><span class="iv-rec-time">'+r.time+'</span><span class="iv-rec-tag '+r.type+'">'+label+'</span></span></div>';
+    }).join('');
+  }
+  function render(){if(mode==='count'){renderCount();document.getElementById('submitBtn').style.display='';}else{renderRecords();document.getElementById('submitBtn').style.display='none';}document.getElementById('submitBtn').disabled=!anyChanged()}
+  document.getElementById('mode').addEventListener('click',event=>{const b=event.target.closest('[data-mode]');if(!b)return;mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(el=>el.classList.toggle('active',el===b));render()});
+  listWrap.addEventListener('click',event=>{
+    const inc=event.target.closest('[data-inc]'),dec=event.target.closest('[data-dec]');
+    if(!inc&&!dec)return;
+    const id=Number((inc||dec).dataset[inc?'inc':'dec']),item=stock.find(x=>x.id===id);
+    if(inc)item.cur=Math.min(item.max,item.cur+1);else item.cur=Math.max(0,item.cur-1);
+    render();
+  });
+  listWrap.addEventListener('input',event=>{
+    const input=event.target.closest('[data-input]');if(!input)return;
+    const id=Number(input.dataset.input),item=stock.find(x=>x.id===id);
+    const v=Math.max(0,Math.min(item.max,parseInt(input.value.replace(/\D/g,'')||'0',10)));
+    item.cur=v;render();
+  });
+  document.getElementById('submitBtn').addEventListener('click',function(){
+    let diffTotal=0,changed=0;stock.forEach(item=>{const d=diffOf(item);if(d!==0){changed++;diffTotal+=d}});
+    const summary='实盘 '+stock.reduce((s,i)=>s+i.cur,0)+' 件 · 差异 '+(diffTotal>0?'+'+diffTotal:diffTotal)+' 件';
+    records.unshift({type:'count',title:'盘点完成',sub:summary,time:'刚刚'});
+    stock.forEach(item=>item.sys=item.cur);
+    toast('盘点已保存');
+    render();
+  });
+  render();
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

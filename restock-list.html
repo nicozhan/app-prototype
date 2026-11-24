@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>Restocking · VendSolution</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+.rl-back{
+  display:inline-flex;align-items:center;gap:2px;height:44px;padding:0 2px;
+  font-size:14px;font-weight:600;color:var(--brand);white-space:nowrap
+}
+
+/* 机器头 */
+.rl-head{padding:2px 2px 0}
+.rl-code-row{display:flex;align-items:center;gap:8px;min-height:18px}
+.rl-code{font-size:12px;line-height:16px;font-weight:700;letter-spacing:2.8px;color:var(--brand)}
+.rl-name{margin-top:3px;font-size:22px;line-height:30px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+.rl-sub{margin-top:2px;font-size:13px;line-height:19px;font-weight:600;color:var(--text-2)}
+.rl-sub.tight{margin-top:0;font-size:14px;line-height:20px;font-weight:700}
+
+/* 料仓卡 */
+.rl-list{margin-top:10px;display:flex;flex-direction:column;gap:10px}
+.rl-card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:11px 14px 0
+}
+.rl-hop{font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.6px;color:var(--brand)}
+.rl-main{display:flex;align-items:center;gap:11px;padding:8px 14px 0}
+.rl-info{flex:1;min-width:0}
+.rl-pname{
+  display:block;font-size:15px;line-height:21px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.rl-stock{
+  display:block;margin-top:1px;font-size:12px;line-height:17px;color:var(--text-2);
+  font-variant-numeric:tabular-nums;white-space:nowrap
+}
+.rl-add{
+  width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);background:var(--brand-weak);color:var(--brand)
+}
+.rl-add:active{background:var(--brand);color:#fff}
+
+/* 液位条 */
+.rl-bar{
+  height:8px;margin:10px 14px 13px;border-radius:999px;background:var(--surface-3);overflow:hidden
+}
+.rl-bar i{display:block;height:100%;border-radius:999px;background:var(--ok)}
+.rl-bar i.low{background:var(--warn)}
+.rl-bar i.out{background:var(--danger)}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left"><a class="rl-back" href="device-double-door.html" title="返回机器详情" onclick="return appBack(event)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</a></span>
+    <h1>Restocking</h1>
+    <span class="nav-right"><span class="icon-btn" aria-hidden="true" style="color:var(--brand)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span></span>
+  </header>
+
+  <div class="body">
+
+    <section class="rl-head">
+      <div class="rl-code-row">
+        <span class="rl-code">VM-1001</span>
+        <span id="doorTag"></span>
+      </div>
+      <h2 class="rl-name">T1 Gate 2  Pitt</h2>
+      <div class="rl-sub">ID: VM-1001</div>
+      <div class="rl-sub tight">Last restocked: 25 Jun 14:30</div>
+    </section>
+
+    <section class="stats mt-12" aria-label="Restocking overview">
+      <div class="stat primary">
+        <div class="stat-label">To Restock</div>
+        <div class="stat-value">6<small>Products</small></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Estimated</div>
+        <div class="stat-value">42<small>Items</small></div>
+      </div>
+    </section>
+
+    <div class="rl-list">
+
+      <section class="card">
+        <div class="rl-card-head">
+          <span class="rl-hop">HOPPER #1</span>
+          <span class="badge danger">OUT OF STOCK</span>
+        </div>
+        <div class="rl-main">
+          <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3)"><path d="M6 8h12l-1 11.2a1.8 1.8 0 0 1-1.8 1.8H8.8A1.8 1.8 0 0 1 7 19.2L6 8Z"/><path d="M8.5 8V6.2A3.5 3.5 0 0 1 12 2.7a3.5 3.5 0 0 1 3.5 3.5V8"/><path d="M6.6 12.5h10.8"/></svg></span>
+          <div class="rl-info">
+            <span class="rl-pname">奶茶粉</span>
+            <span class="rl-stock">Stock: 0/2000 ml</span>
+          </div>
+          <a class="rl-add" href="restock-form.html" title="补货" aria-label="补货 奶茶粉"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></a>
+        </div>
+        <div class="rl-bar" aria-hidden="true"><i class="out" style="width:0%"></i></div>
+      </section>
+
+      <section class="card">
+        <div class="rl-card-head">
+          <span class="rl-hop">HOPPER #2</span>
+          <span class="badge warn">低</span>
+        </div>
+        <div class="rl-main">
+          <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3)"><ellipse cx="12" cy="12" rx="6.4" ry="8.6" transform="rotate(35 12 12)"/><path d="M8.6 14.2c2.4-.4 4.4-2 5-4.4"/></svg></span>
+          <div class="rl-info">
+            <span class="rl-pname">咖啡豆1埃塞</span>
+            <span class="rl-stock">Stock: 150/2000 g</span>
+          </div>
+          <a class="rl-add" href="restock-form.html" title="补货" aria-label="补货 咖啡豆1埃塞"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></a>
+        </div>
+        <div class="rl-bar" aria-hidden="true"><i class="low" style="width:8%"></i></div>
+      </section>
+
+      <section class="card">
+        <div class="rl-card-head">
+          <span class="rl-hop">HOPPER #3</span>
+        </div>
+        <div class="rl-main">
+          <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3)"><ellipse cx="12" cy="12" rx="6.4" ry="8.6" transform="rotate(35 12 12)"/><path d="M8.6 14.2c2.4-.4 4.4-2 5-4.4"/></svg></span>
+          <div class="rl-info">
+            <span class="rl-pname">咖啡豆2云拿</span>
+            <span class="rl-stock">Stock: 1590/2000 g</span>
+          </div>
+          <a class="rl-add" href="restock-form.html" title="补货" aria-label="补货 咖啡豆2云拿"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></a>
+        </div>
+        <div class="rl-bar" aria-hidden="true"><i style="width:80%"></i></div>
+      </section>
+
+      <section class="card">
+        <div class="rl-card-head">
+          <span class="rl-hop">HOPPER #4</span>
+        </div>
+        <div class="rl-main">
+          <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3)"><path d="M6 8h12l-1 11.2a1.8 1.8 0 0 1-1.8 1.8H8.8A1.8 1.8 0 0 1 7 19.2L6 8Z"/><path d="M8.5 8V6.2A3.5 3.5 0 0 1 12 2.7a3.5 3.5 0 0 1 3.5 3.5V8"/><path d="M6.6 12.5h10.8"/></svg></span>
+          <div class="rl-info">
+            <span class="rl-pname">可可粉</span>
+            <span class="rl-stock">Stock: 2000/2000 g</span>
+          </div>
+          <a class="rl-add" href="restock-form.html" title="补货" aria-label="补货 可可粉"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></a>
+        </div>
+        <div class="rl-bar" aria-hidden="true"><i style="width:100%"></i></div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <a class="btn btn-primary btn-block" href="restock-form.html">完成</a>
+  </footer>
+
+</main>
+<script>
+(function(){
+  var m = location.search.match(/[?&]door=(left|right)(?:&|$)/);
+  if(!m) return;                 /* 无 door 参数时不显示门标签 */
+  var door = m[1], q = '?door=' + door;
+  var tag = document.getElementById('doorTag');
+  tag.className = 'badge brand';
+  tag.textContent = door === 'left' ? '左门' : '右门';
+  document.querySelectorAll('a[href="restock-form.html"]').forEach(function(a){
+    a.setAttribute('href', 'restock-form.html' + q);
+  });
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

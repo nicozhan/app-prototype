@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>设备详情 · 售卖机</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 售卖机 · 页面前缀 vd- */
+.vd-device{padding:2px 0 10px}
+.vd-device-name{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.4px}
+.vd-device-id{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.vd-tags{display:flex;gap:6px;margin-top:8px}
+.vd-stats{margin-bottom:8px}
+
+/* 货道示意 */
+.vd-vm{
+  position:relative;height:214px;padding:14px 18px;overflow:hidden;
+  border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(180deg,var(--surface-2),var(--surface-3))
+}
+.vd-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:8px;height:100%}
+.vd-lane{
+  position:relative;padding:5px 3px;border:1px solid var(--line);border-radius:8px;
+  background:var(--surface);display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;overflow:hidden
+}
+.vd-lane.is-empty{border-style:dashed;background:transparent}
+.vd-fill{position:absolute;left:0;bottom:0;width:100%;background:var(--brand-weak)}
+.vd-lane-no{position:relative;z-index:1;margin-bottom:1px;font-size:11px;font-weight:700;color:var(--text-2)}
+.vd-qty{position:relative;z-index:1;font-size:12px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+.vd-lane.is-empty .vd-qty{color:var(--text-3)}
+.vd-note{margin-top:8px;font-size:12px;line-height:17px;color:var(--text-2)}
+
+/* 状态值 */
+.vd-ok{color:var(--ok)}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left">
+      <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+    </span>
+    <h1>设备详情</h1>
+    <span class="nav-right">
+      <button class="icon-btn" id="inventoryBtn" aria-label="盘点"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5M14 11v5"/></svg></button>
+    </span>
+  </header>
+
+  <div class="body">
+    <section class="vd-device">
+      <div class="vd-device-name" data-device-name>地铁站售卖机</div>
+      <div class="vd-device-id"><span data-device-id>VM-3001</span> · 售卖机</div>
+      <div class="vd-tags"><span class="badge ok" data-conn-badge><span class="dot ok"></span>在线</span><span class="badge">售卖机</span></div>
+    </section>
+
+    <section class="stats vd-stats" aria-label="补货统计">
+      <div class="stat primary"><div class="stat-label">待补货道</div><div class="stat-value">5</div></div>
+      <div class="stat"><div class="stat-label">预计补货 / 件</div><div class="stat-value">31</div></div>
+    </section>
+
+    <section class="card" aria-label="货道示意">
+      <div class="card-head"><h2 class="card-title">货道示意</h2></div>
+      <div class="card-body">
+        <div class="vd-vm"><div class="vd-grid">
+          <div class="vd-lane"><div class="vd-fill" style="height:100%"></div><span class="vd-lane-no">1-1</span><span class="vd-qty">8</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:50%"></div><span class="vd-lane-no">1-2</span><span class="vd-qty">4</span></div>
+          <div class="vd-lane is-empty"><span class="vd-lane-no">1-3</span><span class="vd-qty">—</span></div>
+          <div class="vd-lane is-empty"><span class="vd-lane-no">1-4</span><span class="vd-qty">—</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:0"></div><span class="vd-lane-no">2-1</span><span class="vd-qty">0</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:100%"></div><span class="vd-lane-no">2-2</span><span class="vd-qty">8</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:50%"></div><span class="vd-lane-no">2-3</span><span class="vd-qty">6</span></div>
+          <div class="vd-lane is-empty"><span class="vd-lane-no">2-4</span><span class="vd-qty">—</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:12%"></div><span class="vd-lane-no">3-1</span><span class="vd-qty">1</span></div>
+          <div class="vd-lane is-empty"><span class="vd-lane-no">3-2</span><span class="vd-qty">—</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:100%"></div><span class="vd-lane-no">3-3</span><span class="vd-qty">10</span></div>
+          <div class="vd-lane"><div class="vd-fill" style="height:20%"></div><span class="vd-lane-no">3-4</span><span class="vd-qty">2</span></div>
+        </div></div>
+        <p class="vd-note">售卖机为严格货道概念，货道编号「行-列」，如 1-1(8)、3-4(2)。</p>
+      </div>
+    </section>
+
+    <section class="card" aria-label="设备状态">
+      <div class="card-head"><h2 class="card-title">设备状态</h2></div>
+      <div class="card-body">
+        <div class="rows">
+          <div class="row"><span class="row-k">在线状态</span><span class="row-v vd-ok" data-conn-value>在线</span></div>
+          <div class="row"><span class="row-k">门状态</span><span class="row-v" id="doorState">已关闭</span></div>
+          <div class="row"><span class="row-k">货道数量</span><span class="row-v">8 行 × 4 列</span></div>
+          <div class="row"><span class="row-k">上次补货</span><span class="row-v">2026-11-18 08:40</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="远程操作">
+      <div class="card-head"><h2 class="card-title">远程操作</h2></div>
+      <div class="card-body">
+        <div class="ops">
+          <button class="btn btn-secondary" type="button" data-unlock aria-haspopup="dialog" aria-controls="unlockSheet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>
+            <span data-unlock-label>开锁</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer"><button class="btn btn-primary btn-block" id="restockBtn">补货<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></footer>
+
+  <div class="overlay" id="unlockSheet" role="dialog" aria-modal="true" aria-labelledby="unlockTitle">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head">
+        <h2 id="unlockTitle">远程开锁</h2>
+        <button class="close" type="button" data-close aria-label="关闭">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <p class="sheet-note">确认后柜门可被打开，请确认设备周边安全后再继续。</p>
+        <div class="rows">
+          <div class="row"><span class="row-k">设备</span><span class="row-v">VM-3001 · 地铁站售卖机</span></div>
+          <div class="row"><span class="row-k">门状态</span><span class="row-v">已关闭</span></div>
+        </div>
+        <div class="sheet-btns">
+          <button class="btn btn-ghost" type="button" data-close>取消</button>
+          <button class="btn btn-primary" type="button" data-unlock-confirm>确认开锁</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+</main>
+<script>
+(function(){
+  document.getElementById('restockBtn').addEventListener('click',function(){location.href='vending-restock.html'});
+  document.getElementById('inventoryBtn').addEventListener('click',function(){location.href='inventory.html?device=VM-3001'});
+  document.addEventListener('DOMContentLoaded',function(){
+    if(window.appUnlock)appUnlock({buttons:'[data-unlock]',sheet:'unlockSheet',statusRow:'doorState',toast:'toast'});
+  });
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

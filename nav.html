@@ -2,158 +2,293 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=393, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
 <title>页面导航 · VendSolution</title>
-<link rel="stylesheet" href="vend.css">
+<link rel="stylesheet" href="app-ui.css">
 <style>
-  .navbody{ padding:14px 16px 40px; display:flex; flex-direction:column; gap:16px; }
-  .mod{ background:#fff; border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden; }
-  .mod-head{ display:flex; align-items:center; gap:11px; padding:14px 16px 12px; }
-  .mod-ico{ width:34px; height:34px; border-radius:10px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; }
-  .mod-ico svg{ width:18px; height:18px; }
-  .mod-ico.blue{ background:var(--bg); color:var(--blue); }
-  .mod-ico.orange{ background:var(--orange-bg); color:var(--orange); }
-  .mod-ico.green{ background:var(--green-bg); color:var(--green); }
-  .mod-ico.gray{ background:#EEF1F8; color:var(--gray); }
-  .mod-title{ font-size:15px; font-weight:700; }
-  .mod-count{ margin-left:auto; font-size:12px; font-weight:600; color:var(--gray);
-    background:#F1F3FA; padding:3px 9px; border-radius:999px; }
-  .mod-list{ border-top:1px solid var(--line); }
-  .nl{ display:flex; align-items:center; gap:12px; padding:12px 16px;
-    border-bottom:1px solid #F1F3FA; }
-  .nl:last-child{ border-bottom:none; }
-  .nl-name{ font-size:14px; font-weight:500; color:var(--ink); }
-  .nl-sub{ font-size:11px; color:var(--gray); margin-top:2px; }
-  .nl-go{ margin-left:auto; color:#C2C8DE; }
-  .nl-go svg{ width:16px; height:16px; }
-  .nl:hover{ background:var(--bg-soft); }
-  .hero .sub{ font-size:13px; opacity:.8; margin-top:4px; font-weight:500; }
+/* 页面导航 · 页面前缀 nv- */
+.nv-brand{font-size:10px;line-height:14px;font-weight:700;letter-spacing:2.2px;color:var(--brand)}
+.nv-sub{margin-top:3px;font-size:13px;line-height:19px;color:var(--text-2)}
+.nv-spec{margin-top:10px}
+
+.nv-first{margin-top:14px}
+.nv-mod+.nv-mod{margin-top:10px}
+.nv-h{display:flex;align-items:center;gap:9px;min-width:0}
+.nv-ico{
+  width:34px;height:34px;flex:0 0 auto;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--brand-weak);color:var(--brand)
+}
+.nv-ico.gray{background:var(--surface-2);color:var(--text-2)}
+.nv-ico.orange{background:var(--warn-bg);color:var(--orange)}
+.nv-ico.ok{background:var(--ok-bg);color:var(--ok)}
+.nv-ico svg{width:18px;height:18px}
+
+.nv-row .item-name,.nv-row .item-sub{white-space:normal;overflow:visible}
+.nv-row .item-sub{margin-top:3px;line-height:16px}
 </style>
 </head>
 <body>
-<div class="screen">
-  <div class="hero">
-    <div class="row1">
-      <div class="brand">VENDSOLUTION</div>
-      <div class="actions">
-        <button aria-label="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
-      </div>
-    </div>
-    <div class="pagetitle" style="cursor:default">页面导航</div>
-    <div class="sub">共 28 个手机页面 · 按业务模块分组</div>
-    <div style="margin-top:10px"><a href="DESIGN-SPEC.md" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);color:#fff;font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:999px">设计规范 · DESIGN-SPEC.md</a></div>
-  </div>
+<main class="app">
 
-  <div class="navbody">
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left"></span>
+    <h1>页面导航</h1>
+    <span class="nav-right">
+      <button class="icon-btn" type="button" aria-label="info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      </button>
+    </span>
+  </header>
+
+  <div class="body">
+
+    <div>
+      <div class="nv-brand">VENDSOLUTION</div>
+      <p class="nv-sub">共 30 个手机页面 · 按业务模块分组</p>
+      <a class="btn btn-ghost btn-sm nv-spec" href="DESIGN-SPEC.md">设计规范 · DESIGN-SPEC.md</a>
+    </div>
 
     <!-- 总览 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <div class="mod-title">总览 / 画廊</div>
-        <div class="mod-count">3</div>
+    <section class="card nv-mod nv-first">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+          <span class="card-title">总览 / 画廊</span>
+        </div>
+        <span class="badge">3</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="index.html"><div><div class="nl-name">App 1:1 复刻总览</div><div class="nl-sub">首页 iframe 画廊</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/index.html"><div><div class="nl-name">工单页面总览</div><div class="nl-sub">维修工单 iframe 画廊</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="style-guide.html"><div><div class="nl-name">设计标准 · C3 卡片</div><div class="nl-sub">新页面统一规范</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="figma-pixel.html">
+          <span class="item-body"><span class="item-name">App 1:1 复刻总览</span><span class="item-sub">首页 iframe 画廊</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/index.html">
+          <span class="item-body"><span class="item-name">工单页面总览</span><span class="item-sub">维修工单 iframe 画廊</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="style-guide.html">
+          <span class="item-body"><span class="item-name">设计标准 · C3 卡片</span><span class="item-sub">新页面统一规范</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 登录/账户 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
-        <div class="mod-title">登录 / 账户</div>
-        <div class="mod-count">2</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+          <span class="card-title">登录 / 账户</span>
+        </div>
+        <span class="badge">2</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="login.html"><div><div class="nl-name">登录</div><div class="nl-sub">login.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="my.html"><div><div class="nl-name">我的</div><div class="nl-sub">my.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="login.html">
+          <span class="item-body"><span class="item-name">登录</span><span class="item-sub">login.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="my.html">
+          <span class="item-body"><span class="item-name">我的</span><span class="item-sub">my.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 首页 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></div>
-        <div class="mod-title">首页</div>
-        <div class="mod-count">1</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
+          <span class="card-title">首页</span>
+        </div>
+        <span class="badge">1</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="home.html"><div><div class="nl-name">欢迎 / 首页</div><div class="nl-sub">home.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="home.html">
+          <span class="item-body"><span class="item-name">欢迎 / 首页</span><span class="item-sub">home.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 商品/设备/补货 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></div>
-        <div class="mod-title">商品 / 设备 / 补货</div>
-        <div class="mod-count">5</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
+          <span class="card-title">商品 / 设备 / 补货</span>
+        </div>
+        <span class="badge">10</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="products.html"><div><div class="nl-name">商品列表</div><div class="nl-sub">products.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="product-detail.html"><div><div class="nl-name">商品详情</div><div class="nl-sub">product-detail.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="machines.html"><div><div class="nl-name">设备</div><div class="nl-sub">machines.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="restock.html"><div><div class="nl-name">补货</div><div class="nl-sub">restock.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="restock-done.html"><div><div class="nl-name">补货完成</div><div class="nl-sub">restock-done.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="products.html">
+          <span class="item-body"><span class="item-name">商品列表</span><span class="item-sub">products.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="product-detail.html">
+          <span class="item-body"><span class="item-name">商品详情</span><span class="item-sub">product-detail.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="machines.html">
+          <span class="item-body"><span class="item-name">设备</span><span class="item-sub">machines.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="restock.html">
+          <span class="item-body"><span class="item-name">补货（旧版）</span><span class="item-sub">restock.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="restock-done.html">
+          <span class="item-body"><span class="item-name">补货完成</span><span class="item-sub">restock-done.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="scan.html">
+          <span class="item-body"><span class="item-name">扫码识别设备 · 390×844</span><span class="item-sub">scan.html · 相机取景 → 进入单门柜设备页</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="device-double-door.html">
+          <span class="item-body"><span class="item-name">双门柜设备详情 · 390×844</span><span class="item-sub">device-double-door.html · 远程操作 + 左右门补货</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="restock-door.html">
+          <span class="item-body"><span class="item-name">机器详情（中文版）· 390×844</span><span class="item-sub">restock-door.html · 上一版布局，未含 Unlocking</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="restock-list.html">
+          <span class="item-body"><span class="item-name">Restocking · 1:1</span><span class="item-sub">restock-list.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="restock-form.html">
+          <span class="item-body"><span class="item-name">补货表单（含到期日）</span><span class="item-sub">restock-form.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 经营统计 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
-        <div class="mod-title">经营统计</div>
-        <div class="mod-count">5</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+          <span class="card-title">经营统计</span>
+        </div>
+        <span class="badge">5</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="stats.html"><div><div class="nl-name">经营统计（主）</div><div class="nl-sub">stats.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="rank-product.html"><div><div class="nl-name">商品销量排行</div><div class="nl-sub">rank-product.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="rank-site.html"><div><div class="nl-name">点位销量排行</div><div class="nl-sub">rank-site.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="material.html"><div><div class="nl-name">点位原料统计</div><div class="nl-sub">material.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="site-product.html"><div><div class="nl-name">点位商品销售统计</div><div class="nl-sub">site-product.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="stats.html">
+          <span class="item-body"><span class="item-name">经营统计（主）</span><span class="item-sub">stats.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="rank-product.html">
+          <span class="item-body"><span class="item-name">商品销量排行</span><span class="item-sub">rank-product.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="rank-site.html">
+          <span class="item-body"><span class="item-name">点位销量排行</span><span class="item-sub">rank-site.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="material.html">
+          <span class="item-body"><span class="item-name">点位原料统计</span><span class="item-sub">material.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="site-product.html">
+          <span class="item-body"><span class="item-name">点位商品销售统计</span><span class="item-sub">site-product.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 告警 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></div>
-        <div class="mod-title">告警</div>
-        <div class="mod-count">3</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+          <span class="card-title">告警</span>
+        </div>
+        <span class="badge">5</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="alerts.html"><div><div class="nl-name">告警列表</div><div class="nl-sub">alerts.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="alert-detail.html"><div><div class="nl-name">告警详情</div><div class="nl-sub">alert-detail.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="alert-detail-design.html"><div><div class="nl-name">告警卡片设计对比</div><div class="nl-sub">alert-detail-design.html · C1–C4</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="alerts.html">
+          <span class="item-body"><span class="item-name">告警列表</span><span class="item-sub">alerts.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="alert-detail.html">
+          <span class="item-body"><span class="item-name">告警详情</span><span class="item-sub">alert-detail.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="alert-detail-design.html">
+          <span class="item-body"><span class="item-name">告警卡片设计对比</span><span class="item-sub">alert-detail-design.html · C1–C4</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="notifications.html">
+          <span class="item-body"><span class="item-name">通知列表</span><span class="item-sub">notifications.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="notification-detail.html">
+          <span class="item-body"><span class="item-name">通知详情</span><span class="item-sub">notification-detail.html · 跳转目标</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- 工单 -->
-    <div class="mod">
-      <div class="mod-head">
-        <div class="mod-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v10H4z"/><path d="M4 11h16M9 7v10"/></svg></div>
-        <div class="mod-title">工单（app_workorder/）</div>
-        <div class="mod-count">10</div>
+    <section class="card nv-mod">
+      <div class="card-head bordered">
+        <div class="nv-h">
+          <span class="nv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v10H4z"/><path d="M4 11h16M9 7v10"/></svg></span>
+          <span class="card-title">工单（app_workorder/）</span>
+        </div>
+        <span class="badge">10</span>
       </div>
-      <div class="mod-list">
-        <a class="nl" href="app_workorder/tickets.html"><div><div class="nl-name">我的工单 A01</div><div class="nl-sub">tickets.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-claim.html"><div><div class="nl-name">待认领 A02</div><div class="nl-sub">ticket-claim.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-detail.html"><div><div class="nl-name">工单详情 A03</div><div class="nl-sub">ticket-detail.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-progress.html"><div><div class="nl-name">记录进展 A04</div><div class="nl-sub">ticket-progress.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-complete.html"><div><div class="nl-name">提交完工 A05</div><div class="nl-sub">ticket-complete.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-wait.html"><div><div class="nl-name">等待反馈 A06</div><div class="nl-sub">ticket-wait.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-resume.html"><div><div class="nl-name">恢复处理 A07</div><div class="nl-sub">ticket-resume.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-transfer.html"><div><div class="nl-name">转派 A08</div><div class="nl-sub">ticket-transfer.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/ticket-rework.html"><div><div class="nl-name">退回返工 A09</div><div class="nl-sub">ticket-rework.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
-        <a class="nl" href="app_workorder/index.html"><div><div class="nl-name">工单总览画廊</div><div class="nl-sub">index.html</div></div><div class="nl-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div></a>
+      <div class="list">
+        <a class="item no-thumb nv-row" href="app_workorder/tickets.html">
+          <span class="item-body"><span class="item-name">我的工单 A01</span><span class="item-sub">tickets.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-claim.html">
+          <span class="item-body"><span class="item-name">待认领 A02</span><span class="item-sub">ticket-claim.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-detail.html">
+          <span class="item-body"><span class="item-name">工单详情 A03</span><span class="item-sub">ticket-detail.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-progress.html">
+          <span class="item-body"><span class="item-name">记录进展 A04</span><span class="item-sub">ticket-progress.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-complete.html">
+          <span class="item-body"><span class="item-name">提交完工 A05</span><span class="item-sub">ticket-complete.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-wait.html">
+          <span class="item-body"><span class="item-name">等待反馈 A06</span><span class="item-sub">ticket-wait.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-resume.html">
+          <span class="item-body"><span class="item-name">恢复处理 A07</span><span class="item-sub">ticket-resume.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-transfer.html">
+          <span class="item-body"><span class="item-name">转派 A08</span><span class="item-sub">ticket-transfer.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/ticket-rework.html">
+          <span class="item-body"><span class="item-name">退回返工 A09</span><span class="item-sub">ticket-rework.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+        <a class="item no-thumb nv-row" href="app_workorder/index.html">
+          <span class="item-body"><span class="item-name">工单总览画廊</span><span class="item-sub">index.html</span></span>
+          <svg class="item-go" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
       </div>
-    </div>
+    </section>
 
   </div>
-</div>
+
+</main>
 </body>
 </html>
