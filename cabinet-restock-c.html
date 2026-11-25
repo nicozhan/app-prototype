@@ -16,6 +16,7 @@
   --r-card:16px;--r-ctl:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:#e7eaf3;color:var(--ink);-webkit-font-smoothing:antialiased}
 button,input{font:inherit;color:inherit}
@@ -125,6 +126,44 @@ svg{display:block;flex:0 0 auto}
 .stepper-note{margin-top:7px;display:flex;align-items:center;justify-content:space-between;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
 .stepper-note strong{font-size:12px;font-weight:800;color:var(--brand)}
 
+/* ---------- 保质期 ---------- */
+.shelf{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.shelf-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.shelf-title{font-size:13px;line-height:18px;font-weight:600}
+.shelf-opt{font-size:11px;line-height:16px;color:var(--text-3)}
+.segmented.seg-3{grid-template-columns:repeat(3,1fr)}
+.segmented.seg-3 button{font-size:12px;font-weight:600}
+.shelf-desc{margin-top:8px;font-size:11px;line-height:16px;color:var(--text-2)}
+.shelf-block{display:none;margin-top:11px}
+.shelf-block.show{display:block}
+.field-label{margin-bottom:6px;font-size:11px;line-height:16px;font-weight:600;color:var(--text-2)}
+.date-row{position:relative;height:46px;display:flex;align-items:center;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface-2)}
+.date-row:focus-within{border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+.date-row input{position:relative;z-index:1;width:100%;height:100%;padding-right:24px;border:0;background:transparent;font-size:14px;font-weight:700;color:transparent;outline:0;font-variant-numeric:tabular-nums;appearance:none;-webkit-appearance:none}
+.date-row input::-webkit-datetime-edit{color:transparent}
+.date-val{position:absolute;left:12px;top:50%;z-index:2;transform:translateY(-50%);font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none}
+.date-val.empty{font-weight:500;color:var(--text-3)}
+.date-row input::-webkit-calendar-picker-indicator{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.date-row>svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none}
+.date-row.invalid{border-color:var(--danger);background:var(--danger-bg)}
+.date-chips{display:flex;gap:6px;margin-top:8px}
+.date-chip{height:28px;padding:0 11px;border-radius:8px;background:var(--brand-weak);color:var(--brand);font-size:12px;font-weight:700}
+.date-chip:active{background:#dce2ff}
+.days-static{height:44px;display:flex;align-items:center;font-size:13px;font-weight:600;color:var(--ink)}
+.days-static b{margin:0 4px;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums}
+.days-row{height:44px;display:flex;align-items:center;gap:4px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface-2)}
+.days-row:focus-within{border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+.days-row input{width:100%;min-width:0;border:0;background:transparent;font-size:14px;font-weight:700;outline:0;font-variant-numeric:tabular-nums}
+.days-row span{flex:0 0 auto;font-size:12px;color:var(--text-2)}
+.days-row.invalid{border-color:var(--danger);background:var(--danger-bg)}
+.shelf-calc{margin-top:7px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.shelf-calc b{font-weight:700;color:var(--ink)}
+.shelf-calc.bad{color:var(--danger);font-weight:600}
+.shelf-note{display:none;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:11px;line-height:16px;font-weight:600}
+.shelf-note.show{display:block}
+.shelf-note.warn{background:var(--warn-bg);color:#7a4a1e}
+.shelf-note.bad{background:var(--danger-bg);color:#a02a20}
+
 .quick-actions{display:flex;gap:8px;margin:14px 0 14px}
 .quick{flex:1;height:40px;border-radius:11px;background:var(--brand-weak);color:var(--brand);font-size:13px;font-weight:700}
 .quick:active{background:#dfe4ff}
@@ -133,10 +172,15 @@ svg{display:block;flex:0 0 auto}
 .confirm-box{display:none;margin-bottom:12px;padding:11px 12px;border-radius:11px;background:var(--danger-bg)}
 .confirm-box.show{display:block}
 .confirm-box p{font-size:11px;line-height:17px;color:#a02a20}
+.confirm-box p b{display:block;margin-bottom:2px;font-size:12px;font-weight:700;color:#8a2318}
+.confirm-box.warn{background:var(--warn-bg)}
+.confirm-box.warn p{color:#7a4a1e}
+.confirm-box.warn p b{color:#6b3d12}
 .confirm-actions{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-ghost,.btn-danger{height:36px;border-radius:9px;font-size:12px;font-weight:700}
+.btn-ghost,.btn-danger,.btn-warn{height:36px;border-radius:9px;font-size:12px;font-weight:700}
 .btn-ghost{background:#fff;color:var(--text-2);box-shadow:inset 0 0 0 1px rgba(11,16,47,.08)}
 .btn-danger{background:var(--danger);color:#fff}
+.btn-warn{background:#a86a1d;color:#fff}
 
 /* ---------- 添加商品 ---------- */
 .search{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface)}
@@ -291,10 +335,62 @@ svg{display:block;flex:0 0 auto}
         <button id="plus" aria-label="增加"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
       <div class="stepper-note"><span id="stockNote">当前库存 2 / 容量 10</span><span>补货后 <strong id="afterNote">2</strong></span></div>
+
+      <div class="shelf" id="shelf">
+        <div class="shelf-head">
+          <div class="shelf-title">保质期</div>
+          <span class="shelf-opt">选填</span>
+        </div>
+        <div class="segmented seg-3" id="shelfSeg">
+          <button type="button" class="active" data-mode="ignore">忽略</button>
+          <button type="button" data-mode="produce">按生产日期</button>
+          <button type="button" data-mode="expire">按到期时间</button>
+        </div>
+        <p class="shelf-desc" id="shelfDesc">不记录批次日期，按商品默认保质期管理</p>
+
+        <div class="shelf-block" id="produceBlock">
+          <div class="field-label">生产日期</div>
+          <div class="date-row" id="produceRow">
+            <input type="date" id="produceDate" aria-label="生产日期">
+            <span class="date-val empty" id="produceVal">请选择日期</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+          </div>
+          <div class="date-chips">
+            <button type="button" class="date-chip" data-quick="today">今天</button>
+            <button type="button" class="date-chip" data-quick="yesterday">昨天</button>
+          </div>
+          <div style="margin-top:11px">
+            <div class="field-label">保质期天数</div>
+            <div class="days-static" id="daysStatic" hidden>商品档案 · 保质期 <b id="daysStaticValue">180</b> 天</div>
+            <div class="days-row" id="daysRow" hidden>
+              <input type="text" id="shelfDays" inputmode="numeric" placeholder="如 180" aria-label="保质期天数">
+              <span>天</span>
+            </div>
+          </div>
+          <p class="shelf-calc" id="produceCalc">选择生产日期后自动推算到期日</p>
+        </div>
+
+        <div class="shelf-block" id="expireBlock">
+          <div class="field-label">到期日</div>
+          <div class="date-row" id="expireRow">
+            <input type="date" id="expireDate" aria-label="到期日">
+            <span class="date-val empty" id="expireVal">请选择日期</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+          </div>
+          <p class="shelf-calc" id="expireCalc">选择到期日后显示剩余天数</p>
+        </div>
+
+        <div class="shelf-note" id="shelfNote"></div>
+      </div>
+
       <div class="quick-actions"><button class="quick" id="fillBtn">补满</button><button class="quick danger" id="removeBtn">下架</button></div>
       <div class="confirm-box" id="removeConfirm">
         <p>下架后该商品从当前货道移除，补货列表不再显示，库存记录一并清除。</p>
         <div class="confirm-actions"><button class="btn-ghost" id="cancelRemove">取消</button><button class="btn-danger" id="confirmRemove">确认下架</button></div>
+      </div>
+      <div class="confirm-box warn" id="futureConfirm">
+        <p><b>确认录入未来批次？</b><span id="futureConfirmText">生产日期晚于今天，录入后库存将按未来批次计算，请确认包装日期无误。</span></p>
+        <div class="confirm-actions"><button class="btn-ghost" id="cancelFuture">返回核对</button><button class="btn-warn" id="confirmFuture">仍要确认</button></div>
       </div>
       <button class="btn-primary" id="confirmBtn" disabled>确认补货</button>
     </section>
@@ -361,18 +457,18 @@ svg{display:block;flex:0 0 auto}
     tag.hidden=false;
   }
   var items=[
-    {id:1,name:'可口可乐 330ml',layer:1,slot:'A1',cur:2,max:10,img:imagePath+'product-1.png'},
-    {id:2,name:'雪碧 330ml',layer:1,slot:'A2',cur:4,max:10,img:imagePath+'product-2.png'},
-    {id:3,name:'红牛 250ml',layer:2,slot:'B1',cur:0,max:8,img:imagePath+'product-3.png'},
-    {id:4,name:'矿泉水 550ml',layer:2,slot:'C2',cur:6,max:15,img:imagePath+'product-4.png'},
-    {id:5,name:'乐事薯片 原味',layer:3,slot:'A1',cur:5,max:12,img:imagePath+'product-5.png'},
-    {id:6,name:'巧克力 50g',layer:3,slot:'B2',cur:6,max:10,img:imagePath+'product-6.png'},
-    {id:7,name:'益达口香糖 薄荷',layer:4,slot:'A1',cur:10,max:10,img:imagePath+'product-2.png'},
+    {id:1,name:'可口可乐 330ml',layer:1,slot:'A1',cur:2,max:10,img:imagePath+'product-1.png',shelf:180},
+    {id:2,name:'雪碧 330ml',layer:1,slot:'A2',cur:4,max:10,img:imagePath+'product-2.png',shelf:180},
+    {id:3,name:'红牛 250ml',layer:2,slot:'B1',cur:0,max:8,img:imagePath+'product-3.png',shelf:365},
+    {id:4,name:'矿泉水 550ml',layer:2,slot:'C2',cur:6,max:15,img:imagePath+'product-4.png',shelf:365},
+    {id:5,name:'乐事薯片 原味',layer:3,slot:'A1',cur:5,max:12,img:imagePath+'product-5.png',shelf:120},
+    {id:6,name:'巧克力 50g',layer:3,slot:'B2',cur:6,max:10,img:imagePath+'product-6.png',shelf:365},
+    {id:7,name:'益达口香糖 薄荷',layer:4,slot:'A1',cur:10,max:10,img:imagePath+'product-2.png',shelf:540},
     {id:8,name:'能量棒',layer:4,slot:'B2',cur:8,max:8,img:imagePath+'product-5.png'}
   ];
   var extras=[
-    {id:101,name:'可口可乐 无糖 330ml',code:'6901234500017',layer:4,slot:'C1',cur:0,max:10,img:imagePath+'product-1.png'},
-    {id:102,name:'乌龙茶 500ml',code:'6901234500024',layer:4,slot:'C2',cur:0,max:12,img:imagePath+'product-4.png'}
+    {id:101,name:'可口可乐 无糖 330ml',code:'6901234500017',layer:4,slot:'C1',cur:0,max:10,img:imagePath+'product-1.png',shelf:180},
+    {id:102,name:'乌龙茶 500ml',code:'6901234500024',layer:4,slot:'C2',cur:0,max:12,img:imagePath+'product-4.png',shelf:270}
   ];
 
   /* 产品库（演示数据）：trained=AI 已训练 / untrained=有商品但未训练 / missing=产品库没有 */
@@ -450,9 +546,112 @@ svg{display:block;flex:0 0 auto}
     qty=Math.max(0,Math.min(cap,Math.floor(Number(value)||0)));
     el('qtyInput').value=String(qty);
     el('afterNote').textContent=String((selected?selected.cur:0)+qty);
-    var btn=el('confirmBtn');
-    btn.disabled=qty===0;
+    syncConfirm();
+  }
+
+  /* ---------- 保质期（忽略 / 按生产日期 / 按到期时间） ---------- */
+  var DAY=86400000;
+  var D={
+    today:function(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())},
+    parse:function(s){if(!s)return null;var p=s.split('-');if(p.length!==3)return null;var d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));return isNaN(d.getTime())?null:d},
+    ymd:function(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)},
+    addDays:function(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x},
+    addYears:function(d,n){var x=new Date(d.getTime());x.setFullYear(x.getFullYear()+n);return x},
+    diff:function(a,b){return Math.round((a.getTime()-b.getTime())/DAY)}
+  };
+  /* mode: ignore | produce | expire；days 为本次使用的保质期天数，manual 表示商品档案缺失、需要现场填 */
+  var batch={mode:'ignore',produce:'',expire:'',days:0,manual:false};
+
+  function batchReset(it){
+    batch={mode:'ignore',produce:'',expire:'',days:(it&&it.shelf)||30,manual:!(it&&it.shelf)};
+    el('shelfSeg').querySelectorAll('[data-mode]').forEach(function(b){b.classList.toggle('active',b.dataset.mode==='ignore')});
+    el('produceDate').value='';
+    el('expireDate').value='';
+    el('futureConfirm').classList.remove('show');
+    el('expireDate').max=D.ymd(D.addYears(D.today(),2));
+    el('daysStatic').hidden=batch.manual;
+    el('daysRow').hidden=!batch.manual;
+    el('daysStaticValue').textContent=String(batch.days);
+    el('shelfDays').value=batch.manual?'30':'';
+    if(batch.manual)batch.days=30;
+    renderBatch();
+  }
+
+  /* 返回 {ok, error, note, level, future, expire, remain} */
+  function batchCheck(){
+    var today=D.today(),max=D.addYears(today,2);
+    var out={ok:true,error:'',note:'',level:'',future:false,expire:null,remain:null};
+    if(batch.mode==='ignore')return out;
+    if(batch.mode==='produce'){
+      var pd=D.parse(batch.produce);
+      if(!pd){out.ok=false;out.error='请选择生产日期';return out}
+      var days=Number(batch.days)||0;
+      if(!days||days<=0){out.ok=false;out.error='请填写保质期天数';return out}
+      var ed=D.addDays(pd,days);
+      out.expire=ed;out.remain=D.diff(ed,today);
+      if(out.remain<0){out.ok=false;out.error='按此日期推算已过期 '+(-out.remain)+' 天，请核对包装';return out}
+      if(ed>max){out.ok=false;out.error='推算到期日 '+D.ymd(ed)+' 超过 2 年上限，请核对生产日期';return out}
+      if(out.remain===0){out.level='warn';out.note='推算今日到期，建议优先上架'}
+      else if(D.diff(pd,today)>0){out.level='warn';out.note='生产日期晚于今天，请确认是否预售或重贴标批次';out.future=true}
+      return out;
+    }
+    var xd=D.parse(batch.expire);
+    if(!xd){out.ok=false;out.error='请选择到期日';return out}
+    out.expire=xd;out.remain=D.diff(xd,today);
+    if(out.remain<0){out.ok=false;out.error='到期日已过 '+(-out.remain)+' 天，请核对包装日期';return out}
+    if(xd>max){out.ok=false;out.error='到期日不能超过 2 年（最晚 '+D.ymd(max)+'）';return out}
+    if(out.remain===0){out.level='warn';out.note='今日到期，建议优先上架'}
+    return out;
+  }
+
+  function syncConfirm(){
+    var btn=el('confirmBtn'),s=batchCheck();
+    btn.disabled=qty===0||!s.ok;
     btn.textContent=qty>0?'确认补货 '+qty+' 件':'确认补货';
+  }
+
+  function renderBatch(){
+    var s=batchCheck();
+    el('produceVal').textContent=batch.produce||'请选择日期';
+    el('produceVal').classList.toggle('empty',!batch.produce);
+    el('expireVal').textContent=batch.expire||'请选择日期';
+    el('expireVal').classList.toggle('empty',!batch.expire);
+    el('shelfDesc').hidden=batch.mode!=='ignore';
+    el('produceBlock').classList.toggle('show',batch.mode==='produce');
+    el('expireBlock').classList.toggle('show',batch.mode==='expire');
+
+    var pc=el('produceCalc');
+    if(!batch.produce)pc.innerHTML='选择生产日期后自动推算到期日';
+    else if(!(Number(batch.days)>0))pc.innerHTML='请填写保质期天数';
+    else if(s.expire&&s.remain<0)pc.innerHTML='推算到期 <b>'+D.ymd(s.expire)+'</b>';
+    else if(s.expire&&s.ok){
+      var left=s.remain<=7?'<span style="color:var(--warn);font-weight:700">'+s.remain+'</span>':'<b>'+s.remain+'</b>';
+      pc.innerHTML='到期 <b>'+D.ymd(s.expire)+'</b> · 剩余 '+left+' 天';
+    }else if(s.expire)pc.innerHTML='推算到期 <b>'+D.ymd(s.expire)+'</b>';
+    pc.classList.toggle('bad',batch.mode==='produce'&&!s.ok);
+
+    var xc=el('expireCalc');
+    if(!batch.expire)xc.innerHTML='选择到期日后显示剩余天数';
+    else if(s.remain<0)xc.innerHTML='已过期 <b>'+(-s.remain)+'</b> 天';
+    else if(s.remain===0)xc.innerHTML='今日到期';
+    else if(!s.ok)xc.innerHTML='';
+    else if(s.remain<=7)xc.innerHTML='剩余 <span style="color:var(--warn);font-weight:700">'+s.remain+'</span> 天';
+    else xc.innerHTML='剩余 <b>'+s.remain+'</b> 天';
+    xc.classList.toggle('bad',batch.mode==='expire'&&!s.ok);
+
+    var note=el('shelfNote');
+    note.className='shelf-note';
+    if(batch.mode!=='ignore'&&s.error){note.className='shelf-note bad show';note.textContent='⚠ '+s.error}
+    else if(batch.mode!=='ignore'&&s.note){note.className='shelf-note warn show';note.textContent='⚠ '+s.note}
+
+    var pdRow=el('produceRow'),xdRow=el('expireRow');
+    pdRow.classList.toggle('invalid',batch.mode==='produce'&&!s.ok);
+    xdRow.classList.toggle('invalid',batch.mode==='expire'&&!s.ok);
+    el('daysRow').classList.toggle('invalid',batch.mode==='produce'&&!s.ok&&!(Number(batch.days)>0));
+
+    if(!s.future)el('futureConfirm').classList.remove('show');
+    else el('futureConfirmText').textContent='生产日期 '+batch.produce+' 晚于今天，录入后库存将按未来批次计算，请确认包装日期无误。';
+    syncConfirm();
   }
 
   function openEdit(id){
@@ -465,6 +664,7 @@ svg{display:block;flex:0 0 auto}
     if(selected.img){img.style.display='';img.src=selected.img}else{img.style.display='none'}
     el('stockNote').textContent='当前库存 '+selected.cur+' / 容量 '+selected.max;
     el('removeConfirm').classList.remove('show');
+    batchReset(selected);
     setQty(0);
     openOverlay('editOverlay');
   }
@@ -624,11 +824,65 @@ svg{display:block;flex:0 0 auto}
   });
   el('confirmBtn').addEventListener('click',function(){
     if(!selected||qty===0)return;
+    var s=batchCheck();
+    if(!s.ok)return;
+    if(s.future&&!el('futureConfirm').classList.contains('show')){
+      el('futureConfirm').classList.add('show');
+      el('futureConfirm').scrollIntoView({block:'nearest'});
+      return;
+    }
+    commitRestock();
+  });
+
+  function commitRestock(){
+    if(!selected||qty===0)return;
+    var s=batchCheck();
+    if(!s.ok)return;
     var name=selected.name,add=qty;
     selected.cur=Math.min(selected.max,selected.cur+qty);
+    selected.batch=batch.mode==='ignore'?null:{
+      mode:batch.mode,
+      produceDate:batch.mode==='produce'?batch.produce:null,
+      shelfLifeDays:batch.mode==='produce'?batch.days:null,
+      shelfLifeSource:batch.mode==='produce'?(batch.manual?'manual':'catalog'):null,
+      expireDate:D.ymd(s.expire)
+    };
+    el('futureConfirm').classList.remove('show');
     closeOverlay('editOverlay');render();
-    toast(name+' 已补货 '+add+' 件');
+    toast(selected.batch?'已补货 '+add+' 件 · 到期 '+selected.batch.expireDate:name+' 已补货 '+add+' 件');
+  }
+
+  /* ---- 保质期交互 ---- */
+  el('shelfSeg').addEventListener('click',function(event){
+    var button=event.target.closest('[data-mode]');
+    if(!button)return;
+    batch.mode=button.dataset.mode;
+    el('shelfSeg').querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('active',x===button)});
+    if(batch.mode!=='produce'){batch.produce='';el('produceDate').value=''}
+    if(batch.mode!=='expire'){batch.expire='';el('expireDate').value=''}
+    renderBatch();
   });
+  el('produceDate').addEventListener('change',function(){batch.produce=this.value;renderBatch()});
+  el('produceDate').addEventListener('input',function(){batch.produce=this.value;renderBatch()});
+  el('expireDate').addEventListener('change',function(){batch.expire=this.value;renderBatch()});
+  el('expireDate').addEventListener('input',function(){batch.expire=this.value;renderBatch()});
+  el('produceBlock').addEventListener('click',function(event){
+    var chip=event.target.closest('[data-quick]');
+    if(!chip)return;
+    var t=D.today();
+    if(chip.dataset.quick==='yesterday')t=D.addDays(t,-1);
+    batch.produce=D.ymd(t);
+    el('produceDate').value=batch.produce;
+    renderBatch();
+  });
+  el('shelfDays').addEventListener('input',function(){
+    var v=this.value.replace(/\D/g,'');
+    this.value=v;
+    batch.days=Number(v)||0;
+    renderBatch();
+  });
+  el('cancelFuture').addEventListener('click',function(){el('futureConfirm').classList.remove('show')});
+  el('confirmFuture').addEventListener('click',commitRestock);
 
   el('addBtn').addEventListener('click',function(){el('searchInput').value='';renderSearch();openOverlay('addOverlay')});
   el('searchInput').addEventListener('input',renderSearch);
