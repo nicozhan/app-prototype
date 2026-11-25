@@ -52,7 +52,7 @@
 /* 状态值 */
 .sd-ok{color:var(--ok)}
 
-/* 顶栏右上：检查库存（文字按钮，标题保持绝对居中） */
+/* 顶栏右上：盘点（文字按钮，标题保持绝对居中） */
 .sd-nav{position:relative;grid-template-columns:44px minmax(0,1fr) auto}
 .sd-nav h1{position:absolute;left:50%;transform:translateX(-50%);max-width:150px}
 .sd-stock-btn{
@@ -75,9 +75,9 @@
     </span>
     <h1>设备详情</h1>
     <span class="nav-right">
-      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="检查库存">
+      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="盘点">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-        <span>检查库存</span>
+        <span>盘点</span>
       </button>
     </span>
   </header>
@@ -167,7 +167,7 @@
   var deviceId=qs.get('id')||'VM-1001';
   var deviceName=qs.get('name')||'曼谷机场 T1-A01';
 
-  /* 右上「检查库存」：仍进库存盘点页，带上当前设备 */
+  /* 右上「盘点」：进库存盘点页，带上当前设备 */
   document.getElementById('inventoryBtn').addEventListener('click',function(){
     location.href='inventory.html?device='+encodeURIComponent(deviceId);
   });
