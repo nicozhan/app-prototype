@@ -316,6 +316,72 @@ svg{display:block;flex:0 0 auto}
   height:32px;padding-left:10px;display:flex;align-items:center;border-left:1px solid var(--line);color:var(--brand)
 }
 
+/* ---------- 搜索结果（添加商品） ---------- */
+.result{
+  width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 30px;gap:11px;align-items:center;
+  padding:11px 2px;border-bottom:1px solid var(--line);text-align:left
+}
+.result:last-child{border-bottom:0}
+.result .thumb{width:44px;height:44px;border-radius:10px}
+.result-name{display:block;font-size:14px;line-height:19px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-code{display:block;margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.result-note{display:inline-block;margin-top:3px;height:18px;padding:0 7px;border-radius:999px;background:var(--surface-2);color:var(--text-2);font-size:10px;line-height:18px;font-weight:700}
+.add-circle{width:28px;height:28px;display:flex;align-items:center;justify-content:center;justify-self:end;border-radius:50%;background:var(--brand-weak);color:var(--brand)}
+.result:active .add-circle{background:var(--brand);color:#fff}
+.add-empty{padding:36px 12px 28px;text-align:center}
+.add-empty .empty-icon{margin-bottom:10px;background:var(--surface-2);color:var(--text-3);border-radius:14px}
+.add-empty p{font-size:13px;line-height:19px;font-weight:600}
+.add-empty span{display:block;margin-top:3px;font-size:11px;line-height:16px;color:var(--text-2)}
+.add-empty .btn-secondary{width:100%;height:44px;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:var(--r-ctl);font-size:13px;font-weight:700}
+
+/* ---------- 扫码（相机模拟） ---------- */
+.scn{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;background:#0b102f}
+.scn.open{display:flex}
+.scn-cam{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:radial-gradient(130% 85% at 50% 28%,#1b2456 0%,#0c1130 72%)}
+.scn-top{flex:0 0 auto;height:56px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px}
+.scn-top h2{text-align:center;font-size:16px;line-height:22px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.scn-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;justify-self:center;border-radius:50%;background:rgba(255,255,255,.12);color:#fff}
+.scn-icon:active{background:rgba(255,255,255,.24)}
+.scn-icon.on{background:#fff;color:#0b102f}
+.scn-center{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px}
+.scn-frame{position:relative;width:212px;height:212px;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.13)}
+.scn-frame b{position:absolute;width:26px;height:26px;border:3px solid #fff}
+.scn-frame b:nth-child(1){top:-3px;left:-3px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.scn-frame b:nth-child(2){top:-3px;right:-3px;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.scn-frame b:nth-child(3){bottom:-3px;left:-3px;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.scn-frame b:nth-child(4){bottom:-3px;right:-3px;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.scn-laser{position:absolute;left:12px;right:12px;top:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(122,140,255,0),#8b9bff,#fff,#8b9bff,rgba(122,140,255,0));animation:scnline 2.6s ease-in-out infinite}
+@keyframes scnline{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(172px);opacity:1}}
+.scn-tip{margin:18px 0 0;text-align:center;font-size:12px;line-height:17px;color:rgba(255,255,255,.62)}
+.scn-demo{flex:0 0 auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;background:#141a3d}
+.scn-demo-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+.scn-demo-head b{font-size:12px;line-height:17px;font-weight:700;color:rgba(255,255,255,.92)}
+.scn-demo-head span{font-size:10px;line-height:15px;font-weight:600;color:rgba(255,255,255,.45)}
+.scn-code{width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;margin-top:8px;border-radius:12px;background:rgba(255,255,255,.07);text-align:left}
+.scn-code:active{background:rgba(255,255,255,.16)}
+.scn-code-main{min-width:0;flex:1}
+.scn-code-name{display:block;font-size:13px;line-height:18px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scn-code-num{display:block;margin-top:1px;font-size:11px;line-height:15px;font-weight:500;color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+.scn-tag{flex:0 0 auto;height:20px;padding:0 8px;display:inline-flex;align-items:center;border-radius:999px;font-size:10px;line-height:20px;font-weight:700}
+.scn-tag.ok{background:rgba(0,143,99,.24);color:#74e3b8}
+.scn-tag.warn{background:rgba(154,94,42,.3);color:#f2bc86}
+.scn-tag.bad{background:rgba(217,45,32,.24);color:#ffa39a}
+.scn-sheet{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:6px 16px calc(16px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;background:var(--surface);box-shadow:0 -10px 34px rgba(11,16,47,.28);transform:translateY(104%);transition:transform .24s ease}
+.scn-sheet.show{transform:translateY(0)}
+.scn-prod{display:flex;align-items:center;gap:12px;padding:4px 0 13px}
+.scn-prod .thumb{width:52px;height:52px;border-radius:12px}
+.scn-prod-name{font-size:15px;line-height:21px;font-weight:600}
+.scn-prod-code{margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.scn-state{display:flex;align-items:center;gap:7px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:17px;font-weight:700}
+.scn-state.ok{background:var(--ok-bg);color:var(--ok)}
+.scn-state.warn{background:var(--warn-bg);color:var(--warn)}
+.scn-state.bad{background:var(--danger-bg);color:var(--danger)}
+.scn-state .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.scn-desc{margin:10px 0 0;font-size:12px;line-height:18px;color:var(--text-2)}
+.scn-actions{margin-top:14px;display:flex;gap:8px}
+.scn-actions .btn-primary{flex:1;width:auto}
+.scn-actions .btn-ghost{height:48px;padding:0 18px;border-radius:var(--r-ctl)}
+
 .radios{display:flex;flex-direction:column}
 .radio{
   min-height:50px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);

@@ -11,6 +11,28 @@
 .iv-dev{font-size:11px;line-height:16px;font-weight:700;color:var(--text-2);white-space:nowrap;font-variant-numeric:tabular-nums}
 .iv-mode{flex:0 0 auto;margin:12px 16px 10px}
 
+/* 顶栏：右侧设备号 + 添加商品，标题绝对居中 */
+.navbar{position:relative;grid-template-columns:44px 1fr auto}
+.navbar h1{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:calc(100% - 210px)}
+.iv-add{
+  width:34px;height:34px;margin-left:7px;flex:0 0 auto;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--brand-weak);color:var(--brand)
+}
+.iv-add:active{background:var(--brand-line)}
+.iv-add[hidden]{display:none}
+
+/* 盘点新增商品 */
+.iv-new{
+  display:inline-block;margin-left:5px;height:17px;padding:0 6px;border-radius:999px;
+  background:var(--brand-weak);color:var(--brand);font-size:10px;line-height:17px;font-weight:700;vertical-align:1px
+}
+.iv-row.flash{animation:ivflash 1.2s ease}
+@keyframes ivflash{0%,100%{background:transparent}28%{background:var(--brand-weak)}}
+.iv-add-note{margin:8px 2px 8px;font-size:11px;line-height:16px;color:var(--text-2)}
+.add-circle.done{background:var(--surface-2);color:var(--text-3)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
 .iv-scroll{flex:1;min-height:0;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch}
 .iv-card{overflow:hidden}
 .iv-card .sec-title{padding:11px 14px 6px}
@@ -96,7 +118,7 @@
       <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </span>
     <h1 id="pageTitle">库存盘点</h1>
-    <span class="nav-right"><span class="iv-dev" id="deviceLabel"></span></span>
+    <span class="nav-right"><span class="iv-dev" id="deviceLabel"></span><button class="iv-add" id="addBtn" type="button" aria-label="添加商品"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></span>
   </header>
 
   <div class="segmented iv-mode" id="mode"><button class="active" data-mode="count">盘点</button><button data-mode="record">记录</button></div>
@@ -133,6 +155,41 @@
     </section>
   </div>
 
+  <!-- 添加商品 -->
+  <div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <section class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head"><h2 id="addTitle">添加商品</h2><button class="close" data-close="addOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="searchInput" placeholder="商品名称或 69 码" autocomplete="off" aria-label="搜索商品">
+        <button class="scan" id="scanBtn" aria-label="扫码添加"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+      </div>
+      <p class="iv-add-note">加入后可在这里直接填实盘数量，账面按 0 计，差异自动标红。</p>
+      <div class="results" id="searchResults"></div>
+    </section>
+  </div>
+
+  <!-- 扫码（相机模拟） -->
+  <div class="scn" id="scanOverlay" role="dialog" aria-modal="true" aria-label="扫码添加商品">
+    <div class="scn-cam">
+      <div class="scn-top">
+        <button class="scn-icon" id="scanClose" aria-label="关闭扫描"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <h2>扫码添加</h2>
+        <button class="scn-icon" id="scanTorch" aria-label="补光灯"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg></button>
+      </div>
+      <div class="scn-center">
+        <div class="scn-frame"><b></b><b></b><b></b><b></b><span class="scn-laser"></span></div>
+        <p class="scn-tip">将商品条形码放入框内，自动识别</p>
+      </div>
+    </div>
+    <div class="scn-demo">
+      <div class="scn-demo-head"><b>演示条码</b><span>模拟器 · 点选即可扫码</span></div>
+      <div id="scanCodes"></div>
+    </div>
+    <div class="scn-sheet" id="scanSheet"></div>
+  </div>
+
   <div class="toast" id="toast" role="status"></div>
 </main>
 <script>
@@ -140,15 +197,25 @@
   const imagePath='jpgk-platform/mobile/src/static/replenishment/';
   const device=new URLSearchParams(location.search).get('device')||'VM-1001';
   document.getElementById('deviceLabel').textContent=device;
-  // 库存：sys 系统账面值，cur 实盘编辑值
+  // 库存：sys 系统账面值，cur 实盘编辑值；code 用于扫码/搜索匹配
   let stock=[
-    {id:1,name:'可口可乐 330ml',slot:'1 层 A1',sys:2,cur:2,max:10,img:imagePath+'product-1.png'},
-    {id:2,name:'雪碧 330ml',slot:'1 层 A2',sys:4,cur:4,max:10,img:imagePath+'product-2.png'},
-    {id:3,name:'红牛 250ml',slot:'2 层 B1',sys:0,cur:0,max:8,img:imagePath+'product-3.png'},
-    {id:4,name:'矿泉水 550ml',slot:'2 层 C2',sys:6,cur:6,max:15,img:imagePath+'product-4.png'},
-    {id:5,name:'乐事薯片 原味',slot:'3 层 A1',sys:5,cur:5,max:12,img:imagePath+'product-5.png'},
-    {id:6,name:'巧克力 50g',slot:'3 层 B2',sys:6,cur:6,max:10,img:imagePath+'product-6.png'}
+    {id:1,name:'可口可乐 330ml',code:'6901234500001',slot:'1 层 A1',sys:2,cur:2,max:10,img:imagePath+'product-1.png'},
+    {id:2,name:'雪碧 330ml',code:'6901234500002',slot:'1 层 A2',sys:4,cur:4,max:10,img:imagePath+'product-2.png'},
+    {id:3,name:'红牛 250ml',code:'6901234500003',slot:'2 层 B1',sys:0,cur:0,max:8,img:imagePath+'product-3.png'},
+    {id:4,name:'矿泉水 550ml',code:'6901234500004',slot:'2 层 C2',sys:6,cur:6,max:15,img:imagePath+'product-4.png'},
+    {id:5,name:'乐事薯片 原味',code:'6901234500005',slot:'3 层 A1',sys:5,cur:5,max:12,img:imagePath+'product-5.png'},
+    {id:6,name:'巧克力 50g',code:'6901234500006',slot:'3 层 B2',sys:6,cur:6,max:10,img:imagePath+'product-6.png'}
   ];
+  // 商品库（演示数据）：盘点时可搜索/扫码加入这些尚未在列表中的商品
+  const CATALOG=[
+    {code:'6901234500017',name:'可口可乐 无糖 330ml',slot:'4 层 C1',max:10,img:imagePath+'product-1.png'},
+    {code:'6901234500024',name:'乌龙茶 500ml',slot:'4 层 C2',max:12,img:imagePath+'product-4.png'},
+    {code:'6921168509256',name:'农夫山泉 550ml',slot:'4 层 A1',max:15,img:imagePath+'product-4.png'},
+    {code:'6954767434674',name:'雪碧柠檬味汽水 600ml',slot:'4 层 A2',max:12,img:imagePath+'product-2.png'},
+    {code:'6933266607185',name:'百事可乐 330ml',slot:'4 层 B1',max:12,img:imagePath+'product-1.png'}
+  ];
+  // 扫码结果的库状态：ok=已收录 / warn=档案待补 / bad=产品库未收录（盘点均允许加入）
+  const SCAN_STATE={'6901234500017':['ok','已收录'],'6901234500024':['ok','已收录'],'6921168509256':['warn','档案待补'],'6954767434674':['ok','已收录'],'6933266607185':['bad','未收录']};
   // 记录：type = restock(补货) | count(盘点)；at 为时间戳，diff 为盘点差异（正=增加，负=减少）
   const pad=n=>('0'+n).slice(-2);
   function at(daysAgo,h,m){const d=new Date();d.setHours(h,m||0,0,0);d.setDate(d.getDate()-daysAgo);return d.getTime()}
@@ -174,9 +241,10 @@
   function diffText(item){const d=diffOf(item);return d>0?'+'+d:d<0?String(d):'0'}
   function anyChanged(){return stock.some(item=>item.cur!==item.sys)}
   function renderCount(){
-    if(!stock.length){listWrap.innerHTML='<div class="empty"><p>暂无库存数据</p></div>';return}
+    if(!stock.length){listWrap.innerHTML='<div class="empty"><p>暂无库存数据</p><span>点右上角 + 添加商品</span></div>';return}
     listWrap.innerHTML='<div class="sec-title">实盘数量（'+stock.length+' 个商品）</div>'+stock.map(item=>{
-      return '<div class="iv-row"><span class="thumb"><img src="'+item.img+'" alt=""></span><span class="iv-main"><span class="iv-name">'+item.name+'</span><span class="iv-meta">'+item.slot+' · 账面 '+item.sys+'</span></span><span class="iv-side"><span class="iv-editor"><button data-dec="'+item.id+'" aria-label="减少">−</button><input data-input="'+item.id+'" type="text" inputmode="numeric" value="'+item.cur+'" aria-label="实盘数量"><button data-inc="'+item.id+'" aria-label="增加">+</button></span><span class="iv-diff '+diffClass(item)+'">'+diffText(item)+'</span></span></div>';
+      const meta=item.isNew?item.slot+'<span class="iv-new">新增</span>':item.slot+' · 账面 '+item.sys;
+      return '<div class="iv-row" id="row-'+item.id+'"><span class="thumb"><img src="'+item.img+'" alt="" onerror="this.style.display=\'none\'"></span><span class="iv-main"><span class="iv-name">'+item.name+'</span><span class="iv-meta">'+meta+'</span></span><span class="iv-side"><span class="iv-editor"><button data-dec="'+item.id+'" aria-label="减少">−</button><input data-input="'+item.id+'" type="text" inputmode="numeric" value="'+item.cur+'" aria-label="实盘数量"><button data-inc="'+item.id+'" aria-label="增加">+</button></span><span class="iv-diff '+diffClass(item)+'">'+diffText(item)+'</span></span></div>';
     }).join('');
   }
   /* ---------- 时间段筛选 ---------- */
@@ -245,10 +313,122 @@
     const isCount=mode==='count';
     $('rangeBar').style.display=isCount?'none':'';
     $('submitBtn').style.display=isCount?'':'none';
+    $('addBtn').hidden=!isCount;
     $('pageTitle').textContent=isCount?'库存盘点':'盘点记录';
     if(isCount)renderCount();else renderRecords();
     $('submitBtn').disabled=!anyChanged();
   }
+
+  /* ---------- 添加商品：搜索 / 扫码 ---------- */
+  const ICON_SEARCH='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>';
+  const ICON_SCAN='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>';
+  const ICON_PLUS_SM='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  const ICON_CHECK_SM='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>';
+
+  function findStock(code){return stock.find(x=>x.code===code)}
+  function openOverlay(id){$(id).classList.add('open')}
+  function closeOverlay(id){$(id).classList.remove('open')}
+  function flashRow(id){
+    setTimeout(()=>{
+      const row=listWrap.querySelector('#row-'+id);
+      if(!row)return;
+      row.scrollIntoView({block:'center'});
+      row.classList.add('flash');
+      setTimeout(()=>row.classList.remove('flash'),1200);
+    },40);
+  }
+  function addProduct(p){
+    const exist=findStock(p.code);
+    if(exist){closeOverlay('addOverlay');closeScan();flashRow(exist.id);toast(p.name+' 已在盘点列表中');return}
+    const item={id:Date.now(),name:p.name,code:p.code,slot:p.slot||'未分配货道',sys:0,cur:1,max:p.max||10,img:p.img,isNew:true};
+    stock.push(item);
+    closeOverlay('addOverlay');closeScan();render();flashRow(item.id);
+    toast('已加入 '+p.name+' · 实盘 1 件');
+  }
+  function renderSearch(){
+    const q=$('searchInput').value.trim().toLowerCase();
+    const list=CATALOG.filter(p=>!q||p.name.toLowerCase().includes(q)||p.code.includes(q));
+    if(!list.length){
+      $('searchResults').innerHTML='<div class="add-empty"><div class="empty-icon">'+ICON_SEARCH+'</div><p>没有匹配的商品</p><span>换个关键词，或扫码录入条形码</span><button class="btn-secondary" id="emptyScan">'+ICON_SCAN+'扫码添加</button></div>';
+      $('emptyScan').addEventListener('click',openScan);
+      return;
+    }
+    $('searchResults').innerHTML=list.map(p=>{
+      const inList=!!findStock(p.code);
+      return '<button class="result" data-code="'+p.code+'"><span class="thumb"><img src="'+p.img+'" alt="" onerror="this.style.display=\'none\'"></span>'
+        +'<span><span class="result-name">'+p.name+'</span><span class="result-code">'+p.code+(inList?' · 已在盘点':'')+'</span></span>'
+        +'<span class="add-circle'+(inList?' done':'')+'">'+(inList?ICON_CHECK_SM:ICON_PLUS_SM)+'</span></button>';
+    }).join('');
+  }
+  /* 扫码：库状态 ok=已收录 / warn=档案待补 / bad=未收录（盘点都允许加入） */
+  function scanTag(p){
+    if(findStock(p.code))return ['ok','已在盘点'];
+    return SCAN_STATE[p.code]||['warn','档案待补'];
+  }
+  function openScan(){
+    $('scanSheet').classList.remove('show');
+    $('scanSheet').innerHTML='';
+    $('scanCodes').innerHTML=CATALOG.map(p=>{
+      const t=scanTag(p);
+      return '<button class="scn-code" data-code="'+p.code+'"><span class="scn-code-main"><span class="scn-code-name">'+p.name+'</span><span class="scn-code-num">'+p.code+'</span></span><span class="scn-tag '+t[0]+'">'+t[1]+'</span></button>';
+    }).join('');
+    openOverlay('scanOverlay');
+  }
+  function closeScan(){
+    $('scanSheet').classList.remove('show');
+    $('scanSheet').innerHTML='';
+    $('scanOverlay').classList.remove('open');
+  }
+  function scanResult(code){
+    const p=CATALOG.find(x=>x.code===code);
+    if(!p)return;
+    const inList=!!findStock(p.code),t=scanTag(p);
+    let state,desc,btn;
+    if(inList){
+      state='<div class="scn-state ok"><span class="dot"></span>该商品已在盘点列表中</div>';
+      desc='关闭扫码后为你定位到这一行，可直接修改实盘数量。';
+      btn='<button class="btn-primary" id="scanDone">定位到该商品</button>';
+    }else if(t[0]==='ok'){
+      state='<div class="scn-state ok"><span class="dot"></span>产品库已收录 · 可直接盘点</div>';
+      desc='加入后账面记为 0，实盘默认 1 件，可在列表里直接调整。';
+      btn='<button class="btn-primary" id="scanAdd">加入盘点</button>';
+    }else if(t[0]==='warn'){
+      state='<div class="scn-state warn"><span class="dot"></span>产品档案待补 · 不影响盘点</div>';
+      desc='该商品缺少图片或规格信息，仍可记录实盘数量，建议同步给管理员补档。';
+      btn='<button class="btn-primary" id="scanAdd">加入盘点</button>';
+    }else{
+      state='<div class="scn-state bad"><span class="dot"></span>产品库未收录 · 可先盘点</div>';
+      desc='产品库没有这条条码，加入后会生成一条待补档记录，管理员补齐后即可正常补货。';
+      btn='<button class="btn-primary" id="scanAdd">仍要加入</button>';
+    }
+    $('scanSheet').innerHTML='<div class="handle"></div>'
+      +'<div class="scn-prod"><span class="thumb"><img src="'+p.img+'" alt="" onerror="this.style.display=\'none\'"></span>'
+      +'<div><div class="scn-prod-name">'+p.name+'</div><div class="scn-prod-code">'+p.code+' · '+p.slot+'</div></div></div>'
+      +state+'<p class="scn-desc">'+desc+'</p><div class="scn-actions">'+btn+'</div>';
+    $('scanSheet').classList.add('show');
+    const add=$('scanAdd'),done=$('scanDone');
+    if(add)add.addEventListener('click',()=>addProduct(p));
+    if(done)done.addEventListener('click',()=>{closeScan();flashRow(findStock(p.code).id)});
+  }
+
+  $('addBtn').addEventListener('click',()=>{$('searchInput').value='';renderSearch();openOverlay('addOverlay')});
+  $('searchInput').addEventListener('input',renderSearch);
+  $('searchResults').addEventListener('click',event=>{
+    const btn=event.target.closest('[data-code]');
+    if(!btn)return;
+    const p=CATALOG.find(x=>x.code===btn.dataset.code);
+    if(p)addProduct(p);
+  });
+  $('scanBtn').addEventListener('click',openScan);
+  $('scanClose').addEventListener('click',closeScan);
+  $('scanTorch').addEventListener('click',()=>$('scanTorch').classList.toggle('on'));
+  $('scanCodes').addEventListener('click',event=>{
+    const btn=event.target.closest('[data-code]');
+    if(btn)scanResult(btn.dataset.code);
+  });
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeOverlay(b.dataset.close)));
+  $('addOverlay').addEventListener('click',event=>{if(event.target===$('addOverlay'))closeOverlay('addOverlay')});
+
   $('mode').addEventListener('click',event=>{const b=event.target.closest('[data-mode]');if(!b)return;mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(el=>el.classList.toggle('active',el===b));render()});
 
   /* 时间段：切换即筛选；自定义先开弹层，确定后才生效 */
@@ -298,7 +478,7 @@
     let diffTotal=0;stock.forEach(item=>{const d=diffOf(item);if(d!==0)diffTotal+=d});
     const total=stock.reduce((s,i)=>s+i.cur,0);
     records.unshift({type:'count',title:'盘点完成',sub:'实盘 '+total+' 件 · '+stock.length+' 个商品',at:Date.now(),diff:diffTotal});
-    stock.forEach(item=>item.sys=item.cur);
+    stock.forEach(item=>{item.sys=item.cur;item.isNew=false});
     toast('盘点已保存');
     render();
   });
