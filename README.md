@@ -24,9 +24,11 @@ open figma-pixel.html  # 改造前 Figma 1:1 对照稿（归档，不参与统�
 仓库根就是部署根，`npm start` 起一个无依赖的 Node 静态服务（`server.js`），端口读 `PORT`。
 
 ```
-/            入口选择页 index.html  →  App Demo（navigation.html）
-                                   →  Web 后台 Demo（vend-solution-reports.html，新标签打开）
+/            入口选择页 index.html  →  App Demo（/navigation.html）
+                                   →  Web 后台 Demo（/vend-solution-reports.html#/devicecfg/brand，新标签打开）
 ```
+
+线上示例（Railway）：`https://nicodemo.up.railway.app/` 为入口，`/navigation.html` 是 App，`/vend-solution-reports.html#/devicecfg/brand` 直接落在后台「品牌型号与组件 · 品牌」。
 
 - **Railway 设置**：新建项目 → Deploy from GitHub repo → 选本仓库，其余保持默认。不需要环境变量、不需要构建命令，`railway.json` 已指定 `startCommand` 与健康检查 `/healthz`。
 - **Web 后台是原型页**：`vend-solution-reports.html`（报表与分析，单文件自包含）从早期 Web 后台原型迁入，不连真实接口。要换成线上后台，改 `index.html` 里 Web 卡片的 `href` 与下方域名文本即可。

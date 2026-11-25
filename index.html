@@ -130,6 +130,10 @@
     .card{padding:18px}
     .card .foot{margin-top:14px}
   }
+  /* 窄屏放不下完整 hash 路由，只保留文件名，完整地址在 title 里 */
+  @media(max-width:430px){
+    .d-hash{display:none}
+  }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -152,7 +156,7 @@
   <div class="cards">
 
     <!-- APP：进入 Demo 外壳 navigation.html -->
-    <a class="card card-app" href="navigation.html">
+    <a class="card card-app" href="navigation.html" title="/navigation.html">
       <span class="card-tag tag-app">移动端</span>
       <div class="preview">
         <div class="ph">
@@ -167,15 +171,15 @@
       <h2>App · 运维端</h2>
       <div class="desc">设备列表与详情、远程开锁、补货（单门 / 双门 / 咖啡机 / 售卖机）、库存盘点、告警与工单。</div>
       <div class="foot">
-        <span class="domain">点击进入可交互 Demo</span>
+        <span class="domain" title="/navigation.html">/navigation.html</span>
         <span class="go">打开 App
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>
         </span>
       </div>
     </a>
 
-    <!-- WEB 后台：本地原型页（非线上平台），改下面 href 即可换地址 -->
-    <a class="card card-web" href="vend-solution-reports.html" target="_blank" rel="noopener">
+    <!-- WEB 后台：本地原型页（非线上平台），默认落在「品牌型号与组件 · 品牌」 -->
+    <a class="card card-web" href="vend-solution-reports.html#/devicecfg/brand" target="_blank" rel="noopener" title="/vend-solution-reports.html#/devicecfg/brand">
       <span class="card-tag tag-web">Web</span>
       <div class="preview">
         <div class="br">
@@ -195,9 +199,9 @@
         </div>
       </div>
       <h2>Web 后台 · 运营端</h2>
-      <div class="desc">商品与价格、设备与货道、订单与退款、经营数据看板、权限与账号管理。</div>
+      <div class="desc">默认进入「品牌型号与组件」；另有商品、机器、报表与分析、租户管理、系统设置。</div>
       <div class="foot">
-        <span class="domain">Web 后台 Demo · 报表与分析</span>
+        <span class="domain" title="/vend-solution-reports.html#/devicecfg/brand">/vend-solution-reports.html<span class="d-hash">#/devicecfg/brand</span></span>
         <span class="go">打开后台
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>
         </span>
