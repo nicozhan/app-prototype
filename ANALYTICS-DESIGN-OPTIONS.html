@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>经营分析 · 移动端设计方案池（8 套方案 × 50 个模块）</title>
+<style>
+:root{
+  --brand:#2434c8;--brand-deep:#1b299e;--brand-weak:#edf0ff;--brand-line:#dce2ff;
+  --ink:#0b102f;--text-2:#5d6480;--text-3:#8b92a8;
+  --bg:#eef0f6;--surface:#fff;--surface-2:#f5f6fa;--line:#e4e7ef;
+  --ok:#008f63;--ok-bg:#e8f7f1;--warn:#9a5e2a;--warn-bg:#fff4e8;
+  --danger:#d92d20;--danger-bg:#fff0ef;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.62;-webkit-font-smoothing:antialiased;
+}
+b,strong{font-weight:700}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#f1f3fa;padding:1px 5px;border-radius:5px;color:#2b3a8f}
+.shell{max-width:1180px;margin:0 auto;padding:0 22px 90px}
+
+/* ---------- 文档头 ---------- */
+.doc-head{padding:46px 0 26px;border-bottom:1px solid #dfe3ee}
+.kicker{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.8px;color:var(--brand);text-transform:uppercase}
+.kicker i{width:18px;height:2px;background:var(--brand);border-radius:2px;display:block}
+.doc-head h1{margin-top:12px;font-size:32px;line-height:1.28;letter-spacing:-.8px;font-weight:800}
+.doc-head .sub{margin-top:10px;max-width:840px;font-size:15px;color:var(--text-2)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.meta span{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--text-2)}
+.meta b{color:var(--ink);font-weight:700}
+
+/* ---------- 目录 ---------- */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(224px,1fr));gap:10px;margin:26px 0 8px}
+.toc a{
+  display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;background:#fff;
+  border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;font-weight:600
+}
+.toc a:hover{border-color:#c9d1f2;box-shadow:0 4px 14px rgba(36,52,200,.06)}
+.toc a em{flex:0 0 auto;width:22px;height:22px;border-radius:7px;background:var(--brand-weak);color:var(--brand);font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+/* ---------- 段落 ---------- */
+section{margin-top:46px;scroll-margin-top:20px}
+.sec-head{display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid #dfe3ee}
+.sec-num{font-size:13px;font-weight:800;color:var(--brand);letter-spacing:.4px}
+.sec-head h2{font-size:22px;line-height:1.3;letter-spacing:-.4px;font-weight:800}
+.sec-head .hint{margin-left:auto;font-size:12px;color:var(--text-3)}
+h3{margin-top:26px;font-size:16px;font-weight:800;letter-spacing:-.2px}
+h4{margin-top:18px;font-size:14px;font-weight:800;color:#2a3150}
+p{margin-top:10px;color:#2e3450}
+.lead{font-size:15.5px;color:#353c5c}
+ul,ol{margin:10px 0 0 20px}
+li{margin-top:6px;color:#2e3450}
+li::marker{color:#9aa4c8}
+.small{font-size:12.5px;color:var(--text-2)}
+.tiny{font-size:11.5px;color:var(--text-3)}
+
+/* ---------- 结论卡 ---------- */
+.verdict{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.vcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.vcard .n{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--brand)}
+.vcard h4{margin-top:5px;font-size:15px}
+.vcard p{margin-top:6px;font-size:12.5px;line-height:1.55;color:var(--text-2)}
+@media(max-width:760px){.verdict{grid-template-columns:1fr}}
+
+/* ---------- 表格 ---------- */
+.tbl-wrap{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12.8px;min-width:640px}
+thead th{
+  position:sticky;top:0;z-index:1;background:#f7f8fc;text-align:left;font-weight:700;color:#3a4166;
+  padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:12px
+}
+tbody td{padding:10px 12px;border-bottom:1px solid #eef0f7;vertical-align:top;color:#2e3450}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fbfcff}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:10.5px;font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.tag.p0{background:var(--brand-weak);color:var(--brand)}
+.tag.p1{background:#fff4e8;color:#a05a12}
+.tag.p2{background:#f1f3f8;color:#6b7390}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.tag.part{background:var(--warn-bg);color:var(--warn)}
+.tag.no{background:#f4f5f9;color:#7a819c}
+.tag.out{background:#fdeef2;color:#a3243d}
+.mark{font-weight:800;font-size:13px;white-space:nowrap}
+.mark.f{color:var(--ok)}
+.mark.p{color:#b4560c}
+.mark.x{color:#7a819c}
+
+/* ---------- 提示条 ---------- */
+.note{display:flex;gap:10px;margin-top:14px;padding:12px 14px;border-radius:12px;border:1px solid #dbe2ff;background:#f6f8ff}
+.note.warn{border-color:#f3dfc6;background:#fffaf3}
+.note.danger{border-color:#f6d5d2;background:#fff7f6}
+.note.ok{border-color:#cfeade;background:#f4fbf8}
+.note .ic{flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:var(--brand);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.note.warn .ic{background:#b4560c}
+.note.danger .ic{background:var(--danger)}
+.note.ok .ic{background:var(--ok)}
+.note p{margin:0;font-size:12.8px;line-height:1.6;color:#39406a}
+.note.warn p{color:#7d4a13}
+.note.danger p{color:#8c2a24}
+.note.ok p{color:#1f5c48}
+
+/* ================= 模块池 ================= */
+.grp{margin-top:26px}
+.grp-h{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.grp-h .gid{font-size:10.5px;font-weight:800;color:#fff;background:#0b102f;padding:2px 7px;border-radius:5px;letter-spacing:.4px}
+.grp-h h3{margin:0;font-size:16px}
+.grp-h .gsub{margin-left:auto;font-size:11.5px;color:var(--text-3)}
+.grp>.small{margin-top:4px}
+
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}
+.mod{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+.mod.dim{background:#fcfcfe;border-style:dashed;border-color:#e7eaf3}
+.mod-h{display:flex;align-items:center;gap:8px;min-width:0}
+.mod-h .mn{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--brand);background:var(--brand-weak);padding:2px 6px;border-radius:5px;letter-spacing:.3px}
+.mod.dim .mod-h .mn{background:#f1f3f8;color:#8a90a8}
+.mod-h b{font-size:13.5px;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod-h .sz{margin-left:auto;flex:0 0 auto;font-size:9.5px;font-weight:800;color:#98a0b8;border:1px solid #e2e6f0;border-radius:5px;padding:0 5px;line-height:15px}
+.mod-prev{background:#f7f8fc;border:1px solid #edf0f8;border-radius:10px;padding:8px 9px;min-height:78px;display:flex;flex-direction:column;justify-content:center;gap:5px;overflow:hidden}
+.mod-f{font-size:11px;color:#7c849e;line-height:1.5}
+.mod-f code{font-size:10.5px;background:#f4f6fb}
+.mod-r{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:7px;border-top:1px dashed #edf0f8}
+.lv{font-size:9px;letter-spacing:1.5px;color:var(--brand);font-weight:800}
+.lv.off{color:#ccd2e2}
+.pick{font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:5px;margin-left:auto;white-space:nowrap}
+.pick.up{background:var(--ok-bg);color:var(--ok)}
+.pick.opt{background:#fff4e8;color:#a05a12}
+.pick.no{background:#f1f3f8;color:#8a90a8}
+.cost{font-size:9.5px;color:#a3aac0;font-weight:700;white-space:nowrap}
+
+/* 微缩组件 */
+.pv-num{font-size:21px;font-weight:800;letter-spacing:-.8px;font-variant-numeric:tabular-nums;line-height:1.15}
+.pv-num em{font-style:normal;font-size:10px;font-weight:800;color:var(--danger);margin-left:5px;vertical-align:2px}
+.pv-num em.dn{color:var(--ok)}
+.pv-lbl{font-size:9.5px;color:#98a0b8;font-weight:600}
+.pv-row{display:flex;gap:6px}
+.pv-row>div{flex:1;min-width:0;background:#fff;border:1px solid #eaedf6;border-radius:7px;padding:5px 7px}
+.pv-row b{display:block;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.3}
+.pv-row span{display:block;font-size:9px;color:#98a0b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-rk{display:flex;align-items:center;gap:6px;font-size:10px}
+.pv-rk .n{width:13px;flex:0 0 auto;font-weight:800;color:#b9c0d6;font-size:9px;text-align:center}
+.pv-rk .n.t1{color:var(--brand)}
+.pv-rk b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:98px;flex:0 0 auto}
+.pv-rk .bar{flex:1;min-width:14px;height:5px;border-radius:3px;background:#e9ecf6;overflow:hidden}
+.pv-rk .bar i{display:block;height:100%;background:var(--brand);border-radius:3px}
+.pv-rk em{font-style:normal;font-variant-numeric:tabular-nums;color:#4a5273;font-weight:700;font-size:9.5px;flex:0 0 auto}
+.pv-kv{display:flex;align-items:center;justify-content:space-between;font-size:10px;gap:8px}
+.pv-kv>span{color:#6d7590;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-kv b{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.pv-kv .up{color:var(--danger)}
+.pv-kv .dn{color:var(--ok)}
+.pv-tag{display:inline-flex;align-items:center;height:17px;padding:0 5px;border-radius:4px;font-size:9px;font-weight:800;background:var(--brand-weak);color:var(--brand);white-space:nowrap}
+.pv-tag.warn{background:var(--warn-bg);color:var(--warn)}
+.pv-tag.no{background:#eef0f6;color:#8a90a8}
+.pv-chips{display:flex;gap:4px}
+.pv-chips span{flex:1;text-align:center;font-size:9px;font-weight:700;padding:4px 0;border-radius:6px;background:#fff;border:1px solid #e6eaf4;color:#8a90a8}
+.pv-chips span.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.pv-note{font-size:9px;color:#9aa1b7;line-height:1.45}
+.pv-h{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:9.5px;font-weight:700;color:#4a5273}
+.pv-h .pv-tag{font-weight:800}
+.pv-spark{display:block;width:100%}
+
+/* ================= 方案 ================= */
+.plans{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.plan{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px 18px;position:relative}
+.plan.rec{border-color:#b9c4f5;box-shadow:0 6px 22px rgba(36,52,200,.07)}
+.plan-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.plan-h .pid{font-size:11px;font-weight:800;color:#fff;background:var(--brand);padding:3px 9px;border-radius:6px;letter-spacing:.3px}
+.plan-h h3{margin:0;font-size:17px;letter-spacing:-.3px}
+.plan-h .badge{margin-left:auto;display:flex;gap:6px;align-items:center}
+.plan>p{margin-top:8px;font-size:12.8px;color:var(--text-2);max-width:940px}
+.plan-cols{display:grid;grid-template-columns:1.02fr 1fr;gap:18px;margin-top:14px;align-items:start}
+@media(max-width:900px){.plan-cols{grid-template-columns:1fr}}
+.skel{background:#f7f8fc;border:1px solid #edf0f8;border-radius:11px;padding:8px;display:flex;flex-direction:column;gap:4px}
+.skel .r{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #e9ecf5;border-radius:6px;padding:4px 7px;font-size:9.5px;font-weight:600;color:#4a5273;line-height:1.3}
+.skel .r b{color:var(--brand);font-size:9px;font-weight:800;flex:0 0 auto}
+.skel .r .m{margin-left:auto;font-size:8.5px;color:#a3aac0;font-weight:600;white-space:nowrap}
+.skel .r.grp{background:#eef1fb;border-color:#dfe5fa;color:var(--brand-deep);font-weight:800;justify-content:center;font-size:9.5px;letter-spacing:.4px}
+.skel .r.gray{background:#f2f4f9;border-color:#e6e9f2;color:#8a90a8;font-weight:600}
+.skel2{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+.mx th .th-sub{display:block;font-size:9px;color:#98a0b8;font-weight:600;letter-spacing:0;margin-top:1px}
+.plan-meta{display:flex;flex-direction:column;gap:0;background:#fafbff;border:1px solid #eef0f7;border-radius:12px;padding:2px 14px;align-self:stretch;justify-content:center}
+.plan-meta .row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed #eef0f7;font-size:12.2px}
+.plan-meta .row:last-child{border-bottom:0}
+.plan-meta .k{flex:0 0 68px;color:#8b92a8;font-weight:700;font-size:11.5px;padding-top:1px}
+.plan-meta .v{color:#2e3450;line-height:1.55}
+.plan-meta .v.up{color:var(--ok);font-weight:600}
+.plan-meta .v.dn{color:var(--danger);font-weight:600}
+.pm-foot{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid #f0f2f8;font-size:11.5px;color:var(--text-3)}
+.pm-foot b{color:#39406a;font-weight:800}
+
+/* 矩阵 */
+.mx{font-size:11px}
+.mx th{font-size:10px;text-align:center;padding:8px 3px}
+.mx th:first-child{text-align:left;padding-left:10px}
+.mx td{padding:5px 3px;text-align:center;font-size:10.5px}
+.mx td:first-child{text-align:left;padding-left:10px;white-space:nowrap;color:#39406a;font-weight:600}
+.mx td:first-child em{font-style:normal;color:#a3aac0;font-weight:700;font-size:9px;margin-left:4px}
+.mx .y{color:var(--brand);font-weight:800;font-size:12px}
+.mx .o{color:#b4560c;font-weight:700;font-size:11px}
+.mx .n{color:#d9dde9}
+.mx tr.gsep td{background:#f7f8fc;font-weight:800;color:#3a4166;font-size:10px;letter-spacing:.4px}
+
+/* 决策清单 */
+.dec{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.dec .d{display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid #eef0f7;align-items:flex-start}
+.dec .d:last-child{border-bottom:0}
+.dec .d>.box{flex:0 0 auto;width:15px;height:15px;border:1.5px solid #c3cadf;border-radius:4px;margin-top:3px}
+.dec .d>.q{flex:1;min-width:0}
+.dec .d>.q>b{font-size:13px;display:block;margin-bottom:3px}
+.dec .d>.q span{font-size:11.5px;color:var(--text-2);line-height:1.55;display:block}
+.dec .d>.q .ops{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+.dec .d>.q .ops i{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;background:#f4f6fb;border:1px solid #e7eaf3;color:#5d6480}
+
+/* ================= 手机壳（沿用 PRD 组件） ================= */
+.wf-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;justify-content:center}
+.wf-figure{margin:0}
+.wf-figure figcaption{margin-top:12px;text-align:center;font-size:12px;color:var(--text-2);font-weight:600}
+.wf-figure figcaption span{display:block;margin-top:2px;font-weight:400;color:var(--text-3);font-size:11px}
+.phone{
+  width:390px;height:844px;border-radius:30px;background:#f5f6fa;overflow:hidden;position:relative;
+  box-shadow:0 18px 44px rgba(23,30,70,.16),0 0 0 8px #1c2338,0 0 0 9px #2a3350;
+  display:flex;flex-direction:column;color:var(--ink)
+}
+.p-status{flex:0 0 28px;display:flex;align-items:center;justify-content:space-between;padding:4px 22px 0;font-size:11.5px;font-weight:700}
+.p-status .ic{display:flex;align-items:center;gap:4px}
+.p-nav{flex:0 0 50px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 6px;background:#fff;border-bottom:1px solid #e4e7ef}
+.p-nav h1{font-size:16px;font-weight:700;text-align:center;letter-spacing:-.2px}
+.p-nav .ico{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;color:#2b3152;margin:0 auto;font-size:17px}
+.p-nav .ico.ghost{color:#b9c0d6}
+.p-scroll{flex:1;min-height:0;overflow:hidden;padding:12px 14px 10px;display:flex;flex-direction:column;gap:9px}
+.p-scroll>*{flex:0 0 auto}
+.p-dock{flex:0 0 62px;display:flex;align-items:center;gap:6px;padding:6px 14px 10px;background:linear-gradient(180deg,rgba(245,246,250,0),#f5f6fa 34%)}
+.p-dock .bar{flex:1;height:48px;border-radius:18px;background:#fff;border:1px solid rgba(11,16,47,.06);display:flex;align-items:center;justify-content:space-around;box-shadow:0 4px 14px rgba(11,16,47,.06)}
+.p-dock .di{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:11px;color:#8a90a8}
+.p-dock .di.on{background:var(--brand-weak);color:var(--brand)}
+.p-chips{display:flex;gap:6px;padding:4px;border-radius:11px;background:#eceff7}
+.p-chips span{flex:1;height:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:11.5px;font-weight:600;color:#6d7590;white-space:nowrap}
+.p-chips span.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(11,16,47,.1)}
+.p-hero{background:linear-gradient(155deg,#2434c8,#3a4ede 62%,#4d61ea);border-radius:16px;padding:12px 14px;color:#fff;position:relative;overflow:hidden}
+.p-hero:after{content:"";position:absolute;right:-42px;top:-46px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.10)}
+.p-hero .lbl{font-size:11px;font-weight:600;opacity:.82;letter-spacing:.2px}
+.p-hero .big{margin-top:2px;font-size:27px;line-height:1.15;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.p-hero .big small{font-size:14px;font-weight:700;letter-spacing:0;opacity:.85;margin-left:2px}
+.p-hero .dlt{display:inline-flex;align-items:center;gap:5px;margin-top:6px;height:21px;padding:0 8px;border-radius:999px;background:rgba(255,255,255,.18);font-size:10.5px;font-weight:700}
+.p-hero .dlt span{font-weight:500;opacity:.8}
+.p-hero .rows{display:grid;grid-template-columns:repeat(3,1fr);margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.22);position:relative;z-index:1}
+.p-hero .rows div{min-width:0}
+.p-hero .rows b{display:block;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.p-hero .rows span{display:block;margin-top:1px;font-size:10px;opacity:.78}
+.p-card{background:#fff;border:1px solid #e4e7ef;border-radius:15px;padding:12px 13px;min-width:0}
+.p-ch{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.p-ch b{font-size:13px;font-weight:700}
+.p-ch .go{margin-left:auto;font-size:11px;color:#7b83a0;font-weight:600}
+.p-ch .tagline{font-size:10px;font-weight:600;color:#9aa1b7}
+.p-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.p-kpi{background:#fff;border:1px solid #e4e7ef;border-radius:14px;padding:10px 12px;min-width:0}
+.p-kpi b{display:block;font-size:18px;font-weight:800;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.p-kpi span{display:block;margin-top:1px;font-size:10.5px;color:#7b83a0;font-weight:600}
+.p-kpi em{font-style:normal;font-size:10px;font-weight:700;color:var(--danger);margin-left:4px}
+.p-kpi em.dn{color:var(--ok)}
+.p-rk{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid #f0f2f8}
+.p-rk:last-child{border-bottom:0;padding-bottom:2px}
+.p-rk .no{flex:0 0 18px;height:18px;border-radius:6px;background:#f1f3fa;color:#7c84a2;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.p-rk .no.t1{background:#2434c8;color:#fff}
+.p-rk .no.t2{background:#7b8cf0;color:#fff}
+.p-rk .no.t3{background:#bcc6f7;color:#2a3aa8}
+.p-rk .nm{flex:1;min-width:0}
+.p-rk .nm b{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-rk .nm>i{display:block;font-style:normal;font-size:9.5px;color:#9aa1b7;margin-top:1px}
+.p-rk .amt{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.p-bar{display:block;height:4px;border-radius:99px;background:#eef0f7;overflow:hidden;margin-top:4px}
+.p-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2434c8,#5a6bef)}
+.p-4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.p-4 div{padding:8px;border-radius:11px;background:#f7f8fc;text-align:center}
+.p-4 b{display:block;font-size:15px;font-weight:800;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.p-4 span{display:block;margin-top:1px;font-size:9.5px;color:#8a91a8;font-weight:600}
+.p-note{margin-top:2px;font-size:9.5px;line-height:1.5;color:#9aa1b7}
+.p-foot-note{font-size:9.5px;color:#9aa1b7;text-align:center;margin-top:2px}
+.p-list-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f2f8}
+.p-list-row:last-child{border-bottom:0}
+.p-list-row .d{font-size:11.5px;color:#5d6480;font-variant-numeric:tabular-nums;flex:0 0 52px}
+.p-list-row .v{margin-left:auto;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.p-list-row .o{margin-left:auto;font-size:10px;color:#9aa1b7;width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.p-seg{display:flex;gap:6px;padding:4px;border-radius:11px;background:#eceff7}
+.p-seg span{flex:1;height:29px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:11.5px;font-weight:700;color:#6d7590}
+.p-seg span.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(11,16,47,.1)}
+.p-todo{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0f2f8}
+.p-todo:last-child{border-bottom:0}
+.p-todo .ic{flex:0 0 26px;height:26px;border-radius:9px;background:var(--warn-bg);color:#b4560c;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.p-todo .tx{flex:1;min-width:0}
+.p-todo .tx b{display:block;font-size:12px;font-weight:700}
+.p-todo .tx span{display:block;font-size:9.5px;color:#9aa1b7;margin-top:1px}
+.p-todo .n{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;color:#b4560c}
+.p-todo .ar{color:#c3cadf;font-size:14px}
+.p-concl{background:#fff;border:1px solid #e4e7ef;border-radius:15px;padding:12px 13px;display:flex;gap:10px}
+.p-concl .ix{flex:0 0 20px;height:20px;border-radius:7px;background:var(--brand-weak);color:var(--brand);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.p-concl .tx b{display:block;font-size:12.5px;font-weight:700;line-height:1.45}
+.p-concl .tx b em{font-style:normal;color:var(--brand);font-weight:800;font-variant-numeric:tabular-nums}
+.p-concl .tx span{display:block;margin-top:3px;font-size:9.5px;color:#9aa1b7}
+
+/* 漏斗 / 进度 / 柱图 */
+.pv-fn{display:flex;flex-direction:column;gap:3px}
+.pv-fn i{display:block;height:8px;border-radius:3px;background:var(--brand)}
+.pv-fn i:nth-child(2){opacity:.66}
+.pv-fn i:nth-child(3){opacity:.46}
+.pv-fn i:nth-child(4){opacity:.3}
+.pv-prog{height:6px;border-radius:3px;background:#e9ecf6;overflow:hidden;margin-top:2px}
+.pv-prog i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.pv-prog.b i{background:var(--brand)}
+.pv-dots{display:flex;gap:4px;align-items:center}
+.pv-dots i{width:7px;height:7px;border-radius:50%;background:#dfe4f0;display:block}
+.pv-dots i.on{background:var(--brand)}
+
+/* 图例 */
+.lg{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:11.5px;color:var(--text-2)}
+.lg span{display:inline-flex;align-items:center;gap:5px}
+.lg i{width:9px;height:9px;border-radius:3px;display:block}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ==================== 文档头 ==================== -->
+<div class="doc-head">
+  <div class="kicker"><i></i>Design Options · 只做设计，不动代码</div>
+  <h1>经营分析移动端：先把牌摊开，再做减法</h1>
+  <p class="sub">50 个可展示的信息模块 + 8 套页面组合方案。目标不是"能做什么"，而是"该留什么"——把现有接口能支撑的所有可能性摆在一张桌上，由你逐个勾选。</p>
+  <div class="meta">
+    <span>基线 <b>ANALYTICS-MOBILE-PRD.html</b></span>
+    <span>数据源 <b>7 接口 + 1 本地</b></span>
+    <span>模块 <b>50</b></span>
+    <span>方案 <b>8</b></span>
+    <span>本期范围 <b>预包装，不含现制</b></span>
+  </div>
+</div>
+
+<nav class="toc">
+  <a href="#s0"><em>0</em>怎么用这份文档</a>
+  <a href="#s1"><em>1</em>数据底座：手上有什么牌</a>
+  <a href="#s2"><em>2</em>模块池（50 个，可勾选）</a>
+  <a href="#s3"><em>3</em>八套页面方案</a>
+  <a href="#s4"><em>4</em>方案 × 模块 覆盖矩阵</a>
+  <a href="#s5"><em>5</em>我的推荐与该砍的</a>
+  <a href="#s6"><em>6</em>待你拍板</a>
+</nav>
+
+<!-- ==================== 00 ==================== -->
+<section id="s0">
+  <div class="sec-head"><span class="sec-num">00</span><h2>怎么用这份文档</h2><span class="hint">三层选择，从粗到细</span></div>
+
+  <p class="lead">上一份 PRD 已经论证了"哪些分析能做"，也给出了 4 + 1 个页面。这一份换一个做法：<b>先不预设页面</b>，把所有能上手机的信息拆成最小可展示单元（模块），再往下组合成页面方案。这样能避免"页面结构定死了，好内容塞不进去"。</p>
+
+  <div class="verdict">
+    <div class="vcard">
+      <div class="n">STEP 1 · 看第 3 章</div>
+      <h4>先定页面形态</h4>
+      <p>8 套方案从"一屏到底"到"卡片自由拼"，差别不在模块多少，而在<b>产品立场</b>：是给老板看结果，还是给运营看今天该干什么。</p>
+    </div>
+    <div class="vcard">
+      <div class="n">STEP 2 · 看第 2 章</div>
+      <h4>再挑卡片</h4>
+      <p>50 个模块按 7 组排列，每个都标了数据来源、屏幕高度、价值和成本。<b>圈掉不想要的编号即可</b>，不用管它属于哪套方案。</p>
+    </div>
+    <div class="vcard">
+      <div class="n">STEP 3 · 看第 6 章</div>
+      <h4>最后拍板</h4>
+      <p>8 个非技术决策项（角色、分期、排行能否下钻等）。这些定了，具体做哪几个页面就自动收敛了。</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="ic">i</div>
+    <p><b>阅读约定：</b>模块编号 <code>M01–M50</code> 全文唯一，第 4 章的矩阵用编号索引；<b>高度档</b> S ≈ 60–90pt、M ≈ 110–180pt、L ≈ 200pt 以上；<b>价值</b> ●●● 强 / ●● 中 / ● 弱；<b>成本</b> 1 = 现有数据纯前端派生、2 = 需多一次请求、3 = 需要新交互或新页面。</p>
+  </div>
+
+  <div class="note ok">
+    <div class="ic">✓</div>
+    <p><b>这份文档不改任何代码。</b>没有新增接口，没有动 <code>analytics.html</code>，也没有写页面。所有方案都建立在现有 7 个接口 + 手机上已有的盘点数据之上。</p>
+  </div>
+</section>
+
+<!-- ==================== 01 ==================== -->
+<section id="s1">
+  <div class="sec-head"><span class="sec-num">01</span><h2>数据底座：手上到底有什么牌</h2><span class="hint">先算清边界，再谈设计</span></div>
+
+  <p>50 个模块不是凭空想的，每个都能落到具体字段。下表把 8 个数据源摊开，第三列是"直接就能显示"的，第四列是"用现有字段算出来的"。</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:178px">数据源</th><th style="width:56px" class="num">字段</th><th style="width:330px">直接可显示</th><th>可派生</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>summary.business</code></td><td class="num">5</td>
+          <td>区间实付金额、区间订单数、今日实付、今日订单、币种</td>
+          <td>客单价、日均金额、日均订单、环比增减、单均件数（<span class="mark x">不可</span>）</td>
+        </tr>
+        <tr>
+          <td><code>summary.operational</code></td><td class="num">8</td>
+          <td>设备总数、在用设备、点位总数、正常点位、已关闭点位、商品总数、在售商品、低库存商品</td>
+          <td>在用率、点位正常率、<b>暂停点位（总数 − 正常 − 关闭）</b>、上架率、缺货占比、单机产出</td>
+        </tr>
+        <tr>
+          <td><code>sales-trend</code></td><td class="num">4×N</td>
+          <td>日期、标签、当日金额、当日订单</td>
+          <td>峰值/谷值、日均、累计、相邻日变化、当日客单价、环比上一周期</td>
+        </tr>
+        <tr>
+          <td><code>rankings</code></td><td class="num">12</td>
+          <td>设备/商品/点位各 TOP N（排名、名称、金额、设备还带 SN）</td>
+          <td>各行占比、TOP5 集中度、尾部贡献（总额 − TOP N）、超均值设备数</td>
+        </tr>
+        <tr>
+          <td><code>device-fleet-insights</code></td><td class="num">11</td>
+          <td>机型结构、固件版本分布、可升级台数、客户设备数</td>
+          <td>机型占比、版本落后占比、可升级率</td>
+        </tr>
+        <tr>
+          <td><code>device-activation-trend</code></td><td class="num">5</td>
+          <td>月度激活点、累计激活数、活跃客户数</td>
+          <td>本月新增、环比上月、累计曲线</td>
+        </tr>
+        <tr>
+          <td><code>operations/usage-analysis</code><br><span class="tiny">仅平台角色</span></td><td class="num">12</td>
+          <td>货架浏览、商品浏览、支付进入/放弃/成功、取货成功、屏显不一致、人流三段</td>
+          <td>四级转化率、支付放弃率、取货成功率、异常率、人流漏斗</td>
+        </tr>
+        <tr>
+          <td><b>本地盘点数据</b><br><span class="tiny"><code>vs:count:&lt;deviceId&gt;</code></span></td><td class="num">6</td>
+          <td>盘点时间、商品数、实盘合计、差异件数、变更行明细</td>
+          <td>已盘点设备数、盘盈/盘亏件数、差异 TOP 商品<br><span class="tiny">手机独有，Web 端没有</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <div class="ic">!</div>
+    <p><b>一个必须纠正的口径误会：</b><code>deviceActive</code> 取自 <code>DeviceLifecycleStatusEnum.ACTIVE</code>，含义是<b>生命周期"在用"</b>，不是"此刻在线"。设备状态实际有 注册 / 待激活 / 在用 / 维修中 / 已退役 五种，接口只回"在用"一个数。所以 <code>总数 − 在用</code> <b>不等于离线设备</b>（里面混着维修和退役），任何"离线率""在线率"的卡片在这个前提下都是错的。这个坑直接影响第 2 章 M33 的可行性判断。</p>
+  </div>
+
+  <h3>1.1 看似能算、其实不能（伪指标黑名单）</h3>
+  <p>做减法时最容易犯的错不是漏掉功能，而是<b>把算不出来的东西做成卡片</b>。以下 8 项在设计时会被反复想到，但现有数据支撑不了，方案里一律不出现：</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:180px">想到的指标</th><th style="width:96px">可行性</th><th>为什么不行</th></tr></thead>
+      <tbody>
+        <tr><td>设备在线率 / 离线数</td><td><span class="mark x">✕</span></td><td>接口给的是生命周期状态，不含心跳。要真在线率得读设备上报时间</td></tr>
+        <tr><td>商品销量（件）</td><td><span class="mark x">✕</span></td><td>排行只回金额；没有订单商品行的聚合接口</td></tr>
+        <tr><td>退款率 / 净交易额</td><td><span class="mark x">✕</span></td><td>无退款金额按日聚合；订单级退款状态不能求和</td></tr>
+        <tr><td>自然月 / 自然周</td><td><span class="mark x">✕</span></td><td><code>range=month</code> 是近 30 天滑动窗口。要自然月只能 custom 传日期，但 UI 上不能叫"本月"</td></tr>
+        <tr><td>分时段（小时）销售</td><td><span class="mark x">✕</span></td><td><code>sales-trend</code> 固定 <code>granularity=day</code>，无法按小时归桶</td></tr>
+        <tr><td>支付渠道 / 入口占比</td><td><span class="mark x">✕</span></td><td>无渠道维度聚合</td></tr>
+        <tr><td>SKU 动销率 / 周转</td><td><span class="mark x">✕</span></td><td>无库存台账；Web 自己也标"未接入"</td></tr>
+        <tr><td>同比增长</td><td><span class="mark p">◐</span></td><td>技术上能传去年同区间，但跨年数据完整性和口径无法保证，本期不做</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <div class="ic">i</div>
+    <p><b>但有一块金字招牌被忽略了：</b>盘点数据是<b>手机端产生的</b>。Web 后台没有、也不需要这个数据。"今天盘了几台、差异多少件、哪几个商品总是对不上"——这类信息只有 App 能给，而且和补货动作直接连着。它在第 2 章被单独列为一组（G5），也是方案 D 的核心。</p>
+  </div>
+
+  <h3>1.2 "这一期去掉咖啡机"能兑现到什么程度</h3>
+  <p>这是个必须在校准的设计前提。需求是"只考虑预包装产品"，但在<b>不新增接口</b>的约束下，这句话只能实现一半：</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:290px">想要的"去掉咖啡"</th><th style="width:66px">能否</th><th>依据</th></tr></thead>
+      <tbody>
+        <tr><td>页面上不出现咖啡专属分析（制作任务、原料消耗、配方矩阵）</td><td><span class="mark f">✓ 能</span></td><td>纯设计决策，不设计这些模块即可</td></tr>
+        <tr><td>销售额、订单数里不含咖啡机订单</td><td><span class="mark x">✕ 不能</span></td><td><code>summary</code> / <code>sales-trend</code> / <code>rankings</code> 全链路无 <code>deviceType</code> 参数，SQL 里也没有类型条件</td></tr>
+        <tr><td>设备台数只算预包装设备</td><td><span class="mark x">✕ 不能</span></td><td><code>operational</code> 同样没有类型过滤，计数是租户全部设备</td></tr>
+        <tr><td>商品排行里不出咖啡原料</td><td><span class="mark p">◐ 看数据</span></td><td>取决于咖啡原料是否登记为普通商品，需联调时核对，设计阶段不假设</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note danger">
+    <div class="ic">!</div>
+    <p><b>结论要写进卡片文案里：</b>本期的"去掉咖啡"= <b>不做咖啡分析</b>，<b>不等于</b>数字已剔除咖啡。所有金额类卡片副标题统一写"租户全部设备订单"，绝不写"仅预包装"。若一定要剔除，只有两条路——用 <code>/orders?deviceType=</code> 自己拉全量订单聚合（性能与分页都不可行），或后端给 dashboard 加参数（属于新增接口，违背本期约束）。两条都不建议，等二期再谈。</p>
+  </div>
+</section>
+
+<!-- ==================== 02 模块池 ==================== -->
+<section id="s2">
+  <div class="sec-head"><span class="sec-num">02</span><h2>模块池：50 个可展示单元</h2><span class="hint">圈编号，不用管它属于哪套方案</span></div>
+
+  <p class="lead">每个模块都是"能独立放进一张卡片"的最小单元。三件事说清楚了才能被选：<b>数据从哪来</b>、<b>占多少屏</b>、<b>值不值得</b>。所有示例数字彼此自洽，可直接拿去对照。</p>
+
+  <div class="lg">
+    <span><i style="background:#008f63"></i>建议上（一期候选）</span>
+    <span><i style="background:#b4560c"></i>可选（看方案取舍）</span>
+    <span><i style="background:#a3aac0"></i>不建议（说明理由）</span>
+    <span><i style="background:#dfe4f0"></i>成本 1 = 纯派生　2 = 多一次请求　3 = 需新交互</span>
+  </div>
+
+  <!-- ---------- G1 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G1</span><h3>经营结果</h3><span class="gsub">M01–M07 · 回答"最近卖得怎么样"</span></div>
+    <p class="small">最基础的一组，也是唯一 100% 能还原的一组。难点不在取数，在<b>怎么摆才不被误读</b>——尤其是"今日"和"区间"混在一屏里的时候。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M01</span><b>销售额大数</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-lbl">销售额 · 11-20 至 11-26（CNY）</div>
+          <div class="pv-num">¥128,400<em>▲ 8.2%</em></div>
+          <div class="pv-note">前 7 天 ¥118,700</div>
+        </div>
+        <div class="mod-f"><code>summary.totalSalesAmount</code>，环比需再请求上一个等长周期</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1–2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M02</span><b>订单数</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-lbl">订单数 · 近 7 天</div>
+          <div class="pv-num">2,860<em>▲ 3.1%</em></div>
+        </div>
+        <div class="mod-f"><code>summary.totalOrderCount</code></div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M03</span><b>客单价</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-lbl">客单价 · 派生</div>
+          <div class="pv-num">¥44.9<em>▲ 4.9%</em></div>
+          <div class="pv-note">128,400 ÷ 2,860，保留 1 位</div>
+        </div>
+        <div class="mod-f">派生：金额 ÷ 订单；订单为 0 时显示「—」不是 0</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M04</span><b>今日实时</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-lbl">今日（不受筛选影响）</div>
+          <div class="pv-num" style="font-size:18px">¥12,860<em style="color:#8b92a8">186 单</em></div>
+        </div>
+        <div class="mod-f"><code>todaySalesAmount</code> / <code>todayOrderCount</code>，标签必须写"今日"</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M05</span><b>日均销售</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b>¥18,343</b><span>日均金额</span></div>
+            <div><b>409</b><span>日均订单</span></div>
+          </div>
+        </div>
+        <div class="mod-f">派生：合计 ÷ 区间天数（不是 ÷ 30）</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M06</span><b>KPI 三联卡</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:19px">¥128,400</div>
+          <div class="pv-row" style="margin-top:2px">
+            <div><b>2,860</b><span>订单</span></div>
+            <div><b>¥44.9</b><span>客单价</span></div>
+          </div>
+        </div>
+        <div class="mod-f">M01+M02+M03 合卡：一张卡给三个数，省一次视线跳转</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M07</span><b>本期 vs 上期对照</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>销售额</span><b>128,400 <span class="up">+8.2%</span></b></div>
+          <div class="pv-kv"><span>订单</span><b>2,860 <span class="up">+3.1%</span></b></div>
+          <div class="pv-kv"><span>客单价</span><b>44.9 <span class="up">+4.9%</span></b></div>
+        </div>
+        <div class="mod-f"><code>summary</code> ×2；比单个环比箭头信息量大得多</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 2</span><span class="pick up">建议上</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G2 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G2</span><h3>趋势</h3><span class="gsub">M08–M15 · 回答"什么时候掉的"</span></div>
+    <p class="small">趋势的坑是<b>每天只能拿到一个点</b>（<code>granularity=day</code>），所以任何"分时段"的图都做不了。另一坑是 7 天视图做平滑没有意义，均线只在 30 天视图出现。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M08</span><b>迷你趋势线</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <svg class="pv-spark" viewBox="0 0 260 34" height="30" aria-hidden="true">
+            <polyline points="4,22 46,20 88,25 130,14 172,17 214,9 256,26" fill="none" stroke="#2434c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="pv-note">无坐标轴 · 嵌在 KPI 卡里 · 只表方向</div>
+        </div>
+        <div class="mod-f">复用 <code>sales-trend</code> 结果，零额外请求</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M09</span><b>标准折线</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 56" width="100%" height="50" aria-hidden="true">
+            <g stroke="#e9ecf6" stroke-width="1"><line x1="0" y1="46" x2="260" y2="46"/><line x1="0" y1="30" x2="260" y2="30"/><line x1="0" y1="14" x2="260" y2="14"/></g>
+            <path d="M6 34 L44 30 L82 38 L120 22 L158 26 L196 16 L234 40 L234 46 L6 46 Z" fill="#2434c8" opacity=".12"/>
+            <polyline points="6,34 44,30 82,38 120,22 158,26 196,16 234,40" fill="none" stroke="#2434c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="196" cy="16" r="2.8" fill="#fff" stroke="#2434c8" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="mod-f">面积渐变 + 3 条网格 + 3–4 个刻度；点数 &gt; 10 时刻度不逐个标</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M10</span><b>金额/订单切换</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-chips"><span class="on">销售额</span><span>订单数</span></div>
+          <div class="pv-note">同一份 points，纯前端切换，不走网络</div>
+        </div>
+        <div class="mod-f">不加接口、不加请求，只加一个分段控件</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M11</span><b>本期 + 上期双线</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 50" width="100%" height="46" aria-hidden="true">
+            <polyline points="6,30 44,26 82,34 120,18 158,22 196,13 234,36" fill="none" stroke="#2434c8" stroke-width="1.8" stroke-linejoin="round"/>
+            <polyline points="6,38 44,36 82,40 120,30 158,33 196,26 234,42" fill="none" stroke="#b3bad4" stroke-width="1.5" stroke-dasharray="3 3"/>
+          </svg>
+          <div class="pv-note">实线本期 · 虚线上期</div>
+        </div>
+        <div class="mod-f">两次 <code>sales-trend</code>；两条线日期轴要对齐</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M12</span><b>峰值/谷值标注</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b style="color:#d92d20">¥32,800</b><span>峰值 11-22</span></div>
+            <div><b>¥9,120</b><span>谷值 11-16</span></div>
+          </div>
+        </div>
+        <div class="mod-f">由 points 取 max/min，附在趋势卡下方一行</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M13</span><b>7 日均线</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 34" width="100%" height="30" aria-hidden="true">
+            <polyline points="4,20 44,18 84,22 124,16 164,14 204,12 250,10" fill="none" stroke="#2434c8" stroke-width="1.6" stroke-dasharray="4 3"/>
+          </svg>
+          <div class="pv-note">仅近 30 天视图有意义；7 天视图会退化成直线</div>
+        </div>
+        <div class="mod-f">前端滑动平均；<b>只在 30 天视图出现</b></div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod dim">
+        <div class="mod-h"><span class="mn">M14</span><b>累计销售曲线</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 40" width="100%" height="36" aria-hidden="true">
+            <path d="M5 38 C40 34 80 28 120 22 C160 15 200 10 245 6" fill="none" stroke="#b3bad4" stroke-width="1.6"/>
+          </svg>
+          <div class="pv-note">累计值只增不减，看不出波动</div>
+        </div>
+        <div class="mod-f">能算，但与折线信息重复，且运营不会看累计</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 1</span><span class="pick no">不建议</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M15</span><b>按日明细</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span style="color:#8a90a8">11-26</span><b>¥12,860 <span style="color:#a3aac0;font-weight:600">186</span></b></div>
+          <div class="pv-kv"><span style="color:#8a90a8">11-25</span><b>¥24,200 <span style="color:#a3aac0;font-weight:600">302</span></b></div>
+          <div class="pv-kv"><span style="color:#8a90a8">11-24</span><b>¥19,800 <span style="color:#a3aac0;font-weight:600">268</span></b></div>
+        </div>
+        <div class="mod-f">points 逐行渲染，默认 5 行 +「展开全部」</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G3 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G3</span><h3>排行</h3><span class="gsub">M16–M23 · 回答"谁在扛量"</span></div>
+    <p class="small">排行接口只回<b>金额</b>，所以所有文案都必须是"销售额排行"，不能写"销量榜"。<code>limit</code> 上限 20，默认 5；一次请求同时带回商品/点位/设备三组，三个 Tab 共用。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M16</span><b>商品 TOP3 内嵌</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n t1">1</span><b>气泡水 青柠 500ml</b><span class="bar"><i style="width:100%"></i></span><em>¥9,860</em></div>
+          <div class="pv-rk"><span class="n t2">2</span><b>薯片 原味</b><span class="bar"><i style="width:85%"></i></span><em>¥8,420</em></div>
+          <div class="pv-rk"><span class="n t3">3</span><b>能量饮料 250ml</b><span class="bar"><i style="width:80%"></i></span><em>¥7,940</em></div>
+        </div>
+        <div class="mod-f"><code>rankings.topProducts</code> 前 3 条，用于首页内嵌</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1–2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M17</span><b>商品 TOP10 全屏</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n t1">1</span><b>气泡水 青柠 500ml</b><span class="bar"><i style="width:100%"></i></span><em>¥9,860</em></div>
+          <div class="pv-rk"><span class="n">2</span><b>薯片 原味</b><span class="bar"><i style="width:85%"></i></span><em>¥8,420</em></div>
+          <div class="pv-rk"><span class="n">3</span><b>能量饮料 250ml</b><span class="bar"><i style="width:80%"></i></span><em>¥7,940</em></div>
+          <div class="pv-rk"><span class="n">4</span><b>巧克力 50g</b><span class="bar"><i style="width:62%"></i></span><em>¥6,120</em></div>
+        </div>
+        <div class="mod-f"><code>rankings?limit=10</code>；点击行<b>无下钻</b>（无商品详情页）</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M18</span><b>点位 TOP10</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n t1">1</span><b>滨江写字楼 A 座</b><span class="bar"><i style="width:100%"></i></span><em>¥18,400</em></div>
+          <div class="pv-rk"><span class="n">2</span><b>科技园 3 号楼</b><span class="bar"><i style="width:76%"></i></span><em>¥14,020</em></div>
+          <div class="pv-rk"><span class="n">3</span><b>地铁 7 号线 B 口</b><span class="bar"><i style="width:54%"></i></span><em>¥9,930</em></div>
+        </div>
+        <div class="mod-f"><code>rankings.topLocations</code>；点位比设备更贴运营语言</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M19</span><b>设备 TOP10（可下钻）</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n t1">1</span><b>VM-1001</b><span class="bar"><i style="width:100%"></i></span><em>¥6,240</em></div>
+          <div class="pv-rk"><span class="n">2</span><b>VM-1004</b><span class="bar"><i style="width:88%"></i></span><em>¥5,510</em></div>
+          <div class="pv-note" style="margin-top:2px">带 SN · 点击进设备详情</div>
+        </div>
+        <div class="mod-f"><code>topDevices</code> 含 <code>deviceId</code>+<code>sn</code>，是<b>唯一能安全下钻</b>的排行</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 2</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M20</span><b>三 Tab 切换</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-chips"><span class="on">商品</span><span>点位</span><span>设备</span></div>
+          <div class="pv-note">一次请求三组数据，切换零网络开销</div>
+        </div>
+        <div class="mod-f">避免开三个页面；三个 Tab 共用一个 <code>limit</code></div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M21</span><b>TOP5 集中度</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:17px">29.3%</div>
+          <div class="pv-note">前 5 名商品占总额 · 越集中越依赖单品</div>
+        </div>
+        <div class="mod-f">TOP5 金额 ÷ 区间总额；<b>依赖 M01</b></div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M22</span><b>尾部贡献</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>其余 381 个商品</span><b>70.7%</b></div>
+          <div class="pv-kv"><span>其余点位</span><b>61.4%</b></div>
+        </div>
+        <div class="mod-f">总额 − TOP N 之和；能算，但「381 个」这个数字容易引战</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M23</span><b>行内占比条</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n t1">1</span><b>气泡水</b><span class="bar"><i style="width:100%"></i></span><em>7.7%</em></div>
+          <div class="pv-rk"><span class="n">2</span><b>薯片</b><span class="bar"><i style="width:85%"></i></span><em>6.6%</em></div>
+        </div>
+        <div class="mod-f">条长按第一名归一，右侧标占总销售额比例</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G4 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G4</span><h3>资产与机队</h3><span class="gsub">M24–M31 · 回答"家底有多厚"</span></div>
+    <p class="small">这一组最容易犯的错是把<b>生命周期</b>当<b>在线状态</b>。接口只说"在用/非在用"，不说"在线/离线"。另外点位有第三种状态（暂停），可以用总数减出来，是个便宜又有用的派生指标。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M24</span><b>设备资产</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b>893</b><span>设备总数</span></div>
+            <div><b>764</b><span>在用</span></div>
+            <div><b>85.6%</b><span>在用率</span></div>
+          </div>
+          <div class="pv-note" style="margin-top:3px">口径：生命周期，非实时在线</div>
+        </div>
+        <div class="mod-f"><code>deviceTotal</code> / <code>deviceActive</code>；文案必须写"在用"</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M25</span><b>点位资产</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b>38</b><span>点位</span></div>
+            <div><b>31</b><span>正常</span></div>
+            <div><b>4</b><span>暂停</span></div>
+            <div><b>3</b><span>关闭</span></div>
+          </div>
+        </div>
+        <div class="mod-f">暂停 = <code>siteTotal − siteActive − siteClosed</code>（对应 SUSPENDED）</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M26</span><b>商品资产</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b>1,240</b><span>在售</span></div>
+            <div><b>6</b><span>低库存</span></div>
+            <div><b>78%</b><span>上架率</span></div>
+          </div>
+        </div>
+        <div class="mod-f"><code>productOnShelf</code> / <code>productLowStock</code> / <code>productTotal</code></div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M27</span><b>机型结构</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-rk"><span class="n">·</span><b>单门柜</b><span class="bar"><i style="width:100%"></i></span><em>412</em></div>
+          <div class="pv-rk"><span class="n">·</span><b>双门柜</b><span class="bar"><i style="width:69%"></i></span><em>286</em></div>
+          <div class="pv-rk"><span class="n">·</span><b>售卖机</b><span class="bar"><i style="width:47%"></i></span><em>195</em></div>
+        </div>
+        <div class="mod-f"><code>fleet-insights.models[]</code>，含 count；与 M24 的 893 对得上</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M28</span><b>固件版本 + 可升级</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>v2.4.x</span><b>62%</b></div>
+          <div class="pv-kv"><span>v2.3.x</span><b>31%</b></div>
+          <div class="pv-kv"><span>更早</span><b>7%</b></div>
+          <div class="pv-note" style="margin-top:2px">218 台可升级</div>
+        </div>
+        <div class="mod-f"><code>versions[]</code> + <code>upgradeEligibleCount</code>；偏向运维，不是经营</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M29</span><b>月度新增设备</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 44" width="100%" height="40" aria-hidden="true">
+            <g fill="#c9d1f2"><rect x="10" y="26" width="22" height="16" rx="2"/><rect x="48" y="20" width="22" height="22" rx="2"/><rect x="86" y="24" width="22" height="18" rx="2"/><rect x="124" y="15" width="22" height="27" rx="2"/><rect x="162" y="19" width="22" height="23" rx="2"/></g>
+            <rect x="200" y="8" width="22" height="34" rx="2" fill="#2434c8"/>
+          </svg>
+          <div class="pv-note">逐月激活数 · 最后一根为本月</div>
+        </div>
+        <div class="mod-f"><code>device-activation-trend.points[]</code>，year+month+count</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod dim">
+        <div class="mod-h"><span class="mn">M30</span><b>累计激活曲线</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <svg viewBox="0 0 260 34" width="100%" height="30" aria-hidden="true">
+            <path d="M6 30 C60 26 120 18 180 12 C210 9 235 6 252 4" fill="none" stroke="#b3bad4" stroke-width="1.6"/>
+          </svg>
+          <div class="pv-note">与 M29 同一份数据，换一种画法</div>
+        </div>
+        <div class="mod-f">可算但重复；机队增长不是运营日看指标</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 1</span><span class="pick no">不建议</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M31</span><b>单机产出</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px">¥143.8</div>
+          <div class="pv-note">每台设备近 7 天产出 · 128,400 ÷ 893</div>
+        </div>
+        <div class="mod-f">派生；<b>分母含咖啡机、分子含咖啡订单</b>，口径一致但非纯预包装</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G5 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G5</span><h3>现场待办</h3><span class="gsub">M32–M38 · 手机独有的那一组</span></div>
+    <p class="small">这一组是整份文档里<b>最值得争的一组</b>。理由很简单：Web 后台已经能做报表了，运营坐在电脑前不会打开手机看趋势图；但他拎着货站在设备前面的时候，手机是唯一的屏幕。所以手机分析页真正的差异点不是"把报表缩小"，而是<b>把报表变成今天要干的活</b>。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M32</span><b>缺货商品</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px">6 <span style="font-size:11px;font-weight:700;color:#8b92a8">个商品低于安全库存</span></div>
+          <div class="pv-note" style="margin-top:2px">点击直达补货清单 ›</div>
+        </div>
+        <div class="mod-f"><code>summary.operational.productLowStock</code>，唯一带"该干活了"信号的字段</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod dim">
+        <div class="mod-h"><span class="mn">M33</span><b>非在用设备（原"离线"）</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px;color:#a3aac0">129 <span style="font-size:11px;font-weight:700">台</span></div>
+          <div class="pv-note">893 − 764，看着像"离线"，其实是注册/待激活/维修/退役的混合物</div>
+        </div>
+        <div class="mod-f">口径不成立：<code>deviceActive</code> 是生命周期状态，不是心跳在线</div>
+        <div class="mod-r"><span class="lv off">●●●</span><span class="cost">成本 1</span><span class="pick no">不建议</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M34</span><b>暂停点位</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px">4 <span style="font-size:11px;font-weight:700;color:#8b92a8">个点位暂停中</span></div>
+          <div class="pv-note" style="margin-top:2px">总数 38 − 正常 31 − 关闭 3</div>
+        </div>
+        <div class="mod-f">派生 SUSPENDED；暂停往往意味着"有纠纷"或"待复工"，值得被看见</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M35</span><b>今日盘点进度</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>今日已盘点</span><b>7 / 12 台</b></div>
+          <div class="pv-prog"><i style="width:58%"></i></div>
+          <div class="pv-note" style="margin-top:3px">基于本机盘点记录，非服务端</div>
+        </div>
+        <div class="mod-f">遍历 <code>vs:count:*</code>，按 24 小时窗口计数；<b>只统计这台手机盘过的</b></div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M36</span><b>盘点差异汇总</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-row">
+            <div><b style="color:#d92d20">+12</b><span>盘盈件</span></div>
+            <div><b style="color:#008f63">−5</b><span>盘亏件</span></div>
+            <div><b>+7</b><span>净差异</span></div>
+          </div>
+          <div class="pv-note" style="margin-top:3px">来自 7 台设备的盘点结果</div>
+        </div>
+        <div class="mod-f">聚合 <code>vs:count</code> 的 <code>diff</code> 与 <code>items[]</code>；<b>Web 端完全没有这份数据</b></div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M37</span><b>差异 TOP 商品</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>气泡水 青柠</span><b class="up">+8 件</b></div>
+          <div class="pv-kv"><span>薯片 原味</span><b class="dn">−4 件</b></div>
+          <div class="pv-note" style="margin-top:2px">跨设备累计，找"总也对不上"的 SKU</div>
+        </div>
+        <div class="mod-f">按商品名累加 <code>items[].diff</code>；本地样本通常只有几台，结论弱</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M38</span><b>待办聚合卡</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>缺货商品</span><b style="color:#b4560c">6 个 ›</b></div>
+          <div class="pv-kv"><span>暂停点位</span><b style="color:#b4560c">4 个 ›</b></div>
+          <div class="pv-kv"><span>今日未盘点</span><b style="color:#b4560c">5 台 ›</b></div>
+        </div>
+        <div class="mod-f">M32+M34+M35 合成一张卡，每行独立可点，跳各自页面</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">建议上</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G6 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G6</span><h3>转化漏斗</h3><span class="gsub">M39–M43 · 仅平台角色</span></div>
+    <p class="small">数据来自 <code>operations/usage-analysis</code>，只有 ROOT 角色有权限，且查询窗口 ≤ 30 天。它的价值是能看到"用户走到哪一步走了"，但覆盖率取决于设备有没有摄像头/屏，<b>不同点位的分母可能完全不同</b>，跨点位比较要很小心。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M39</span><b>支付四段漏斗</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-fn"><i style="width:100%"></i><i style="width:38%"></i><i style="width:34%"></i><i style="width:33%"></i></div>
+          <div class="pv-note" style="margin-top:3px">浏览 8,420 → 支付 3,180 → 成功 2,860 → 取货 2,804</div>
+        </div>
+        <div class="mod-f">payVisits / payCount / paySuccess / pickupSuccess 逐段算转化</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M40</span><b>支付放弃率</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px">10.1% <em class="dn">−1.4pt</em></div>
+          <div class="pv-note">3,180 进入支付，320 未完成</div>
+        </div>
+        <div class="mod-f">payAbandoned ÷ payVisits；<b>最能反映"缺货/价格"体感</b></div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M41</span><b>取货成功率</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-num" style="font-size:18px">98.0%</div>
+          <div class="pv-note">2,804 ÷ 2,860，56 单未取货</div>
+        </div>
+        <div class="mod-f">pickupSuccess ÷ paySuccess；设备可用性的间接指标</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M42</span><b>屏显/取货不一致</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>不一致单数</span><b>12 单</b></div>
+          <div class="pv-kv"><span>占支付成功</span><b>0.4%</b></div>
+        </div>
+        <div class="mod-f"><code>screenPickupMismatch</code>；绝对量小，但当异常率用需要基线</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 1</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod dim">
+        <div class="mod-h"><span class="mn">M43</span><b>人流漏斗</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-fn"><i style="width:100%"></i><i style="width:26%"></i><i style="width:11%"></i></div>
+          <div class="pv-note" style="margin-top:3px">经过 12,400 → 靠近 3,180 → 停留 1,360</div>
+        </div>
+        <div class="mod-f">pedestrianPassed/Approached/Stayed；<b>多数预包装点位没有客流采集</b></div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 2</span><span class="pick no">不建议</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------- G7 ---------- -->
+  <div class="grp">
+    <div class="grp-h"><span class="gid">G7</span><h3>全局与交互</h3><span class="gsub">M44–M50 · 不属于任何卡片，但决定体验</span></div>
+    <p class="small">这 7 项不是"展示什么"，而是"怎么展示"。它们不占内容位，但少一个就会让整页显得不专业。前 4 项（M44/M46/M47/M48）属于<b>底线项</b>，任何方案都必须有。</p>
+    <div class="mods">
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M44</span><b>时间分段控件</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-chips"><span>今日</span><span class="on">近 7 天</span><span>近 30 天</span><span>自定</span></div>
+          <div class="pv-note" style="margin-top:3px">顶部常驻 · 默认近 7 天</div>
+        </div>
+        <div class="mod-f">今日 / 近 7 天 / 近 30 天 / 自定义；<b>不能叫"本周""本月"</b></div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">必有</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M45</span><b>租户切换</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>当前租户</span><b>京品便利 ›</b></div>
+          <div class="pv-note" style="margin-top:2px">仅平台角色显示</div>
+        </div>
+        <div class="mod-f">沿用 App 现有切换器，<code>tenantId</code> 透传给各接口</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 2</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M46</span><b>口径脚注</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-note">数据按租户时区归日 · 金额为订单实付<br>含租户全部设备订单（含咖啡机）</div>
+        </div>
+        <div class="mod-f">页脚一句话，避免"数字和 Web 对不上"的争议</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">必有</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M47</span><b>下拉刷新 + 静默刷新</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>下拉</span><b>全量重取</b></div>
+          <div class="pv-kv"><span>停留 &gt; 60s</span><b>只刷 KPI</b></div>
+        </div>
+        <div class="mod-f">静默刷新不闪骨架，避免"看着看着跳一下"</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">必有</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M48</span><b>骨架 / 空 / 错误三态</b><span class="sz">M</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>加载中</span><b class="pv-tag no">骨架屏</b></div>
+          <div class="pv-kv"><span>时段无数据</span><b class="pv-tag no">显示「—」</b></div>
+          <div class="pv-kv"><span>请求失败</span><b class="pv-tag warn">重试</b></div>
+        </div>
+        <div class="mod-f">空数据不能显示 0（会把"没卖"误读成"卖了 0 元"，其实是数据没回来）</div>
+        <div class="mod-r"><span class="lv">●●●</span><span class="cost">成本 1</span><span class="pick up">必有</span></div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><span class="mn">M49</span><b>分享为长图</b><span class="sz">S</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>生成日报长图</span><b>→ 微信</b></div>
+          <div class="pv-note" style="margin-top:2px">老板最常用的"转发"动作</div>
+        </div>
+        <div class="mod-f">前端 canvas 拼图，无后端；需处理长图截断</div>
+        <div class="mod-r"><span class="lv">●●</span><span class="cost">成本 3</span><span class="pick up">可选</span></div>
+      </div>
+
+      <div class="mod dim">
+        <div class="mod-h"><span class="mn">M50</span><b>卡片自定义排序</b><span class="sz">L</span></div>
+        <div class="mod-prev">
+          <div class="pv-kv"><span>长按拖动</span><b>存本地布局</b></div>
+          <div class="pv-note" style="margin-top:2px">首次进入必然面对"空白页"</div>
+        </div>
+        <div class="mod-f">一期过度设计：卡片总共十几个，预设顺序就够；空态成本高</div>
+        <div class="mod-r"><span class="lv">●</span><span class="cost">成本 3</span><span class="pick no">不建议</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="ic">Σ</div>
+    <p><b>50 个模块的去向：</b>建议上 <b>27</b> 个 · 可选 <b>18</b> 个 · 不建议 <b>5</b> 个（M14 累计曲线、M30 累计激活、M33 伪"离线"、M43 人流漏斗、M50 自定义排序）。注意"建议上"不等于"一期全做"——第 5 章会把它压到 14 个左右。</p>
+  </div>
+</section>
+
+<!-- ==================== 03 方案 ==================== -->
+<section id="s3">
+  <div class="sec-head"><span class="sec-num">03</span><h2>八套页面方案</h2><span class="hint">差别不在模块多少，在立场</span></div>
+
+  <p class="lead">下面 8 套方案用的都是第 2 章里的模块，差别在于<b>为谁做、先给什么、要不要下钻</b>。每套都标了模块清单、请求次数和开发量，方便你横向比。左侧的骨架图就是页面的真实信息顺序，从上到下即从上到下滚动看到的顺序。</p>
+
+  <div class="note warn">
+    <div class="ic">!</div>
+    <p><b>先说结论，免得看花眼：</b>如果目标是"这一期先上线、能长期用"，我推荐 <b>D 的首页 + C 的经营页 + B 的设备页（砍一半）</b>，第 5 章给了具体拼法和理由。方案 A 适合做入口卡，方案 H 适合做推送和日报，方案 G 现在做太早。</p>
+  </div>
+
+  <div class="plans">
+
+    <!-- ============ A ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 A</span><h3>一屏结论</h3>
+        <div class="badge"><span class="tag p0">1 个页面</span><span class="tag ok">约 1 天</span><span class="tag no">11 个模块</span></div>
+      </div>
+      <p>只有一页，没有二级页，滑到底就结束。<b>不做"分析"，只做"报数"</b>——打开就知道最近怎么样、什么最好卖、有没有该处理的。</p>
+      <div class="plan-cols">
+        <div class="skel">
+          <div class="r"><b>M44</b>今日 / 近 7 天 / 近 30 天<span class="m">36pt</span></div>
+          <div class="r grp">结论区 · 首屏必见</div>
+          <div class="r"><b>M06</b>销售额 + 订单 + 客单价<span class="m">146pt</span></div>
+          <div class="r"><b>M04</b>今日实时（嵌 hero）<span class="m">0pt</span></div>
+          <div class="r grp">一眼对比</div>
+          <div class="r"><b>M09</b>趋势小图（含 M08）<span class="m">118pt</span></div>
+          <div class="r"><b>M16</b>商品 TOP3<span class="m">148pt</span></div>
+          <div class="r"><b>M24</b>设备 / 点位四格<span class="m">84pt</span></div>
+          <div class="r"><b>M32</b>缺货提示（一行）<span class="m">46pt</span></div>
+          <div class="r gray"><b>M46</b>口径脚注<span class="m">14pt</span></div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">老板、区域经理、投资人。每天打开一次，看 5 秒就关。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">零学习成本；截图直接发群；一屏装完，不用滚动；维护成本最低</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">问不了"为什么"；没有下钻；排行的利用率很低（只有 3 条）</div></div>
+          <div class="row"><div class="k">请求</div><div class="v"><code>summary</code> ×2 + <code>sales-trend</code> + <code>rankings?limit=5</code> = <b>4 次</b></div></div>
+        </div>
+      </div>
+      <div class="wf-row">
+        <figure class="wf-figure">
+          <div class="phone" role="img" aria-label="方案 A 一屏结论线框图">
+            <div class="p-status"><span>9:41</span><span class="ic">▮▮▮ ⌁ ▭</span></div>
+            <div class="p-nav"><span class="ico">‹</span><h1>经营分析</h1><span class="ico ghost">⋯</span></div>
+            <div class="p-scroll">
+              <div class="p-chips"><span>今日</span><span class="on">近 7 天</span><span>近 30 天</span></div>
+
+              <div class="p-hero">
+                <div class="lbl">销售额 · 11-20 至 11-26（CNY）</div>
+                <div class="big">¥128,400</div>
+                <div class="dlt">▲ 8.2% <span>前 7 天 ¥118,700</span></div>
+                <div class="rows">
+                  <div><b>2,860</b><span>订单数</span></div>
+                  <div><b>¥44.9</b><span>客单价</span></div>
+                  <div><b>¥12,860</b><span>今日</span></div>
+                </div>
+              </div>
+
+              <div class="p-card">
+                <div class="p-ch"><b>近 7 天</b><span class="tagline">按日</span><span class="go">＞</span></div>
+                <svg viewBox="0 0 330 70" width="100%" height="64" aria-label="近 7 天趋势">
+                  <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2434c8" stop-opacity=".2"/><stop offset="1" stop-color="#2434c8" stop-opacity="0"/></linearGradient></defs>
+                  <g stroke="#eef0f7" stroke-width="1"><line x1="0" y1="58" x2="330" y2="58"/><line x1="0" y1="38" x2="330" y2="38"/><line x1="0" y1="18" x2="330" y2="18"/></g>
+                  <path d="M10 40 L62 36 L114 44 L166 28 L218 32 L270 20 L322 50 L322 58 L10 58 Z" fill="url(#ga)"/>
+                  <polyline points="10,40 62,36 114,44 166,28 218,32 270,20 322,50" fill="none" stroke="#2434c8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <g font-size="8" fill="#9aa1b7"><text x="10" y="68">11-20</text><text x="150" y="68">11-23</text><text x="292" y="68">11-26</text></g>
+                </svg>
+              </div>
+
+              <div class="p-card">
+                <div class="p-ch"><b>商品排行</b><span class="tagline">按销售额</span><span class="go">全部 ＞</span></div>
+                <div class="p-rk"><span class="no t1">1</span><span class="nm"><b>气泡水 青柠 500ml</b></span><span class="amt">¥9,860</span></div>
+                <div class="p-rk"><span class="no t2">2</span><span class="nm"><b>薯片 原味</b></span><span class="amt">¥8,420</span></div>
+                <div class="p-rk"><span class="no t3">3</span><span class="nm"><b>能量饮料 250ml</b></span><span class="amt">¥7,940</span></div>
+              </div>
+
+              <div class="p-card" style="padding:10px 12px">
+                <div class="p-4">
+                  <div><b>893</b><span>设备</span></div>
+                  <div><b>764</b><span>在用</span></div>
+                  <div><b>38</b><span>点位</span></div>
+                  <div><b>31</b><span>正常</span></div>
+                </div>
+              </div>
+
+              <div class="p-card" style="padding:10px 13px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:11px;font-weight:700;color:#b4560c">6 个商品低于安全库存</span>
+                <span style="margin-left:auto;font-size:10.5px;font-weight:700;color:#7b83a0">去补货 ＞</span>
+              </div>
+
+              <div class="p-foot-note">数据按租户时区归日 · 含全部设备订单</div>
+            </div>
+            <div class="p-dock"><div class="bar"><span class="di">⌂</span><span class="di">▤</span><span class="di on">▦</span><span class="di">☰</span></div></div>
+          </div>
+          <figcaption>A-1 · 一屏结论<span>滑动 0 次，四类信息全部可见</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- ============ B ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 B</span><h3>四页标准</h3>
+        <div class="badge"><span class="tag p0">4 + 1 页</span><span class="tag part">约 6 天</span><span class="tag no">28 个模块</span></div>
+      </div>
+      <p>上一份 PRD 的原案：总览 / 趋势 / 排行 / 设备，四个页面靠「详情 ›」串起来，平台角色多一个漏斗页。<b>结构最完整，和 Web 的 IA 能对上号</b>。</p>
+      <div class="plan-cols">
+        <div class="skel2">
+          <div class="skel">
+            <div class="r grp">A1 总览</div>
+            <div class="r"><b>M44</b>时间筛选<span class="m">36pt</span></div>
+            <div class="r"><b>M06</b>KPI 三联<span class="m">146pt</span></div>
+            <div class="r"><b>M09</b>趋势（M08 复用）<span class="m">118pt</span></div>
+            <div class="r"><b>M16</b>商品 TOP3<span class="m">148pt</span></div>
+            <div class="r"><b>M24</b>设备概况<span class="m">84pt</span></div>
+            <div class="r grp">A2 趋势</div>
+            <div class="r"><b>M10</b>金额 / 订单切换<span class="m">37pt</span></div>
+            <div class="r"><b>M09</b>大图 + <b>M12</b>峰谷<span class="m">200pt</span></div>
+            <div class="r"><b>M15</b>按日明细<span class="m">180pt</span></div>
+            <div class="r"><b>M07</b>上期对照<span class="m">110pt</span></div>
+          </div>
+          <div class="skel">
+            <div class="r grp">A3 排行</div>
+            <div class="r"><b>M20</b>商品/点位/设备<span class="m">37pt</span></div>
+            <div class="r"><b>M17</b><b>M18</b><b>M19</b> TOP10<span class="m">360pt</span></div>
+            <div class="r"><b>M21</b><b>M23</b> 集中度<span class="m">60pt</span></div>
+            <div class="r grp">A4 设备</div>
+            <div class="r"><b>M24</b><b>M25</b><b>M26</b> 资产<span class="m">240pt</span></div>
+            <div class="r"><b>M27</b><b>M28</b> 机型 + 固件<span class="m">200pt</span></div>
+            <div class="r"><b>M29</b><b>M31</b> 新增 + 产出<span class="m">180pt</span></div>
+            <div class="r grp">A5 漏斗 · P1</div>
+            <div class="r"><b>M39</b>四段漏斗<span class="m">200pt</span></div>
+            <div class="r"><b>M40</b><b>M41</b><b>M42</b> 三个率<span class="m">150pt</span></div>
+          </div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">需要"能查"的运营主管。想知道哪天掉的、哪个点位弱，就得有二级页。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">信息最全；结构清晰好维护；和 Web 术语一一对应，培训成本低</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">4 个页面里<b>没有一页回答"今天该干什么"</b>；A4 有一半是季度才看一次的信息；页面多，入口层级深</div></div>
+          <div class="row"><div class="k">请求</div><div class="v">每页 1–4 次，首次进 A1 共 <b>4 次</b>；A2/A3/A4 各自补一次</div></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="ic">▤</div>
+        <p><b>线框不重复画：</b>A1–A5 五个 390×844 的完整线框在 <code>ANALYTICS-MOBILE-PRD.html</code> 第 5 章，本方案与那份文档完全一致。这里只补充一处修正——A1 的设备卡文案要从"活跃"改成"<b>在用</b>"，理由见 1.2 与 M24/M33。</p>
+      </div>
+    </div>
+
+    <!-- ============ C ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 C</span><h3>两页精简</h3>
+        <div class="badge"><span class="tag p0">2 页</span><span class="tag part">约 3.5 天</span><span class="tag no">18 个模块</span></div>
+      </div>
+      <p>把趋势和排行压进总览（排行只留 5 条），设备单独一页。<b>用页面内滚动换掉一次页面跳转</b>，是 B 的 60% 工作量、85% 的日常价值。</p>
+      <div class="plan-cols">
+        <div class="skel">
+          <div class="r grp">C1 总览（一页滚动）</div>
+          <div class="r"><b>M44</b>时间筛选<span class="m">36pt</span></div>
+          <div class="r"><b>M06</b>KPI 三联 + <b>M08</b><span class="m">146pt</span></div>
+          <div class="r"><b>M09</b>趋势（高度压到 120）<span class="m">120pt</span></div>
+          <div class="r"><b>M20</b>商品 / 点位 / 设备 Tab<span class="m">37pt</span></div>
+          <div class="r"><b>M17</b>排行 5 条<span class="m">180pt</span></div>
+          <div class="r"><b>M25</b>点位资产四格<span class="m">84pt</span></div>
+          <div class="r gray"><b>M46</b>口径脚注<span class="m">14pt</span></div>
+          <div class="r grp">C2 设备</div>
+          <div class="r"><b>M24</b><b>M25</b><b>M26</b> 资产三组<span class="m">240pt</span></div>
+          <div class="r"><b>M27</b><b>M28</b>机型 + 固件<span class="m">200pt</span></div>
+          <div class="r"><b>M29</b><b>M31</b>新增 + 单机产出<span class="m">180pt</span></div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">运营主管 + 城市经理。既想看数，也不想被 4 层入口绕晕。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">比 B 少 2.5 天；总览一屏半就能看完趋势和排行；页面少 = 回归测试少</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">排行只能看 5 条，第 6 名看不到；趋势没有峰谷标注和明细；C1 第 4 屏之后容易被忽略</div></div>
+          <div class="row"><div class="k">请求</div><div class="v">C1 进页 <b>4 次</b>（summary×2 + trend + rankings(limit=5)），切 Tab 零请求</div></div>
+        </div>
+      </div>
+      <div class="wf-row">
+        <figure class="wf-figure">
+          <div class="phone" role="img" aria-label="方案 C1 总览线框图">
+            <div class="p-status"><span>9:41</span><span class="ic">▮▮▮ ⌁ ▭</span></div>
+            <div class="p-nav"><span class="ico">‹</span><h1>经营分析</h1><span class="ico ghost">⋯</span></div>
+            <div class="p-scroll" style="gap:8px">
+              <div class="p-chips"><span>今日</span><span class="on">近 7 天</span><span>近 30 天</span></div>
+
+              <div class="p-hero" style="padding:10px 13px">
+                <div class="lbl">销售额 · 11-20 至 11-26（CNY）</div>
+                <div class="big" style="font-size:24px">¥128,400</div>
+                <div class="dlt" style="margin-top:4px">▲ 8.2% <span>前 7 天 ¥118,700</span></div>
+                <div class="rows" style="margin-top:7px;padding-top:7px">
+                  <div><b>2,860</b><span>订单数</span></div>
+                  <div><b>¥44.9</b><span>客单价</span></div>
+                  <div><b>¥12,860</b><span>今日</span></div>
+                </div>
+              </div>
+
+              <div class="p-card" style="padding-bottom:6px">
+                <div class="p-ch"><b>销售趋势</b><span class="tagline">按日</span></div>
+                <svg viewBox="0 0 330 62" width="100%" height="54" aria-label="近 7 天趋势">
+                  <defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2434c8" stop-opacity=".2"/><stop offset="1" stop-color="#2434c8" stop-opacity="0"/></linearGradient></defs>
+                  <g stroke="#eef0f7" stroke-width="1"><line x1="0" y1="50" x2="330" y2="50"/><line x1="0" y1="33" x2="330" y2="33"/><line x1="0" y1="16" x2="330" y2="16"/></g>
+                  <path d="M10 34 L62 31 L114 37 L166 25 L218 28 L270 17 L322 42 L322 50 L10 50 Z" fill="url(#gc)"/>
+                  <polyline points="10,34 62,31 114,37 166,25 218,28 270,17 322,42" fill="none" stroke="#2434c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="270" cy="17" r="2.8" fill="#fff" stroke="#2434c8" stroke-width="1.8"/>
+                  <g font-size="7.5" fill="#9aa1b7"><text x="10" y="60">11-20</text><text x="150" y="60">11-23</text><text x="292" y="60">11-26</text></g>
+                </svg>
+              </div>
+
+              <div class="p-seg"><span class="on">商品</span><span>点位</span><span>设备</span></div>
+
+              <div class="p-card" style="padding:6px 13px">
+                <div class="p-rk"><span class="no t1">1</span><span class="nm"><b>气泡水 青柠 500ml</b><i>占比 7.7%</i><span class="p-bar"><i style="width:100%"></i></span></span><span class="amt">¥9,860</span></div>
+                <div class="p-rk"><span class="no t2">2</span><span class="nm"><b>薯片 原味</b><i>占比 6.6%</i><span class="p-bar"><i style="width:85%"></i></span></span><span class="amt">¥8,420</span></div>
+                <div class="p-rk"><span class="no t3">3</span><span class="nm"><b>能量饮料 250ml</b><i>占比 6.2%</i><span class="p-bar"><i style="width:80%"></i></span></span><span class="amt">¥7,940</span></div>
+                <div class="p-rk"><span class="no">4</span><span class="nm"><b>巧克力 50g</b><i>占比 4.8%</i><span class="p-bar"><i style="width:62%"></i></span></span><span class="amt">¥6,120</span></div>
+                <div class="p-rk"><span class="no">5</span><span class="nm"><b>矿泉水 550ml</b><i>占比 4.1%</i><span class="p-bar"><i style="width:53%"></i></span></span><span class="amt">¥5,280</span></div>
+              </div>
+
+              <div class="p-foot-note">数据按租户时区归日 · 含全部设备订单</div>
+            </div>
+            <div class="p-dock"><div class="bar"><span class="di">⌂</span><span class="di">▤</span><span class="di on">▦</span><span class="di">☰</span></div></div>
+          </div>
+          <figcaption>C-1 · 总览（一页容纳趋势 + 排行）<span>Tab 切换不重新请求，三个维度共用一次返回</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- ============ D ============ -->
+    <div class="plan rec">
+      <div class="plan-h">
+        <span class="pid">方案 D</span><h3>现场优先（Ops-first）</h3>
+        <div class="badge"><span class="tag p0">3 页</span><span class="tag part">约 4.5 天</span><span class="tag ok">推荐</span><span class="tag no">23 个模块</span></div>
+      </div>
+      <p>把首页从「报表」改成「今天该干的三件事」，经营数据退到第二页。<b>这是唯一一套"只有手机能做、Web 做不了"的方案</b>——因为待办里的盘点进度来自本机，报表里的销售数据 Web 已经能看。</p>
+      <div class="plan-cols">
+        <div class="skel2">
+          <div class="skel">
+            <div class="r grp">D1 今日 · 默认落地页</div>
+            <div class="r"><b>M04</b>今日销售额 + 单量<span class="m">72pt</span></div>
+            <div class="r"><b>M38</b>待办：缺货/暂停/未盘点<span class="m">190pt</span></div>
+            <div class="r"><b>M36</b>盘点差异汇总<span class="m">130pt</span></div>
+            <div class="r"><b>M35</b>盘点进度条<span class="m">嵌 M36</span></div>
+            <div class="r"><b>M15</b>今日 vs 昨日<span class="m">130pt</span></div>
+            <div class="r"><b>M24</b>设备 / 点位四格<span class="m">84pt</span></div>
+          </div>
+          <div class="skel">
+            <div class="r grp">D2 经营 · 第二 Tab</div>
+            <div class="r"><b>M44</b><b>M06</b><b>M08</b> 筛选与 KPI<span class="m">182pt</span></div>
+            <div class="r"><b>M09</b>趋势 + <b>M16</b> TOP3<span class="m">266pt</span></div>
+            <div class="r"><b>M20</b>排行 Tab（限 10）<span class="m">300pt</span></div>
+            <div class="r grp">D3 设备 · 低频</div>
+            <div class="r"><b>M24</b><b>M25</b><b>M26</b><span class="m">240pt</span></div>
+            <div class="r"><b>M27</b>机型结构<span class="m">120pt</span></div>
+          </div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">一线运营、督导、补货员。一天开 5 次，每次 20 秒。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">和补货 / 盘点的动线连成一条；数据能变成动作；竞品做不出来</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">老板打开看不到"销售额"在第一位，会问"数呢"；盘点数据要积累几天才有内容，新装机时首页偏空</div></div>
+          <div class="row"><div class="k">请求</div><div class="v">D1 <b>2 次</b>（summary 只取 operational + today）；D2 4 次</div></div>
+        </div>
+      </div>
+      <div class="wf-row">
+        <figure class="wf-figure">
+          <div class="phone" role="img" aria-label="方案 D1 今日页线框图">
+            <div class="p-status"><span>9:41</span><span class="ic">▮▮▮ ⌁ ▭</span></div>
+            <div class="p-nav"><span class="ico">‹</span><h1>今日</h1><span class="ico ghost">⋯</span></div>
+            <div class="p-scroll" style="gap:8px">
+              <div style="display:flex;align-items:baseline;gap:8px">
+                <span style="font-size:15px;font-weight:800;letter-spacing:-.3px">11 月 26 日 · 周三</span>
+                <span style="margin-left:auto;font-size:10.5px;color:#9aa1b7;font-weight:600">已同步 9:41</span>
+              </div>
+
+              <div class="p-card" style="padding:11px 13px">
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <div>
+                    <div style="font-size:10.5px;color:#8b92a8;font-weight:600">今日销售额</div>
+                    <div style="font-size:23px;font-weight:800;letter-spacing:-.8px;font-variant-numeric:tabular-nums;line-height:1.2">¥12,860</div>
+                  </div>
+                  <div style="margin-left:auto;text-align:right">
+                    <div style="font-size:10.5px;color:#8b92a8;font-weight:600">昨日同期</div>
+                    <div style="font-size:12px;font-weight:800;color:#5d6480">¥9,420 <span style="color:#d92d20;font-size:10px">+36.5%</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-card">
+                <div class="p-ch"><b>今天有 3 件事</b><span class="tagline">点击处理</span></div>
+                <div class="p-todo">
+                  <span class="ic">补</span>
+                  <span class="tx"><b>商品低于安全库存</b><span>其中 4 个在滨江写字楼</span></span>
+                  <span class="n">6</span><span class="ar">›</span>
+                </div>
+                <div class="p-todo">
+                  <span class="ic">点</span>
+                  <span class="tx"><b>点位暂停中</b><span>涉及月产能约 ¥18,400</span></span>
+                  <span class="n">4</span><span class="ar">›</span>
+                </div>
+                <div class="p-todo">
+                  <span class="ic">盘</span>
+                  <span class="tx"><b>今日补货但未盘点</b><span>7 台已盘 / 共 12 台</span></span>
+                  <span class="n">5</span><span class="ar">›</span>
+                </div>
+              </div>
+
+              <div class="p-card">
+                <div class="p-ch"><b>本次盘点差异</b><span class="tagline">7 台设备</span><span class="go">明细 ＞</span></div>
+                <div style="display:flex;gap:6px;margin-top:2px">
+                  <div style="flex:1;background:#fff5f4;border:1px solid #f8dbd8;border-radius:10px;padding:7px 9px">
+                    <div style="font-size:15px;font-weight:800;color:#d92d20;font-variant-numeric:tabular-nums">+12</div>
+                    <div style="font-size:9.5px;color:#b0605a;font-weight:600">盘盈件</div>
+                  </div>
+                  <div style="flex:1;background:#f1f9f6;border:1px solid #d3ece2;border-radius:10px;padding:7px 9px">
+                    <div style="font-size:15px;font-weight:800;color:#008f63;font-variant-numeric:tabular-nums">−5</div>
+                    <div style="font-size:9.5px;color:#4d8a74;font-weight:600">盘亏件</div>
+                  </div>
+                  <div style="flex:1;background:#f7f8fc;border:1px solid #e6e9f2;border-radius:10px;padding:7px 9px">
+                    <div style="font-size:15px;font-weight:800;font-variant-numeric:tabular-nums">+7</div>
+                    <div style="font-size:9.5px;color:#8b92a8;font-weight:600">净差异</div>
+                  </div>
+                </div>
+                <div style="margin-top:7px;height:5px;border-radius:3px;background:#eef0f7;overflow:hidden">
+                  <i style="display:block;height:100%;width:58%;background:#008f63;border-radius:3px"></i>
+                </div>
+                <div class="p-note">今日盘点进度 7 / 12 台 · 来自本机记录</div>
+              </div>
+
+              <div class="p-card" style="padding:10px 13px">
+                <div class="p-ch" style="margin-bottom:4px"><b>最近两天</b><span class="tagline">销售额</span></div>
+                <div class="p-list-row"><span class="d">今天</span><span class="v">¥12,860</span><span class="o">186 单</span></div>
+                <div class="p-list-row"><span class="d">昨天</span><span class="v">¥24,200</span><span class="o">302 单</span></div>
+              </div>
+
+              <div class="p-card" style="padding:7px 12px">
+                <div class="p-4">
+                  <div><b>893</b><span>设备</span></div>
+                  <div><b>764</b><span>在用</span></div>
+                  <div><b>38</b><span>点位</span></div>
+                  <div><b>6</b><span>缺货品</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-dock"><div class="bar"><span class="di on">✓</span><span class="di">▤</span><span class="di">▦</span><span class="di">☰</span></div></div>
+          </div>
+          <figcaption>D-1 · 今日（默认落地页）<span>待办在最上面，销售额次之；盘点数据来自本机而不是服务端</span></figcaption>
+        </figure>
+      </div>
+      <div class="note ok">
+        <div class="ic">✓</div>
+        <p><b>为什么它是唯一有护城河的方案：</b>B/C 的信息 Web 全都有，手机只是"小屏版"；D1 的三件事里有两件（盘点进度、盘点差异）<b>Web 端拿不到</b>，因为盘点在手机上做、结果只落本地。再往上接补货完成页，就形成"盘点 → 差异 → 补货"的闭环，这是纯报表做不到的。</p>
+      </div>
+    </div>
+
+    <!-- ============ E ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 E</span><h3>角色双版</h3>
+        <div class="badge"><span class="tag p0">1 页 · 2 套卡片</span><span class="tag part">约 4 天</span><span class="tag no">17 个模块</span></div>
+      </div>
+      <p>同一个页面，顶部一个「视角」开关：<b>老板版</b>只放结果和结论，<b>运营版</b>只放今天要干的活。默认视角由登录角色决定，用户可手动切。</p>
+      <div class="plan-cols">
+        <div class="skel2">
+          <div class="skel">
+            <div class="r grp">顶部：视角切换（默认按角色）</div>
+            <div class="r"><b>—</b>老板版 ｜ 运营版<span class="m">36pt</span></div>
+            <div class="r grp">老板版（6 张）</div>
+            <div class="r"><b>M06</b>销售额 + 订单 + 客单价<span class="m">146pt</span></div>
+            <div class="r"><b>M08</b>迷你趋势<span class="m">嵌卡</span></div>
+            <div class="r"><b>M07</b>本期 vs 上期<span class="m">110pt</span></div>
+            <div class="r"><b>M16</b>商品 TOP3<span class="m">148pt</span></div>
+            <div class="r"><b>M21</b>TOP5 集中度<span class="m">70pt</span></div>
+            <div class="r"><b>M24</b>设备一行<span class="m">84pt</span></div>
+          </div>
+          <div class="skel">
+            <div class="r grp">运营版（7 张）</div>
+            <div class="r"><b>M38</b>待办三项<span class="m">190pt</span></div>
+            <div class="r"><b>M32</b>缺货清单入口<span class="m">46pt</span></div>
+            <div class="r"><b>M34</b>暂停点位<span class="m">46pt</span></div>
+            <div class="r"><b>M35</b><b>M36</b> 盘点进度与差异<span class="m">190pt</span></div>
+            <div class="r"><b>M15</b>按日明细<span class="m">160pt</span></div>
+            <div class="r"><b>M20</b>排行（限 10）<span class="m">300pt</span></div>
+          </div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">同一家公司里既有老板账号又有运营账号，且两类人都要装 App。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">一套代码服务两类人；每类人都不用划过大半与自己无关的卡片</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">"我该用哪个视角"会成为客服问题；两套卡片都要维护和测试；<b>切换状态是否记忆</b>又要一次决策</div></div>
+          <div class="row"><div class="k">请求</div><div class="v">切换视角<b>不重新请求</b>，全部数据一次性取回后按需渲染</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ F ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 F</span><h3>对比仪表</h3>
+        <div class="badge"><span class="tag p0">1 页</span><span class="tag part">约 3 天</span><span class="tag no">14 个模块</span></div>
+      </div>
+      <p>全页只有一个主题：<b>比上期是好了还是差了</b>。每个指标都成对出现——本期、上期、变化量，没有孤立数字。</p>
+      <div class="plan-cols">
+        <div class="skel">
+          <div class="r grp">顶部：本期 11-20 ~ 11-26 ｜ 上期 11-13 ~ 11-19</div>
+          <div class="r"><b>M44</b>时间筛选<span class="m">36pt</span></div>
+          <div class="r grp">八项指标对照表（本页主体）</div>
+          <div class="r"><b>M07</b>销售额　128,400 / 118,700　<span style="color:#d92d20">+8.2%</span><span class="m">60pt</span></div>
+          <div class="r"><b>M07</b>订单数　2,860 / 2,774　+3.1%<span class="m">60pt</span></div>
+          <div class="r"><b>M03</b>客单价　44.9 / 42.8　+4.9%<span class="m">60pt</span></div>
+          <div class="r"><b>M05</b>日均金额　18,343 / 16,957　+8.2%<span class="m">60pt</span></div>
+          <div class="r"><b>M31</b>单机产出　143.8 / 132.9　+8.2%<span class="m">60pt</span></div>
+          <div class="r"><b>M21</b>TOP5 集中度　29.3% / 31.1%　−1.8pt<span class="m">60pt</span></div>
+          <div class="r"><b>M26</b>缺货商品　6 / 11　−5<span class="m">60pt</span></div>
+          <div class="r"><b>M34</b>暂停点位　4 / 2　+2<span class="m">60pt</span></div>
+          <div class="r grp">双线趋势</div>
+          <div class="r"><b>M11</b>本期实线 + 上期虚线<span class="m">200pt</span></div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">看月度复盘的人；做周报 / 月报的人（数字直接抄进 PPT）。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">直接回答"变好还是变差"；8 个指标一屏扫完；天然适合做月报</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn">完全没有绝对值视角，新人不理解 128,400 是什么水平；<b>"今日"视图没有可比的上期</b>（只能比昨日同期，口径要单独定义）；请求翻倍</div></div>
+          <div class="row"><div class="k">请求</div><div class="v"><code>summary</code> ×2 + <code>sales-trend</code> ×2 = <b>4 次</b>，排行与设备另算</div></div>
+        </div>
+      </div>
+      <div class="note warn">
+        <div class="ic">!</div>
+        <p><b>一个容易翻车的细节：</b>选"今日"时，上期不能取"昨天全天"（今天才到 9:41，比不过），必须取<b>昨日同一时刻</b>。但 <code>summary</code> 只支持按日粒度，拿不到"昨日 9:41 之前的累计"。所以方案 F 在"今日"筛选下必须<b>禁用对比</b>或只显示昨日全天并明确标注。这个限制会让 F 的今日视图价值大打折扣。</p>
+      </div>
+    </div>
+
+    <!-- ============ G ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 G</span><h3>卡片自由拼</h3>
+        <div class="badge"><span class="tag p1">1 页 + 市场</span><span class="tag no">约 7 天</span><span class="tag no">全量可选</span></div>
+      </div>
+      <p>像手机桌面的小组件：首屏默认 8 张卡，右上角「编辑」进入模块市场，勾选、长按拖动排序，布局存本地。<b>把"该展示什么"的决定权交给用户。</b></p>
+      <div class="plan-cols">
+        <div class="skel">
+          <div class="r grp">G1 我的分析（默认 8 张）</div>
+          <div class="r"><b>M06</b>KPI 三联<span class="m">固定</span></div>
+          <div class="r"><b>M09</b>趋势<span class="m">固定</span></div>
+          <div class="r"><b>M32</b>缺货<span class="m">可删</span></div>
+          <div class="r"><b>M16</b>商品 TOP3<span class="m">可删</span></div>
+          <div class="r"><b>M25</b>点位<span class="m">可删</span></div>
+          <div class="r"><b>M31</b>单机产出<span class="m">可删</span></div>
+          <div class="r grp">G2 编辑态</div>
+          <div class="r"><b>—</b>长按卡片 → 抖动 + 拖动<span class="m">—</span></div>
+          <div class="r"><b>—</b>点「＋」→ 模块市场（50 选 N）<span class="m">—</span></div>
+          <div class="r"><b>—</b>「完成」→ 写 <code>localStorage</code><span class="m">—</span></div>
+          <div class="r gray">首次进入：预设布局，不弹引导<span class="m">—</span></div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">适合谁</div><div class="v">大型客户、多角色共用同一账号体系的场景；或者你希望"以后加卡片不用改页面结构"。</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">一次解决"每个人想看的不一样"；后续加模块不用动主结构；有"专业感"</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn"><b>最贵且最难测</b>：50 张卡的组合空间无限；用户删空了看什么？；不同用户看到的页面不一样，客服无法指导；<b>现实是绝大多数人从不点"编辑"</b></div></div>
+          <div class="row"><div class="k">请求</div><div class="v">按已选卡片按需请求，最多 4 类；但要处理"卡片依赖的数据没取到"</div></div>
+        </div>
+      </div>
+      <div class="note danger">
+        <div class="ic">!</div>
+        <p><b>我的看法：这一期不要做。</b>它把"产品该替用户做减法"的责任推给了用户。卡片总共十几个、用户总共几十人，预设顺序的边际收益远高于自定义。真要做，等模块数超过 25 个、且明确听到"我想自己排"的诉求之后再说。</p>
+      </div>
+    </div>
+
+    <!-- ============ H ============ -->
+    <div class="plan">
+      <div class="plan-h">
+        <span class="pid">方案 H</span><h3>结论句式（简报）</h3>
+        <div class="badge"><span class="tag p0">1 页</span><span class="tag part">约 3 天</span><span class="tag no">6 条结论</span></div>
+      </div>
+      <p>不画图，直接给 6 句人话，每句一个数字。本质是<b>把"看图表"的活交给前端规则引擎</b>，人只负责读结论。适合做日报推送、开屏摘要、企业微信消息。</p>
+      <div class="plan-cols">
+        <div class="skel">
+          <div class="r grp">H1 今日简报</div>
+          <div class="r"><b>M04</b>今日大数（hero）<span class="m">110pt</span></div>
+          <div class="r"><b>① </b>销量与环比结论<span class="m">78pt</span></div>
+          <div class="r"><b>② </b>头名单品结论<span class="m">78pt</span></div>
+          <div class="r"><b>③ </b>缺货结论<span class="m">78pt</span></div>
+          <div class="r"><b>④ </b>点位暂停结论<span class="m">78pt</span></div>
+          <div class="r"><b>⑤ </b>客单价异常结论<span class="m">78pt</span></div>
+          <div class="r"><b>⑥ </b>商品上架率结论<span class="m">78pt</span></div>
+          <div class="r gray">底部：看明细 / 转发给同事<span class="m">90pt</span></div>
+        </div>
+        <div class="plan-meta">
+          <div class="row"><div class="k">数据</div><div class="v">M01 / M03 / M16 / M32 / M34 五个模块 + 前端规则</div></div>
+          <div class="row"><div class="k">优点</div><div class="v up">最短路径；适合推送和转发；不懂报表的人也能用</div></div>
+          <div class="row"><div class="k">代价</div><div class="v dn"><b>规则写不全就变成废话</b>（"本周销售良好"这种）；异常阈值谁来定？改一次要发版</div></div>
+          <div class="row"><div class="k">请求</div><div class="v">与 A 相同 <b>4 次</b>，只是不上图表</div></div>
+        </div>
+      </div>
+      <div class="wf-row">
+        <figure class="wf-figure">
+          <div class="phone" role="img" aria-label="方案 H 简报线框图">
+            <div class="p-status"><span>9:41</span><span class="ic">▮▮▮ ⌁ ▭</span></div>
+            <div class="p-nav"><span class="ico">‹</span><h1>今日简报</h1><span class="ico ghost">⋯</span></div>
+            <div class="p-scroll">
+              <div class="p-hero" style="padding:11px 14px">
+                <div class="lbl">11 月 26 日 · 数据截至 9:41</div>
+                <div class="big" style="font-size:24px">¥12,860</div>
+                <div class="dlt" style="margin-top:5px">今日销售额 <span>186 单 · 客单价 ¥69.1</span></div>
+              </div>
+
+              <div class="p-concl">
+                <span class="ix">1</span>
+                <span class="tx"><b>近 7 天卖了 <em>¥128,400</em>，比前 7 天多 <em>8.2%</em>，量价齐升。</b><span>订单 +3.1%，客单价 +4.9%</span></span>
+              </div>
+              <div class="p-concl">
+                <span class="ix">2</span>
+                <span class="tx"><b>青柠气泡水贡献 <em>7.7%</em>，是唯一进入 8% 的单品。</b><span>前 5 名合计占 29.3%</span></span>
+              </div>
+              <div class="p-concl">
+                <span class="ix">3</span>
+                <span class="tx"><b><em>6 个商品</em>低于安全库存，其中 4 个在滨江写字楼。</b><span>建议今天补一轮</span></span>
+              </div>
+              <div class="p-concl">
+                <span class="ix">4</span>
+                <span class="tx"><b><em>4 个点位</em>暂停中，涉及月产能约 ¥18,400。</b><span>最长已暂停 11 天</span></span>
+              </div>
+              <div class="p-concl">
+                <span class="ix">5</span>
+                <span class="tx"><b>昨天客单价 ¥41.2，比周均低 <em>8.2%</em>。</b><span>低价商品占比上升</span></span>
+              </div>
+              <div class="p-concl">
+                <span class="ix">6</span>
+                <span class="tx"><b>在售 <em>1,240</em> 个商品，上架率 <em>78%</em>，另有 350 个下架或停售。</b><span>上架率 = 在售 ÷ 商品总数</span></span>
+              </div>
+
+              <div class="p-card" style="padding:10px 13px;display:flex;gap:8px;margin-top:auto">
+                <span style="flex:1;height:32px;border-radius:9px;background:#edf0ff;color:#2434c8;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center">看明细</span>
+                <span style="flex:1;height:32px;border-radius:9px;background:#f5f6fa;color:#5d6480;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid #e6e9f2">转发给同事</span>
+              </div>
+              <div class="p-foot-note">数据按租户时区归日 · 含全部设备订单</div>
+            </div>
+            <div class="p-dock"><div class="bar"><span class="di on">✎</span><span class="di">▤</span><span class="di">▦</span><span class="di">☰</span></div></div>
+          </div>
+          <figcaption>H-1 · 今日简报<span>6 条结论全部由前端规则生成，每条都能点到明细</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== 04 矩阵 ==================== -->
+<section id="s4">
+  <div class="sec-head"><span class="sec-num">04</span><h2>方案 × 模块 覆盖矩阵</h2><span class="hint">● 必含　○ 可选 / 被合并　— 不含</span></div>
+
+  <p>横着读一行，能看出某个模块被几套方案采用；竖着读一列，就是那套方案的完整清单。G 列几乎全是 ○，因为它是"全部可选"，本身不预设内容。</p>
+
+  <div class="tbl-wrap">
+    <table class="mx">
+      <thead>
+        <tr>
+          <th style="width:210px">模块</th>
+          <th style="width:46px">A<span class="th-sub">结论</span></th>
+          <th style="width:46px">B<span class="th-sub">标准</span></th>
+          <th style="width:46px">C<span class="th-sub">精简</span></th>
+          <th style="width:46px">D<span class="th-sub">现场</span></th>
+          <th style="width:46px">E<span class="th-sub">双版</span></th>
+          <th style="width:46px">F<span class="th-sub">对比</span></th>
+          <th style="width:46px">G<span class="th-sub">自由</span></th>
+          <th style="width:46px">H<span class="th-sub">简报</span></th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="gsep"><td colspan="10">G1 经营结果</td></tr>
+        <tr><td>M01<em>销售额大数</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="y">●</td><td class="o">○</td><td class="y">●</td><td>多数方案由 M06 承载</td></tr>
+        <tr><td>M02<em>订单数</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="n">—</td><td>同上，嵌在 KPI 卡</td></tr>
+        <tr><td>M03<em>客单价</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="y">●</td><td class="o">○</td><td class="y">●</td><td>F 用作对比行，H 用作结论</td></tr>
+        <tr><td>M04<em>今日实时</em></td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="y">●</td><td>D/H 的落地数据</td></tr>
+        <tr><td>M05<em>日均销售</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>只在对比语境里有意义</td></tr>
+        <tr><td>M06<em>KPI 三联卡</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="y">●</td><td class="n">—</td><td>唯一 8 套里 7 套都要的卡</td></tr>
+        <tr><td>M07<em>本期 vs 上期</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>B 放 A2，E 放老板版，F 是主体</td></tr>
+
+        <tr class="gsep"><td colspan="10">G2 趋势</td></tr>
+        <tr><td>M08<em>迷你趋势线</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>零成本，几乎都该有</td></tr>
+        <tr><td>M09<em>标准折线</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td>E 老板版只留迷你线</td></tr>
+        <tr><td>M10<em>金额/订单切换</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>二期优先</td></tr>
+        <tr><td>M11<em>本期+上期双线</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>F 的核心图</td></tr>
+        <tr><td>M12<em>峰值/谷值</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>低成本高性价比</td></tr>
+        <tr><td>M13<em>7 日均线</em></td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>仅 30 天视图</td></tr>
+        <tr><td>M14<em>累计曲线</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><b>全部不用</b></td></tr>
+        <tr><td>M15<em>按日明细</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>D 只显示最近两天</td></tr>
+
+        <tr class="gsep"><td colspan="10">G3 排行</td></tr>
+        <tr><td>M16<em>商品 TOP3 内嵌</em></td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="y">●</td><td>首页常客</td></tr>
+        <tr><td>M17<em>商品 TOP10</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>C 压缩到 5 条</td></tr>
+        <tr><td>M18<em>点位 TOP10</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>Tab 内切换</td></tr>
+        <tr><td>M19<em>设备 TOP10</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>唯一可下钻</td></tr>
+        <tr><td>M20<em>三 Tab 切换</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>凡有排行就要它</td></tr>
+        <tr><td>M21<em>TOP5 集中度</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="o">○</td><td>一个数字说清依赖度</td></tr>
+        <tr><td>M22<em>尾部贡献</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td>都能算，但容易引战</td></tr>
+        <tr><td>M23<em>行内占比条</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>排在 A1 里没用上</td></tr>
+
+        <tr class="gsep"><td colspan="10">G4 资产与机队</td></tr>
+        <tr><td>M24<em>设备资产</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>跨方案通用</td></tr>
+        <tr><td>M25<em>点位资产</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>含派生的"暂停"</td></tr>
+        <tr><td>M26<em>商品资产</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>缺货数最有用</td></tr>
+        <tr><td>M27<em>机型结构</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>设备页才有</td></tr>
+        <tr><td>M28<em>固件版本</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>更偏运维</td></tr>
+        <tr><td>M29<em>月度新增</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>D 不含，季度看一次即可</td></tr>
+        <tr><td>M30<em>累计激活</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><b>全部不用</b></td></tr>
+        <tr><td>M31<em>单机产出</em></td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td class="y">●</td><td class="o">○</td><td class="n">—</td><td>口径含咖啡，慎用</td></tr>
+
+        <tr class="gsep"><td colspan="10">G5 现场待办</td></tr>
+        <tr><td>M32<em>缺货商品</em></td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="y">●</td><td>D/E/H 的抓手</td></tr>
+        <tr><td>M33<em>非在用设备</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><b>全部不用</b>（口径错）</td></tr>
+        <tr><td>M34<em>暂停点位</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="o">○</td><td class="y">●</td><td>派生指标，成本极低</td></tr>
+        <tr><td>M35<em>盘点进度</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>本机数据，Web 无</td></tr>
+        <tr><td>M36<em>盘点差异</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>本机数据，Web 无</td></tr>
+        <tr><td>M37<em>差异 TOP 商品</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>样本少，结论弱</td></tr>
+        <tr><td>M38<em>待办聚合</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>D1 的核心卡</td></tr>
+
+        <tr class="gsep"><td colspan="10">G6 转化漏斗（仅 ROOT）</td></tr>
+        <tr><td>M39<em>支付四段漏斗</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>B 的 P1 页</td></tr>
+        <tr><td>M40<em>支付放弃率</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>同页</td></tr>
+        <tr><td>M41<em>取货成功率</em></td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>同页</td></tr>
+        <tr><td>M42<em>屏显不一致</em></td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="o">○</td><td class="n">—</td><td>异常率极低</td></tr>
+        <tr><td>M43<em>人流漏斗</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><b>全部不用</b>（覆盖不足）</td></tr>
+
+        <tr class="gsep"><td colspan="10">G7 全局与交互</td></tr>
+        <tr><td>M44<em>时间分段</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>底线项</td></tr>
+        <tr><td>M45<em>租户切换</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td>仅 ROOT 需要</td></tr>
+        <tr><td>M46<em>口径脚注</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>底线项</td></tr>
+        <tr><td>M47<em>刷新</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>底线项</td></tr>
+        <tr><td>M48<em>三态</em></td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>底线项</td></tr>
+        <tr><td>M49<em>分享长图</em></td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td class="o">○</td><td>二期</td></tr>
+        <tr><td>M50<em>自定义排序</em></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td><b>全部不用</b>（过度设计）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.1 汇总：八套方案的体量</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:170px">方案</th><th class="num" style="width:80px">必含模块</th><th class="num" style="width:76px">页面数</th><th class="num" style="width:76px">首屏请求</th><th class="num" style="width:80px">开发量</th><th>一句话</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b> 一屏结论</td><td class="num">11</td><td class="num">1</td><td class="num">4</td><td class="num">1 天</td><td>最省，但只能"看"，不能"查"</td></tr>
+        <tr><td><b>B</b> 四页标准</td><td class="num">28</td><td class="num">4 + 1</td><td class="num">4</td><td class="num">6 天</td><td>最全，和 Web 对得上，但仍是"小屏报表"</td></tr>
+        <tr><td><b>C</b> 两页精简</td><td class="num">18</td><td class="num">2</td><td class="num">4</td><td class="num">3.5 天</td><td>性价比最高，B 的 85% 价值</td></tr>
+        <tr><td><b>D</b> 现场优先</td><td class="num">23</td><td class="num">3</td><td class="num">2</td><td class="num">4.5 天</td><td>唯一有护城河，但要接受"首页不是报表"</td></tr>
+        <tr><td><b>E</b> 角色双版</td><td class="num">17</td><td class="num">1</td><td class="num">4</td><td class="num">4 天</td><td>一套喂两种人，切换器本身是新问题</td></tr>
+        <tr><td><b>F</b> 对比仪表</td><td class="num">14</td><td class="num">1</td><td class="num">4</td><td class="num">3 天</td><td>回答"变好没"，但"今日"下没有可比上期</td></tr>
+        <tr><td><b>G</b> 自由拼</td><td class="num">6 固定</td><td class="num">1 + 市场</td><td class="num">≤4</td><td class="num">7 天</td><td>过早，把减法推给用户</td></tr>
+        <tr><td><b>H</b> 结论句式</td><td class="num">10</td><td class="num">1</td><td class="num">4</td><td class="num">3 天</td><td>适合推送，不适合当主页面</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 05 推荐 ==================== -->
+<section id="s5">
+  <div class="sec-head"><span class="sec-num">05</span><h2>我的推荐，以及建议砍掉的</h2><span class="hint">50 → 19 → 12</span></div>
+
+  <p class="lead">如果把上面 8 套方案硬选一套，我会选 <b>D 的首页 + C 的经营页 + B 的设备页（砍一半）</b>。不是因为它模块最多，而是因为它在"手机上真正会被打开"这件事上最诚实。</p>
+
+  <h3>5.1 推荐组合：3 个 Tab，19 个模块位</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:110px">Tab</th><th style="width:280px">放什么</th><th>为什么这么放</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>今日</b><br><span class="tiny">默认落地</span></td>
+          <td>M04 今日大数 · M38 待办三项 · M36 盘点差异（含 M35 进度）· M15 最近两天 · M24 设备四格</td>
+          <td>一线运营一天开 5 次的地方。三件事都能点，点了就有下一步动作。<b>这是 Web 做不到的部分</b>。</td>
+        </tr>
+        <tr>
+          <td><b>经营</b><br><span class="tiny">看数</span></td>
+          <td>M44 筛选 · M06 KPI · M08 迷你线 · M09 趋势 · M20 排行 Tab · M17 前 5 条 · M46 脚注</td>
+          <td>保留"查"的能力，但不另开二级页——所有内容在同一个滚动里，最多滑两屏。</td>
+        </tr>
+        <tr>
+          <td><b>设备</b><br><span class="tiny">低频</span></td>
+          <td>M24 设备 · M25 点位 · M26 商品 · M27 机型结构</td>
+          <td>只留"家底是多少"。固件版本、月度新增、单机产出全部砍掉——这三项一年看两次，Web 上看更清楚。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note ok">
+    <div class="ic">✓</div>
+    <p><b>这个组合的三个取舍：</b>① <b>首页不是报表</b>——接受老板第一眼看不到销售额（销售额在第二个 Tab 首位）；② <b>不做二级页</b>——用滚动代替跳转，减少入口层级；③ <b>设备页只做资产</b>——把"设备运营质量"整体推到二期，因为它需要出货成功率、在线率这些拿不到的数据。</p>
+  </div>
+
+  <h3>5.2 这一期建议砍掉的 12 个</h3>
+  <p>砍掉不等于永远不做，而是"这一期不做，且理由能站得住"。每条都给了判断依据，方便你反驳我。</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:44px">#</th><th style="width:150px">模块</th><th style="width:80px">性质</th><th>砍掉的理由</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>M33 非在用设备</td><td><span class="tag out">口径错</span></td><td><code>总数 − 在用</code> 混了注册/待激活/维修/退役四种状态，做成"离线设备"是错的。要真做，得先有设备心跳数据。</td></tr>
+        <tr><td>2</td><td>M43 人流漏斗</td><td><span class="tag out">数据薄</span></td><td>依赖点位摄像头，预包装点位覆盖率低。空数据占比可能过半，做出来是一堆「—」。</td></tr>
+        <tr><td>3</td><td>M30 累计激活曲线</td><td><span class="tag no">重复</span></td><td>和 M29 同一份数据换画法，信息量没有增加。</td></tr>
+        <tr><td>4</td><td>M14 累计销售曲线</td><td><span class="tag no">无价值</span></td><td>只增不减，看不出任何波动。运营不会用累计值做判断。</td></tr>
+        <tr><td>5</td><td>M50 自定义排序</td><td><span class="tag no">过度设计</span></td><td>十几个卡片、几十个用户，预设顺序足够。自定义的测试矩阵是无穷的。</td></tr>
+        <tr><td>6</td><td>M28 固件版本</td><td><span class="tag no">错场景</span></td><td>这是运维动作（远程升级），手机端看得到也做不了。放 Web 设备管理更合适。</td></tr>
+        <tr><td>7</td><td>M29 月度新增</td><td><span class="tag no">低频</span></td><td>机队扩张是季度话题，在手机上占一屏不值。</td></tr>
+        <tr><td>8</td><td>M31 单机产出</td><td><span class="tag part">口径杂</span></td><td>分母含咖啡机、分子含咖啡订单。虽然比值一致，但和"只看预包装"的预期不符，容易被质疑。</td></tr>
+        <tr><td>9</td><td>M13 7 日均线</td><td><span class="tag no">边际低</span></td><td>只在 30 天视图有意义，而 30 天视图本身已经不是主场景。</td></tr>
+        <tr><td>10</td><td>M22 尾部贡献</td><td><span class="tag part">易引战</span></td><td>「其余 381 个商品贡献 70.7%」——这个数字会让商品部来解释半天，但不带任何行动。</td></tr>
+        <tr><td>11</td><td>M42 屏显不一致</td><td><span class="tag no">量太小</span></td><td>0.4% 的异常率，放首页是噪音；放日报里附一句更合适。</td></tr>
+        <tr><td>12</td><td>M49 分享长图</td><td><span class="tag p1">二期</span></td><td>用户现在就是截图，够用。真要做，等确认"转发"是高频动作之后。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.3 二期候选（等一期跑起来再说）</h3>
+  <ul>
+    <li><b>M39–M41 转化漏斗</b>：价值高但只对平台角色开放，且 30 天窗口限制。先确认有多少人能用上。</li>
+    <li><b>M10 金额/订单切换</b>：一期只做金额，如果收到"想看单量趋势"的反馈再加，成本只有 1。</li>
+    <li><b>M18 点位排行</b>：一期排行只做了商品和设备，点位排行对"哪个点位该撤"有直接价值。</li>
+    <li><b>M49 分享长图</b>：如果确认存在"发给老板/客户"的动作，这是最划算的一期功能。</li>
+    <li><b>M37 差异 TOP 商品</b>：等盘点数据积累到 30 天以上、有统计意义再看。</li>
+    <li><b>真·离线率</b>：需要后端补设备心跳，属于新接口，不在"零新增"范围内。</li>
+  </ul>
+
+  <h3>5.4 一个降低风险的执行建议</h3>
+  <p>别一次把 3 个 Tab 都做完。<b>先只做「今日」一个 Tab</b>（D1，约 1.5 天），装到 3–5 个真实运营的手机上跑一周，看两件事：① 他们会不会主动打开；② 打开后点的是哪一行。</p>
+  <p>如果一周后打开率很低，说明"现场待办"这个假设不成立，那就退回方案 C（报表优先），损失只有 1.5 天。如果打开率高，再把经营和设备两页补上——这时候你对"哪张卡该在第一屏"已经有真实数据了，不用靠猜。</p>
+
+  <div class="note warn">
+    <div class="ic">!</div>
+    <p><b>这个建议的前提：</b>「今日」页的价值完全取决于盘点数据有没有积累。如果现在的盘点功能还没人用，M35/M36 会是空的，D1 就只剩下缺货和暂停点位两行——那它就退化成一张普通的待办卡，撑不起一个 Tab。这一点必须先确认（见第 6 章第 5 项）。</p>
+  </div>
+</section>
+
+<!-- ==================== 06 决策 ==================== -->
+<section id="s6">
+  <div class="sec-head"><span class="sec-num">06</span><h2>待你拍板的 8 件事</h2><span class="hint">勾完就能开工</span></div>
+
+  <p>这些不是技术问题，是产品立场问题，我不该替你定。每项都给了选项和我的倾向，你可以直接说「第几项选哪个」。</p>
+
+  <div class="dec">
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>1. 首页给谁看：待办优先，还是报表优先？</b>
+        <span>决定了整套页面的骨架，也是唯一一个"选错就白做"的决策。</span>
+        <div class="ops"><i>D · 待办优先（我倾向）</i><i>B/C · 报表优先</i><i>E · 双版切换</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>2. 底部 Tab 留几个？</b>
+        <span>现有 dock 已有 4 个位置，分析页是其中之一。多一个 Tab 就少一个给别人。</span>
+        <div class="ops"><i>2 个：今日 + 经营</i><i>3 个：+ 设备（我倾向）</i><i>4 个：+ 排行独立</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>3. 排行能不能点进去？</b>
+        <span>接口只给了 <code>deviceId</code>，商品和点位都没有可用详情页。</span>
+        <div class="ops"><i>只有设备可跳（我倾向）</i><i>全部不可点</i><i>点位也做详情（需后端）</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>4. 今日的环比怎么处理？</b>
+        <span><code>summary</code> 只能按日取，拿不到"昨日同一时刻"的累计，所以严格意义的今日环比做不了。</span>
+        <div class="ops"><i>比昨日全天 + 明确标注（我倾向）</i><i>今日不显示环比</i><i>等后端支持分时</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>5. 盘点数据要不要进这一期？</b>
+        <span>M35 / M36 依赖本机 <code>vs:count</code>，如果盘点功能本身使用率低，首页会是空的。</span>
+        <div class="ops"><i>要，且先验证使用率</i><i>要，但只在有数据时显示</i><i>不要，这期纯报表</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>6. 转化漏斗这一期上不上？</b>
+        <span>只有平台角色有 <code>usage-analysis</code> 权限，租户角色看不到，等于两个产品。</span>
+        <div class="ops"><i>本期上，仅 ROOT</i><i>推到二期（我倾向）</i><i>永远不做</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>7. 销售额含咖啡机，怎么对外说？</b>
+        <span>这是数据层面绕不过去的，必须在文案上说清楚，不能靠"我们只做预包装"糊过去。</span>
+        <div class="ops"><i>接受，卡片写"全部设备"（我倾向）</i><i>要求后端加类型参数（本期违背约束）</i><i>只用订单接口自己算（不可行）</i></div>
+      </div>
+    </div>
+    <div class="d">
+      <div class="box"></div>
+      <div class="q">
+        <b>8. 分享长图做不做？</b>
+        <span>成本 3，需要 canvas 拼图。但"转给老板"是很真实的高频动作。</span>
+        <div class="ops"><i>本期做</i><i>二期（我倾向）</i><i>不做，让用户自己截图</i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="ic">→</div>
+    <p><b>怎么回我就行：</b>直接说「1 选 D、2 选 3 个、3 只设备可点、4 比昨日全天、5 要、6 二期、7 接受、8 二期」，或者只挑你有异议的说。定了之后我先出 <b>3 个 Tab 的高保真稿</b>（真实数字、真实状态、含空态），确认视觉再动代码——现在这份文档和上一份 PRD 都还没碰任何产品文件。</p>
+  </div>
+
+  <div class="note ok">
+    <div class="ic">✓</div>
+    <p><b>两份文档的关系：</b><code>ANALYTICS-MOBILE-PRD.html</code> 是"<b>方案 B 的详细规格</b>"，可以直接开发；这份 <code>ANALYTICS-DESIGN-OPTIONS.html</code> 是"<b>选方案用的池子</b>"。如果你最终选了 D 或 C，PRD 里对应页面的规格仍然有效，只需要按第 5 章的清单增删卡片。</p>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
