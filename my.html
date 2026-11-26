@@ -40,6 +40,17 @@
 }
 .lang-opt:last-child{border-bottom:0}
 .lang-opt:active{background:#fafbfd}
+.lang-flag{
+  width:22px;flex:0 0 auto;text-align:center;font-size:17px;line-height:1;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif
+}
+.lang-name{flex:1;min-width:0}
+/* 列表行「语言」后面的当前语言 + 旗 */
+#langValue.with-flag{display:flex;align-items:center;gap:6px}
+#langValue .row-flag{
+  font-size:14px;line-height:1;flex:0 0 auto;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif
+}
 .lang-check{flex:0 0 auto;width:20px;height:20px;color:var(--brand);opacity:0}
 .lang-opt[aria-checked="true"] .lang-check{opacity:1}
 .lang-opt[aria-checked="true"] .lang-name{color:var(--brand)}
@@ -136,19 +147,23 @@
       </div>
       <div class="sheet-body">
         <div class="lang-list" role="radiogroup" aria-labelledby="langTitle">
-          <button class="lang-opt" type="button" role="radio" aria-checked="true" data-lang="中文(简体)">
+          <button class="lang-opt" type="button" role="radio" aria-checked="true" data-lang="中文(简体)" aria-label="中文(简体)，中国">
+            <span class="lang-flag" aria-hidden="true">🇨🇳</span>
             <span class="lang-name">中文(简体)</span>
             <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
           </button>
-          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="English">
+          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="English" aria-label="English，United Kingdom">
+            <span class="lang-flag" aria-hidden="true">🇬🇧</span>
             <span class="lang-name">English</span>
             <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
           </button>
-          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="Tiếng Việt">
+          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="Tiếng Việt" aria-label="Tiếng Việt，Việt Nam">
+            <span class="lang-flag" aria-hidden="true">🇻🇳</span>
             <span class="lang-name">Tiếng Việt</span>
             <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
           </button>
-          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="中文(繁體)">
+          <button class="lang-opt" type="button" role="radio" aria-checked="false" data-lang="中文(繁體)" aria-label="中文(繁體)，中国香港">
+            <span class="lang-flag" aria-hidden="true">🇭🇰</span>
             <span class="lang-name">中文(繁體)</span>
             <svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
           </button>
@@ -243,6 +258,8 @@ function showToast(text){
   var DEFAULT='中文(简体)';
   /* 抽屉选项 → 列表行内显示的文案；切英文 / 越南语 / 繁体后行内同步 */
   var ROW_TEXT={'中文(简体)':'简体中文','English':'English','Tiếng Việt':'Tiếng Việt','中文(繁體)':'中文(繁體)'};
+  /* 语言对应的国家 / 地区旗（繁體中文按中国香港标注） */
+  var FLAG={'中文(简体)':'🇨🇳','English':'🇬🇧','Tiếng Việt':'🇻🇳','中文(繁體)':'🇭🇰'};
 
   var item=document.getElementById('langItem');
   var value=document.getElementById('langValue');
@@ -258,7 +275,8 @@ function showToast(text){
       var on=btn.getAttribute('data-lang')===cur;
       btn.setAttribute('aria-checked',on?'true':'false');
     });
-    value.textContent=ROW_TEXT[cur]||cur;
+    value.classList.add('with-flag');
+    value.innerHTML='<span class="row-flag" aria-hidden="true">'+(FLAG[cur]||'')+'</span><span>'+(ROW_TEXT[cur]||cur)+'</span>';
   }
   function openSheet(){render();sheet.classList.add('open')}
   function closeSheet(){sheet.classList.remove('open')}

@@ -24,6 +24,12 @@
     } catch (e) { return false; }
   }
 
+  /* 上报当前地址：外壳在 file:// 下读不到 iframe 的 location，
+     靠这条消息判断页面层级——分区页保留底部导航，详情页收起 */
+  if (inFrame()) {
+    try { parent.postMessage({ type: 'app:route', href: location.href }, '*'); } catch (e) {}
+  }
+
   /* 返回上一级
      外壳里每个原型页都从空白页重新挂载，历史只有「空白 + 当前页」两条：
      此时直接请求外壳回上一个视图，不再触发 iframe 后退；

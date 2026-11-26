@@ -201,7 +201,7 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 .dock-button.active:active{background:var(--primary-tint)}
 .dock-unread{position:absolute;top:8px;right:17px;width:7px;height:7px;border:1.5px solid #F4F4F5;border-radius:50%;background:var(--brand)}
 .avatar-entry{width:54px;height:54px;padding:3px;border:1px solid rgba(11,16,47,.06);border-radius:50%;background:#fff;box-shadow:0 4px 16px rgba(11,16,47,.07);pointer-events:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
-.avatar-entry svg{width:100%;height:100%;border-radius:50%}
+.avatar-entry img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 
 /* 全屏菜单 */
 .fullscreen{position:absolute;inset:0;z-index:50;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .18s ease,transform .18s ease,visibility .18s ease}
@@ -298,7 +298,7 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       <button class="dock-button" type="button" data-view="common" aria-label="常用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="7.2" height="7.2" rx="2.2"/><rect x="13.4" y="3.4" width="7.2" height="7.2" rx="2.2"/><rect x="3.4" y="13.4" width="7.2" height="7.2" rx="2.2"/><rect x="13.4" y="13.4" width="7.2" height="7.2" rx="2.2"/></svg></button>
       <button class="dock-button" id="menuButton" type="button" aria-label="全部页面" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     </div>
-    <button class="avatar-entry" id="profileButton" type="button" aria-label="我的"><svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="22" fill="#E3E7FF"/><circle cx="22" cy="17" r="7" fill="#2434C8"/><path d="M9 40c1.4-7.4 7-11 13-11s11.6 3.6 13 11" fill="#2434C8"/></svg></button>
+    <button class="avatar-entry" id="profileButton" type="button" aria-label="我的"><img id="profileAvatar" src="assets/avatar-leo.jpg" alt="" width="48" height="48"></button>
   </nav>
 
   <!-- 全屏菜单：全部原型页 -->
@@ -315,6 +315,10 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 (function(){
   var $=function(id){return document.getElementById(id)};
   var toastTimer, currentView="home", lastBuiltin="home", filter="all";
+  /* 当前 iframe 打开的页面地址。
+     直接双击打开文件（file://）时，外壳读不到跨源 iframe 的 location，
+     必须靠这里记住的地址判断页面层级，否则会被误判成 focus 把 dock 收起来 */
+  var pageHref="";
 
   /* ---------- 编辑区 1：页面清单 ---------- */
   var MENU=[
@@ -544,6 +548,8 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     app.dataset.chrome=next;
     if(currentView==='page'&&next==='tab'){
       var dockTarget=(lastBuiltin&&lastBuiltin!=='page')?lastBuiltin:'home';
+      /* 任务列表就是第二个 dock 目的地，从菜单进来也高亮「任务」 */
+      if(String(href||'').indexOf('task-list.html')>=0)dockTarget='tasks';
       document.querySelectorAll('.dock-button[data-view]').forEach(function(button){
         var on=button.dataset.view===dockTarget;
         button.classList.toggle('active',on);
@@ -582,13 +588,17 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       if(currentView!=='page')return;
       var href='';
       try{href=frame.contentWindow.location.href||''}catch(e){href=''}
+      /* file:// 下读不到 iframe 地址：退回打开时记录的地址（页面内跳转由 app:route 消息更新） */
+      if(!href||href.indexOf('about:blank')===0)href=pageHref||href;
       if(href.indexOf('about:blank')===0){switchView(lastBuiltin||'home');return}
+      pageHref=href;
       /* 页面内部跳转（分区页 → 详情页 / 补货执行页）时同步外壳层级，
          否则从 tab 页下钻后 dock 会一直压在新页面上 */
       applyChrome(chromeFor(href),href);
     });
   }
   function mountPage(href){
+    pageHref=href;
     var old=$("pageFrame");
     var next=document.createElement('iframe');
     next.id='pageFrame';
@@ -615,8 +625,9 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     var from=String(active).replace(/View$/,'');
     if(from==='home'||from==='common')taskBackView=from;
     lastBuiltin='tasks';
-    var cur='';
-    try{cur=$("pageFrame").contentWindow.location.href||''}catch(e){cur=''}
+    /* pageHref 兜底：file:// 下读不到 iframe 的 location，否则每次点「任务」都会重建列表 */
+    var cur=pageHref||'';
+    try{cur=$("pageFrame").contentWindow.location.href||cur}catch(e){}
     if(cur.indexOf('task-list.html')<0){
       $("pageTitle").textContent='任务';
       mountPage('task-list.html');
@@ -646,10 +657,19 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       var before='';
       try{before=$("pageFrame").contentWindow.location.pathname||''}catch(e){before=''}
       releaseCamera(before);
+      syncAvatar();
       if(want&&want!=='page'){switchView(want);return}
       switchView(lastBuiltin&&lastBuiltin!=='page'?lastBuiltin:'home');
     }else if(type==='app:taskback'){
       switchView(taskBackView||'home');
+    }else if(type==='app:route'){
+      /* 页面自己上报当前地址：file:// 下外壳读不到 iframe 的 location，
+         靠这条消息同步「该不该收起 dock」（分区页保持 tab，详情页转 focus） */
+      var route=event.data&&event.data.href;
+      if(route&&currentView==='page'){
+        pageHref=route;
+        applyChrome(chromeFor(route),route);
+      }
     }else if(type==='app:logout'){
       location.href='login.html';
     }
@@ -674,6 +694,19 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
   $("closeMenu").addEventListener('click',closeMenu);
   $("fullMenu").addEventListener('click',function(event){if(event.target===$("fullMenu"))closeMenu()});
   $("backButton").addEventListener('click',goBack);
+  /* 右下角头像与「我的」共用一份数据：都读 localStorage 的 vs:my-avatar */
+  var AVATAR_KEY='vs:my-avatar',AVATAR_DEFAULT='assets/avatar-leo.jpg';
+  function syncAvatar(){
+    var img=$("profileAvatar");
+    if(!img)return;
+    var src='';
+    try{src=localStorage.getItem(AVATAR_KEY)||''}catch(e){src=''}
+    img.src=src||AVATAR_DEFAULT;
+  }
+  syncAvatar();
+  window.addEventListener('focus',syncAvatar);
+  window.addEventListener('storage',function(event){if(!event.key||event.key===AVATAR_KEY)syncAvatar()});
+
   $("profileButton").addEventListener('click',function(){openPage('my.html','我的')});
   $("deviceSearch").addEventListener('input',renderDevices);
   $("deviceSearch").addEventListener('focus',function(){setFilterPanel(true)});
