@@ -7,46 +7,15 @@
 <title>商品 · VendSolution</title>
 <link rel="stylesheet" href="app-ui.css">
 <style>
-  .pl-bar{position:relative}
-  .pl-title{display:inline-flex;flex-direction:column;align-items:center;gap:0}
-  .pl-brand{font-size:10px;line-height:13px;font-weight:700;letter-spacing:1.7px;color:var(--text-3)}
-  .pl-name{
-    display:inline-flex;align-items:center;gap:3px;font-size:17px;line-height:23px;
-    font-weight:700;letter-spacing:-.2px;color:var(--ink)
-  }
-  .pl-title svg{color:var(--text-3);transition:transform .2s}
-  .pl-title.open svg{transform:rotate(180deg)}
-
-  /* 模块切换浮层（沿用原下拉菜单） */
-  .pl-menu{
-    position:absolute;top:52px;left:16px;z-index:40;width:206px;padding:6px;
-    border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);
-    box-shadow:0 14px 34px rgba(11,16,47,.14);
-    opacity:0;visibility:hidden;transform:translateY(-6px);
-    transition:opacity .18s,transform .18s,visibility .18s
-  }
-  .pl-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
-  .pl-menu a{
-    display:flex;align-items:center;gap:9px;height:42px;padding:0 10px;border-radius:10px;
-    font-size:14px;font-weight:600;color:var(--ink)
-  }
-  .pl-menu a svg:first-child{color:var(--text-2)}
-  .pl-menu a.active{background:var(--brand-weak);color:var(--brand)}
-  .pl-menu a.active svg:first-child{color:var(--brand)}
-  .pl-menu a .tick{margin-left:auto;color:var(--brand)}
-
   /* 搜索 + 工具按钮 */
   .pl-tools{display:flex;align-items:center;gap:8px}
   .pl-tools .search{flex:1;min-width:0}
-  .pl-search-ph{font-size:14px;color:var(--text-3)}
   .pl-tool{
     width:46px;height:46px;flex:0 0 auto;border:1px solid var(--line);border-radius:var(--r-ctl);
     background:var(--surface);color:var(--text-2);
     display:flex;align-items:center;justify-content:center
   }
   .pl-tool:active{background:var(--surface-2)}
-
-  .pl-view{font-size:12px;font-weight:600;color:var(--text-3);align-self:center;padding-right:2px}
 
   /* 商品行：长名称换行不截断 */
   .pl-thumb{width:44px;height:44px}
@@ -58,48 +27,24 @@
 
   <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
-  <header class="navbar pl-bar">
-    <div class="nav-left">
-      <button class="icon-btn" type="button" aria-label="新增">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
-    </div>
-    <h1><button class="pl-title" id="navToggle" type="button">
-      <span class="pl-brand">VENDSOLUTION</span>
-      <span class="pl-name">商品
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </span>
-    </button></h1>
-    <div class="nav-right">
-      <button class="icon-btn" type="button" aria-label="更多">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
-      </button>
-    </div>
-
-    <nav class="pl-menu" id="navMenu">
-      <a href="products.html" class="active">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>商品
-        <svg class="tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </a>
-      <a href="#">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>订单
-      </a>
-      <a href="machines.html">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>设备
-      </a>
-      <a href="stats.html">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>经营统计
-      </a>
+  <header class="navbar">
+    <span class="nav-left"><button class="icon-btn" type="button" aria-label="新增"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></span>
+    <h1><button class="mod-title" type="button" data-mod-toggle="#modMenu" aria-expanded="false"><span>商品</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></h1>
+    <span class="nav-right"><button class="icon-btn" type="button" aria-label="更多"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></span>
+    <nav class="mod-menu" id="modMenu" aria-label="模块切换">
+      <a href="products.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg><span>商品</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></a>
+      <a href="machines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>设备</span></a>
+      <a href="alerts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span>告警</span></a>
+      <a href="app_workorder/tickets.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2H7.4A2.4 2.4 0 0 0 5 6.6v11.8A2.4 2.4 0 0 0 7.4 20.8h9.2a2.4 2.4 0 0 0 2.4-2.4V6.6a2.4 2.4 0 0 0-2.4-2.4H15"/><path d="M9 3h6a1 1 0 0 1 1 1v1.8a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="m8.8 13.4 2.2 2.2 4.2-4.2"/></svg><span>工单</span></a>
+      <a href="analytics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.6v15.8a1 1 0 0 0 1 1h15.4"/><path d="M8.4 16.6v-4.2M13 16.6V8.4M17.6 16.6v-6.4"/></svg><span>经营分析</span></a>
     </nav>
   </header>
 
   <div class="tabs" id="tabs">
-    <span class="tab active" data-f="all">全部</span>
-    <span class="tab" data-f="active">已上架</span>
-    <span class="tab" data-f="draft">草稿</span>
-    <span class="tab" data-f="archived">已归档</span>
-    <span class="spacer"></span>
-    <span class="pl-view">视图</span>
+    <button class="tab active" type="button" data-f="all">全部</button>
+    <button class="tab" type="button" data-f="active">已上架</button>
+    <button class="tab" type="button" data-f="draft">草稿</button>
+    <button class="tab" type="button" data-f="archived">已归档</button>
   </div>
 
   <div class="body">
@@ -107,7 +52,7 @@
     <div class="pl-tools">
       <div class="search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-        <span class="pl-search-ph">搜索商品</span>
+        <input id="kw" type="search" placeholder="搜索商品" aria-label="搜索商品">
       </div>
       <button class="pl-tool" type="button" aria-label="排序">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10M11 9h7M11 13h4"/><path d="m3 17 3 3 3-3"/><path d="M6 18V4"/></svg>
@@ -163,19 +108,25 @@
 
 </main>
 <script>
-  var t = document.getElementById('navToggle'), m = document.getElementById('navMenu');
-  t.addEventListener('click', function(e){ e.stopPropagation(); m.classList.toggle('open'); t.classList.toggle('open'); });
-  document.addEventListener('click', function(){ m.classList.remove('open'); t.classList.remove('open'); });
+  var curTab = 'all', kw = document.getElementById('kw');
+
+  function applyFilter(){
+    var q = (kw.value || '').trim().toLowerCase();
+    document.querySelectorAll('#list .item').forEach(function(r){
+      var okTab = (curTab === 'all' || r.dataset.s === curTab);
+      var okKw = !q || r.textContent.toLowerCase().indexOf(q) >= 0;
+      r.style.display = (okTab && okKw) ? '' : 'none';
+    });
+  }
 
   document.getElementById('tabs').addEventListener('click', function(e){
     var tab = e.target.closest('.tab'); if(!tab) return;
     this.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
     tab.classList.add('active');
-    var f = tab.dataset.f;
-    document.querySelectorAll('#list .item').forEach(function(r){
-      r.style.display = (f==='all' || r.dataset.s===f) ? '' : 'none';
-    });
+    curTab = tab.dataset.f;
+    applyFilter();
   });
+  kw.addEventListener('input', applyFilter);
 </script>
 <script src="app-ui.js"></script>
 </body>

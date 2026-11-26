@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>咖啡机补货</title>
+<style>
+:root{
+  --brand:#2434c8;--brand-deep:#1b299e;--brand-weak:#edf0ff;
+  --ink:#0b102f;--text-2:#697095;--text-3:#9aa1b7;
+  --bg:#f5f6fa;--surface:#fff;--surface-2:#f0f2f8;--line:#e4e7ef;
+  --ok:#008f63;--ok-bg:#e8f7f1;
+  --warn:#9a5e2a;--warn-bg:#fff4e8;
+  --danger:#d92d20;--danger-bg:#fff0ef;
+  --r-card:16px;--r-ctl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:#e7eaf3;color:var(--ink);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.22);outline-offset:2px}
+svg{display:block;flex:0 0 auto}
+
+.app{position:relative;width:100%;max-width:390px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- 状态栏 / 顶栏 ---------- */
+.status{flex:0 0 28px;height:28px;display:flex;align-items:center;justify-content:space-between;padding:2px 20px 0;background:var(--surface);font-size:12px;font-weight:700}
+.status-icons{display:flex;align-items:center;gap:5px}
+.signal{width:16px;height:10px;display:flex;align-items:flex-end;gap:1.5px}
+.signal i{display:block;width:3px;border-radius:1px;background:var(--ink)}
+.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:6px}.signal i:nth-child(3){height:8px}.signal i:nth-child(4){height:10px}
+.battery{position:relative;width:21px;height:10px;padding:1px;border:1.5px solid var(--ink);border-radius:3px}
+.battery:after{content:"";position:absolute;right:-3px;top:2px;width:2px;height:4px;background:var(--ink);border-radius:0 1px 1px 0}
+.battery i{display:block;width:80%;height:100%;border-radius:1px;background:var(--ink)}
+
+.head{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--line)}
+.navbar{height:52px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px}
+.navbar h1{text-align:center;font-size:17px;line-height:24px;font-weight:700;letter-spacing:-.2px}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;color:var(--ink)}
+.icon-btn:active{background:var(--surface-2)}
+.icon-btn.accent{color:var(--brand)}
+
+.device{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:0 16px 12px}
+.device-main{min-width:0}
+.device-name{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.4px}
+.device-meta{margin-top:2px;display:flex;align-items:center;gap:6px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.device-meta b{font-weight:600;color:var(--text-2)}
+.inv-btn{
+  flex:0 0 auto;height:32px;margin-top:1px;padding:0 11px;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid #dce2ff;border-radius:10px;background:var(--brand-weak);
+  font-size:12px;line-height:18px;font-weight:700;color:var(--brand)
+}
+.inv-btn:active{background:#dce2ff}
+.door-tag{height:18px;padding:0 7px;display:inline-flex;align-items:center;border-radius:999px;background:var(--brand-weak);color:var(--brand);font-size:10px;line-height:18px;font-weight:700;letter-spacing:.2px}
+
+/* ---------- 双门：整柜补货，不再分左右门 ---------- */
+.door-tag.double{letter-spacing:.2px}
+
+/* ---------- 统计 ---------- */
+.stats{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px 0}
+.stat{padding:9px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.stat.primary{border-color:#dce2ff;background:var(--brand-weak)}
+.stat-label{font-size:11px;line-height:15px;font-weight:600;color:var(--text-2)}
+.stat.primary .stat-label{color:#4653b4}
+.stat-value{margin-top:1px;font-size:26px;line-height:32px;font-weight:800;letter-spacing:-.9px;font-variant-numeric:tabular-nums}
+.stat.primary .stat-value{color:var(--brand)}
+.stat-value small{margin-left:3px;font-size:11px;font-weight:600;letter-spacing:0;color:var(--text-2)}
+
+/* ---------- 筛选 ---------- */
+.controls{flex:0 0 auto;display:flex;gap:8px;padding:10px 16px 6px}
+.segmented{display:grid;grid-template-columns:1fr 1fr;gap:3px;flex:1;min-width:0;padding:3px;border-radius:11px;background:#e9ecf4}
+.segmented button{height:34px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.segmented button.active{background:var(--surface);color:var(--brand);box-shadow:0 2px 7px rgba(11,16,47,.08)}
+.layer-select{height:40px;min-width:88px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--line);border-radius:11px;background:var(--surface);font-size:13px;font-weight:600;white-space:nowrap}
+
+/* ---------- 列表 ---------- */
+.list-wrap{flex:1;min-height:0;overflow-y:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch}
+.list-card{border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);overflow:hidden}
+.group-head{padding:11px 14px 5px;border-bottom:1px solid var(--line);background:#fafbfd;font-size:11px;line-height:16px;font-weight:700;letter-spacing:.6px;color:var(--text-3)}
+.group-head.pin{display:flex;align-items:center;gap:5px;background:var(--brand-weak);border-bottom-color:#dce2ff;color:var(--brand)}
+
+/* 每行：上层商品信息，下层数量控件；左滑露出置顶 / 清空 */
+.item{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:var(--surface)}
+.item:last-child{border-bottom:0}
+.item-front{position:relative;z-index:2;background:var(--surface);touch-action:pan-y;transition:transform .24s cubic-bezier(.22,.61,.36,1)}
+.item-front.drag{transition:none}
+.item-front:active{background:#fafbfd}
+.item-main{display:flex;align-items:center;gap:10px;padding:11px 13px 5px}
+.item-main .item-body{flex:1;min-width:0}
+.item-bar{display:flex;align-items:center;gap:8px;padding:0 13px 10px}
+
+.thumb{position:relative;width:42px;height:42px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.thumb i{position:absolute;font-style:normal;font-size:15px;font-weight:700;color:#8a92ab}
+.thumb img{position:relative;width:100%;height:100%;padding:3px;object-fit:contain}
+.thumb.lg{width:54px;height:54px;border-radius:12px}
+.item-body{min-width:0;display:block}
+.item-name{display:block;font-size:15px;line-height:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pin-tag{margin-left:5px;height:16px;padding:0 5px;display:inline-flex;align-items:center;border-radius:5px;background:var(--brand-weak);color:var(--brand);font-size:10px;font-style:normal;font-weight:700;vertical-align:1px}
+.item-meta{margin-top:3px;display:flex;align-items:center;gap:5px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.item-meta .slot{font-weight:600;color:var(--ink)}
+.item-meta .stock{font-weight:500}
+.item-meta .batch-tag{color:var(--brand);font-weight:600}
+.badge{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+
+/* 行内数量：− [输入] + */
+/* 单条试验：图片 48 / 名称两行 / 步进器 96 */
+.item--v2 .item-main{gap:10px;padding:11px 12px;min-height:84px}
+.item--v2 .thumb{flex:0 0 48px;width:48px;height:48px;border-radius:12px}
+.item--v2 .thumb i{font-size:16px}
+.item--v2 .item-body{display:flex;flex-direction:column;justify-content:center;min-height:62px}
+.item--v2 .item-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;word-break:break-word;overflow-wrap:break-word}
+.item--v2 .item-meta{white-space:nowrap;overflow:visible}
+.item--v2 .step{flex:0 0 96px;grid-template-columns:34px 28px 34px;height:36px;border-radius:10px}
+.step{flex:0 0 auto;height:40px;display:grid;grid-template-columns:40px 50px 40px;border:1px solid #ccd4f6;border-radius:11px;overflow:hidden;background:var(--brand-weak)}
+.step button{display:flex;align-items:center;justify-content:center;background:var(--brand-weak);color:var(--brand)}
+.step button:active{background:#dce2ff}
+.step button:disabled{background:#f3f4f9;color:#c2c6d8}
+.step button.plus{background:var(--brand);color:#fff}
+.step button.plus:active{background:var(--brand-deep)}
+.step button.plus:disabled{background:#d7dbf0;color:#fff}
+.step input{width:100%;min-width:0;padding:0;border:0;border-left:1px solid #dde2f6;border-right:1px solid #dde2f6;background:var(--surface);text-align:center;font-size:16px;font-weight:800;letter-spacing:-.3px;font-variant-numeric:tabular-nums;outline:0}
+.step input:focus{background:#f7f8ff}
+.batch-chip{flex:0 0 auto;height:40px;margin-left:auto;padding:0 8px;display:inline-flex;align-items:center;gap:3px;border:1px solid var(--line);border-radius:11px;background:var(--surface);font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap}
+.batch-chip.set{border-color:#dce2ff;background:var(--brand-weak);color:var(--brand)}
+.batch-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex:0 0 auto}
+
+/* 左滑动作 */
+.swipe{position:absolute;top:0;right:0;bottom:0;z-index:1;display:flex}
+.swipe-l{position:absolute;top:0;left:0;bottom:0;z-index:1;display:flex}
+.swipe-l .done{width:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:var(--ok);color:#fff;font-size:11px;font-weight:700;letter-spacing:.2px}
+.swipe-l .done.undo{background:#5b6478}
+.swipe-l .done:active{filter:brightness(.92)}
+.item.is-done .item-front{background:#fbfdfc}
+.item.is-done .item-name{color:var(--text-2)}
+.swipe button{width:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#fff;font-size:11px;font-weight:700;letter-spacing:.2px}
+.swipe .pin{background:var(--brand)}
+.swipe .pin.on{background:#5a67d8}
+.swipe .clear{background:#7b8199}
+.swipe button:active{filter:brightness(.92)}
+@keyframes rowflash{0%{background:var(--brand-weak)}100%{background:var(--surface)}}
+.item-front.flash{animation:rowflash 1.1s ease-out}
+
+.swipe-tip{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:0 18px 8px;font-size:11px;line-height:15px;color:var(--text-3)}
+.empty{padding:52px 20px;text-align:center}
+.empty-icon{width:44px;height:44px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--ok-bg);color:var(--ok)}
+.empty p{font-size:14px;line-height:20px;font-weight:600}
+.empty span{display:block;margin-top:3px;font-size:12px;line-height:17px;color:var(--text-2)}
+
+/* ---------- 底部主操作 ---------- */
+.footer{flex:0 0 auto;padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.98)}
+.btn-primary{width:100%;height:48px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--r-ctl);background:var(--brand);color:#fff;font-size:15px;font-weight:700}
+.btn-primary:active{background:var(--brand-deep)}
+.btn-primary:disabled{opacity:.42;cursor:not-allowed}
+
+/* ---------- 底部弹层 ---------- */
+.overlay{position:absolute;inset:0;z-index:50;display:flex;align-items:flex-end;background:rgba(11,16,47,.42);opacity:0;visibility:hidden;transition:opacity .2s}
+.overlay.open{opacity:1;visibility:visible}
+.sheet{width:100%;max-height:90%;overflow-y:auto;padding:6px 16px calc(16px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;background:var(--surface);box-shadow:0 -8px 30px rgba(11,16,47,.12);transform:translateY(24px);transition:transform .22s}
+.overlay.open .sheet{transform:translateY(0)}
+.handle{width:40px;height:4px;margin:2px auto 10px;border-radius:4px;background:#dfe3ee}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sheet-head h2{font-size:18px;line-height:25px;font-weight:700;letter-spacing:-.25px}
+.close{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--surface-2);color:var(--text-2)}
+
+.sheet-product{display:flex;align-items:center;gap:12px;padding:2px 0 14px}
+.sheet-product-name{font-size:15px;line-height:21px;font-weight:600}
+.sheet-product-meta{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.sheet-stock{margin:0 0 12px;font-size:12px;line-height:17px;color:var(--text-2)}
+/* 试验：可口可乐的批次弹层新布局 */
+.sheet.nv .sheet-head{justify-content:flex-end;margin-bottom:2px}
+.sheet.nv #editTitle{display:none}
+.sheet.nv .sheet-product{padding:6px 0 12px}
+.sheet.nv .sheet-product>div{min-height:61px;display:flex;flex-direction:column;justify-content:center}
+.sheet.nv .sheet-product-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;overflow-wrap:break-word}
+.sheet.nv .sheet-stock{margin:0 0 14px}
+.nv-qty{margin:0 0 6px}
+.nv-qty-label{font-size:13px;line-height:18px;font-weight:600;margin-bottom:8px}
+.nv-step{height:56px;display:grid;grid-template-columns:54px 1fr 54px;border:1px solid #ccd4f6;border-radius:12px;background:var(--brand-weak);overflow:hidden}
+.nv-step button{display:flex;align-items:center;justify-content:center;color:var(--brand)}
+.nv-step button:disabled{color:#b9c0d8}
+.nv-step input{width:100%;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);background:var(--surface);text-align:center;font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;outline:0}
+.sheet-stock b{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.shelf.flat{margin-top:0;padding-top:12px;border-top:1px solid var(--line)}
+
+/* ---------- 保质期 ---------- */
+.shelf{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.shelf-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.shelf-title{font-size:13px;line-height:18px;font-weight:600}
+.shelf-opt{font-size:11px;line-height:16px;color:var(--text-3)}
+.segmented.seg-3{grid-template-columns:repeat(3,1fr)}
+.segmented.seg-3 button{font-size:12px;font-weight:600}
+.shelf-desc{margin-top:8px;font-size:11px;line-height:16px;color:var(--text-2)}
+.shelf-block{display:none;margin-top:11px}
+.shelf-block.show{display:block}
+.field-label{margin-bottom:6px;font-size:11px;line-height:16px;font-weight:600;color:var(--text-2)}
+.date-row{position:relative;height:46px;display:flex;align-items:center;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface-2)}
+.date-row:focus-within{border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+.date-row input{position:relative;z-index:1;width:100%;height:100%;padding-right:24px;border:0;background:transparent;font-size:14px;font-weight:700;color:transparent;outline:0;font-variant-numeric:tabular-nums;appearance:none;-webkit-appearance:none}
+.date-row input::-webkit-datetime-edit{color:transparent}
+.date-val{position:absolute;left:12px;top:50%;z-index:2;transform:translateY(-50%);font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none}
+.date-val.empty{font-weight:500;color:var(--text-3)}
+.date-row input::-webkit-calendar-picker-indicator{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.date-row>svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none}
+.date-row.invalid{border-color:var(--danger);background:var(--danger-bg)}
+.days-static{height:44px;display:flex;align-items:center;font-size:13px;font-weight:600;color:var(--ink)}
+.days-static b{margin:0 4px;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums}
+.days-row{height:44px;display:flex;align-items:center;gap:4px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface-2)}
+.days-row:focus-within{border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+.days-row input{width:100%;min-width:0;border:0;background:transparent;font-size:14px;font-weight:700;outline:0;font-variant-numeric:tabular-nums}
+.days-row span{flex:0 0 auto;font-size:12px;color:var(--text-2)}
+.days-row.invalid{border-color:var(--danger);background:var(--danger-bg)}
+.shelf-calc{margin-top:7px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.shelf-calc b{font-weight:700;color:var(--ink)}
+.shelf-calc.bad{color:var(--danger);font-weight:600}
+.shelf-note{display:none;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:11px;line-height:16px;font-weight:600}
+.shelf-note.show{display:block}
+.shelf-note.warn{background:var(--warn-bg);color:#7a4a1e}
+.shelf-note.bad{background:var(--danger-bg);color:#a02a20}
+
+.quick-actions{display:flex;gap:8px;margin:14px 0 14px}
+.quick{flex:1;height:40px;border-radius:11px;background:var(--brand-weak);color:var(--brand);font-size:13px;font-weight:700}
+.quick:active{background:#dfe4ff}
+.quick.danger{background:var(--danger-bg);color:var(--danger)}
+.quick.danger:active{background:#ffe4e1}
+.confirm-box{display:none;margin-bottom:12px;padding:11px 12px;border-radius:11px;background:var(--danger-bg)}
+.confirm-box.show{display:block}
+.confirm-box p{font-size:11px;line-height:17px;color:#a02a20}
+.confirm-box p b{display:block;margin-bottom:2px;font-size:12px;font-weight:700;color:#8a2318}
+.confirm-box.warn{background:var(--warn-bg)}
+.confirm-box.warn p{color:#7a4a1e}
+.confirm-box.warn p b{color:#6b3d12}
+.confirm-actions{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-ghost,.btn-danger,.btn-warn{height:36px;border-radius:9px;font-size:12px;font-weight:700}
+.btn-ghost{background:#fff;color:var(--text-2);box-shadow:inset 0 0 0 1px rgba(11,16,47,.08)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warn{background:#a86a1d;color:#fff}
+
+/* ---------- 添加商品 ---------- */
+.search{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface)}
+.search:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(36,52,200,.10)}
+.search>svg{color:var(--text-3)}
+.search input{min-width:0;flex:1;border:0;background:transparent;outline:0;font-size:14px}
+.search input::placeholder{color:var(--text-3)}
+.scan{height:32px;padding-left:10px;display:flex;align-items:center;border-left:1px solid var(--line);color:var(--brand)}
+.results{margin-top:6px}
+.result{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 30px;gap:11px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);text-align:left}
+.result:last-child{border-bottom:0}
+.result .thumb{width:44px;height:44px;border-radius:10px}
+.result-name{display:block;font-size:14px;line-height:19px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-code{display:block;margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.add-circle{width:28px;height:28px;display:flex;align-items:center;justify-content:center;justify-self:end;border-radius:50%;background:var(--brand-weak);color:var(--brand)}
+.result:active .add-circle{background:var(--brand);color:#fff}
+.add-empty{padding:36px 12px 28px;text-align:center}
+.add-empty .empty-icon{margin-bottom:10px;background:var(--surface-2);color:var(--text-3);border-radius:14px}
+.add-empty p{font-size:13px;line-height:19px;font-weight:600}
+.add-empty span{display:block;margin-top:3px;font-size:11px;line-height:16px;color:var(--text-2)}
+.btn-secondary{width:100%;height:44px;margin-top:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:var(--r-ctl);background:var(--brand-weak);color:var(--brand);font-size:13px;font-weight:700}
+.btn-secondary:active{background:#dfe4ff}
+
+/* ---------- 扫码（相机模拟） ---------- */
+.scn{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;background:#0b102f}
+.scn.open{display:flex}
+.scn-cam{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:radial-gradient(130% 85% at 50% 28%,#1b2456 0%,#0c1130 72%)}
+.scn-top{flex:0 0 auto;height:56px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:0 8px}
+.scn-top h2{text-align:center;font-size:16px;line-height:22px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.scn-icon{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;justify-self:center;border-radius:50%;background:rgba(255,255,255,.12);color:#fff}
+.scn-icon:active{background:rgba(255,255,255,.24)}
+.scn-icon.on{background:#fff;color:#0b102f}
+.scn-center{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px}
+.scn-frame{position:relative;width:212px;height:212px;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.13)}
+.scn-frame b{position:absolute;width:26px;height:26px;border:3px solid #fff}
+.scn-frame b:nth-child(1){top:-3px;left:-3px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.scn-frame b:nth-child(2){top:-3px;right:-3px;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.scn-frame b:nth-child(3){bottom:-3px;left:-3px;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.scn-frame b:nth-child(4){bottom:-3px;right:-3px;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.scn-laser{position:absolute;left:12px;right:12px;top:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(122,140,255,0),#8b9bff,#fff,#8b9bff,rgba(122,140,255,0));animation:scnline 2.6s ease-in-out infinite}
+@keyframes scnline{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(172px);opacity:1}}
+.scn-tip{margin:18px 0 0;text-align:center;font-size:12px;line-height:17px;color:rgba(255,255,255,.62)}
+
+.scn-demo{flex:0 0 auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;background:#141a3d}
+.scn-demo-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+.scn-demo-head b{font-size:12px;line-height:17px;font-weight:700;color:rgba(255,255,255,.92)}
+.scn-demo-head span{font-size:10px;line-height:15px;font-weight:600;color:rgba(255,255,255,.45)}
+.scn-code{width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;margin-top:8px;border-radius:12px;background:rgba(255,255,255,.07);text-align:left}
+.scn-code:active{background:rgba(255,255,255,.16)}
+.scn-code-main{min-width:0;flex:1}
+.scn-code-name{display:block;font-size:13px;line-height:18px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scn-code-num{display:block;margin-top:1px;font-size:11px;line-height:15px;font-weight:500;color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+.scn-tag{flex:0 0 auto;height:20px;padding:0 8px;display:inline-flex;align-items:center;border-radius:999px;font-size:10px;line-height:20px;font-weight:700}
+.scn-tag.ok{background:rgba(0,143,99,.24);color:#74e3b8}
+.scn-tag.warn{background:rgba(154,94,42,.3);color:#f2bc86}
+.scn-tag.bad{background:rgba(217,45,32,.24);color:#ffa39a}
+
+.scn-sheet{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:6px 16px calc(16px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;background:var(--surface);box-shadow:0 -10px 34px rgba(11,16,47,.28);transform:translateY(104%);transition:transform .24s ease}
+.scn-sheet.show{transform:translateY(0)}
+.scn-prod{display:flex;align-items:center;gap:12px;padding:4px 0 13px}
+.scn-prod .thumb{width:52px;height:52px;border-radius:12px}
+.scn-prod-name{font-size:15px;line-height:21px;font-weight:600}
+.scn-prod-code{margin-top:2px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums}
+.scn-state{display:flex;align-items:center;gap:7px;padding:11px 12px;border-radius:12px;font-size:12px;line-height:17px;font-weight:700}
+.scn-state.ok{background:var(--ok-bg);color:var(--ok)}
+.scn-state.warn{background:var(--warn-bg);color:var(--warn)}
+.scn-state.bad{background:var(--danger-bg);color:var(--danger)}
+.scn-state .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.scn-desc{margin:10px 0 0;font-size:12px;line-height:18px;color:var(--text-2)}
+.scn-info{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.scn-info div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px;line-height:17px}
+.scn-info div:last-child{border-bottom:0}
+.scn-info span{color:var(--text-2)}
+.scn-info b{max-width:66%;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.scn-actions{margin-top:14px;display:flex;gap:8px}
+.scn-actions .btn-primary{flex:1;width:auto}
+.scn-actions .btn-ghost{height:48px;padding:0 18px;border-radius:var(--r-ctl)}
+
+/* ---------- 层选择 ---------- */
+.layer-options{display:flex;flex-direction:column}
+.layer-option{height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:15px;font-weight:600}
+.layer-option:last-child{border-bottom:0}
+.layer-option .check{color:var(--brand);visibility:hidden}
+.layer-option.active{color:var(--brand)}
+.layer-option.active .check{visibility:visible}
+
+/* ---------- Toast（避开底部按钮） ---------- */
+.toast{position:absolute;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));z-index:90;max-width:calc(100% - 40px);padding:10px 16px;border-radius:11px;background:#11162f;color:#fff;font-size:12px;line-height:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:.2s;box-shadow:0 10px 30px rgba(11,16,47,.2)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(min-width:520px){
+  .app{height:min(844px,calc(100dvh - 32px));margin-top:16px;border-radius:26px;box-shadow:0 18px 60px rgba(20,20,20,.14)}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  .meta-note{margin-left:8px;font-size:11px;line-height:16px;color:var(--text-3)}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <div class="head">
+    <header class="navbar">
+      <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <h1>补货</h1>
+      <button class="icon-btn accent" id="addBtn" aria-label="添加原料"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </header>
+    <section class="device">
+      <div class="device-main">
+        <div class="device-name">中央广场咖啡机</div>
+        <div class="device-meta"><b id="deviceId">CM-2001</b><span class="meta-note">现磨 · 8 个料仓</span></div>
+      </div>
+      <button class="inv-btn" id="inventoryBtn" type="button" aria-label="库存盘点">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h3v14H4zM10 5h3.5v14H10M17 5h3v14h-3"/></svg>
+        盘点
+      </button>
+    </section>
+  </div>
+
+  <section class="stats" aria-label="补货统计">
+    <div class="stat primary"><div class="stat-label" id="statNeedLabel">待补料仓</div><div class="stat-value"><span id="skuCount">6</span><small>个</small></div></div>
+    <div class="stat"><div class="stat-label" id="statAddLabel">已录入</div><div class="stat-value"><span id="unitCount">0</span><small>件</small></div></div>
+  </section>
+
+  <div class="controls">
+    <div class="segmented" id="segments"><button class="active" data-status="need">待补 <span id="needCount">6</span></button><button data-status="all">全部 <span id="allCount">8</span></button></div>
+    <button class="layer-select" id="layerBtn"><span id="layerLabel">全部料仓</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg></button>
+  </div>
+
+  <p class="swipe-tip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M9 7l-5 5 5 5"/></svg>左滑置顶 / 清空 · 右滑完成移到底部</p>
+
+  <div class="list-wrap"><div class="list-card" id="list"></div></div>
+
+  <footer class="footer">
+    <button class="btn-primary" id="completeBtn">完成补货<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+  </footer>
+
+  <!-- 批次信息 -->
+  <div class="overlay" id="editOverlay" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <section class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head"><h2 id="editTitle">批次信息</h2><button class="close" data-close="editOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="sheet-product">
+        <span class="thumb lg"><i id="editInitial"></i><img id="editImage" alt="" onerror="this.style.display='none'"></span>
+        <div>
+          <div class="sheet-product-name" id="editName"></div>
+          <div class="sheet-product-meta" id="editSlot"></div>
+        </div>
+      </div>
+      <p class="sheet-stock" id="sheetStock">当前库存 2 / 容量 10</p>
+      <div class="nv-qty" id="nvQty" hidden>
+        <div class="nv-qty-label">本次补货</div>
+        <div class="nv-step">
+          <button type="button" id="nvMinus" aria-label="减少补货数量"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <input id="nvInput" type="text" inputmode="numeric" autocomplete="off" value="0" aria-label="本次补货数量">
+          <button type="button" id="nvPlus" aria-label="增加补货数量"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+      </div>
+
+      <div class="shelf flat" id="shelf">
+        <div class="shelf-head">
+          <div class="shelf-title">保质期</div>
+          <span class="shelf-opt">选填</span>
+        </div>
+        <div class="segmented seg-3" id="shelfSeg">
+          <button type="button" class="active" data-mode="ignore">忽略</button>
+          <button type="button" data-mode="produce">按生产日期</button>
+          <button type="button" data-mode="expire">按到期时间</button>
+        </div>
+        <p class="shelf-desc" id="shelfDesc">不记录批次日期，按商品默认保质期管理</p>
+
+        <div class="shelf-block" id="produceBlock">
+          <div class="field-label">生产日期</div>
+          <div class="date-row" id="produceRow">
+            <input type="date" id="produceDate" aria-label="生产日期">
+            <span class="date-val empty" id="produceVal">请选择日期</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+          </div>
+          <div style="margin-top:11px">
+            <div class="field-label">保质期天数</div>
+            <div class="days-static" id="daysStatic" hidden>商品档案 · 保质期 <b id="daysStaticValue">180</b> 天</div>
+            <div class="days-row" id="daysRow" hidden>
+              <input type="text" id="shelfDays" inputmode="numeric" placeholder="如 180" aria-label="保质期天数">
+              <span>天</span>
+            </div>
+          </div>
+          <p class="shelf-calc" id="produceCalc">选择生产日期后自动推算到期日</p>
+        </div>
+
+        <div class="shelf-block" id="expireBlock">
+          <div class="field-label">到期日</div>
+          <div class="date-row" id="expireRow">
+            <input type="date" id="expireDate" aria-label="到期日">
+            <span class="date-val empty" id="expireVal">请选择日期</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
+          </div>
+          <p class="shelf-calc" id="expireCalc">选择到期日后显示剩余天数</p>
+        </div>
+
+        <div class="shelf-note" id="shelfNote"></div>
+      </div>
+
+      <div class="quick-actions"><button class="quick danger" id="removeBtn">下架该原料</button></div>
+      <div class="confirm-box" id="removeConfirm">
+        <p>下架后该原料从当前料仓移除，补货列表不再显示，库存记录一并清除。</p>
+        <div class="confirm-actions"><button class="btn-ghost" id="cancelRemove">取消</button><button class="btn-danger" id="confirmRemove">确认下架</button></div>
+      </div>
+      <div class="confirm-box warn" id="futureConfirm">
+        <p><b>确认录入未来批次？</b><span id="futureConfirmText">生产日期晚于今天，录入后库存将按未来批次计算，请确认包装日期无误。</span></p>
+        <div class="confirm-actions"><button class="btn-ghost" id="cancelFuture">返回核对</button><button class="btn-warn" id="confirmFuture">仍要确认</button></div>
+      </div>
+      <button class="btn-primary" id="confirmBtn">保存批次</button>
+    </section>
+  </div>
+
+  <!-- 添加商品 -->
+  <div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <section class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head"><h2 id="addTitle">添加原料</h2><button class="close" data-close="addOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="searchInput" placeholder="原料名称或条码" autocomplete="off" aria-label="搜索原料">
+        <button class="scan" id="scanBtn" aria-label="扫码添加"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+      </div>
+      <div class="results" id="searchResults"></div>
+    </section>
+  </div>
+
+  <!-- 选择层 -->
+  <div class="overlay" id="layerOverlay" role="dialog" aria-modal="true" aria-labelledby="layerTitle">
+    <section class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head"><h2 id="layerTitle">选择料仓</h2><button class="close" data-close="layerOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="layer-options" id="layerOptions"></div>
+    </section>
+  </div>
+
+  <!-- 扫码（相机模拟） -->
+  <div class="scn" id="scanOverlay" role="dialog" aria-modal="true" aria-label="扫码添加商品">
+    <div class="scn-cam">
+      <div class="scn-top">
+        <button class="scn-icon" id="scanClose" aria-label="关闭扫描"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <h2>扫码添加</h2>
+        <button class="scn-icon" id="scanTorch" aria-label="补光灯"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg></button>
+      </div>
+      <div class="scn-center">
+        <div class="scn-frame"><b></b><b></b><b></b><b></b><span class="scn-laser"></span></div>
+        <p class="scn-tip">将原料条码放入框内，自动识别</p>
+      </div>
+    </div>
+    <div class="scn-demo">
+      <div class="scn-demo-head"><b>演示条码</b><span>模拟器 · 点选即可扫码</span></div>
+      <div id="scanCodes"></div>
+    </div>
+    <div class="scn-sheet" id="scanSheet"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script>
+(function(){
+  var imagePath='jpgk-platform/mobile/src/static/replenishment/';
+
+  /* 咖啡机：一份设备、8 个料仓，没有左右门与货道 */
+  var params=new URLSearchParams(location.search);
+  var doubleDoor=false;
+  var currentDoor='left';
+  if(params.get('name'))document.querySelector('.device-name').textContent=params.get('name');
+  if(params.get('id'))document.getElementById('deviceId').textContent=params.get('id');
+
+  /* 8 个料仓按原料分组：咖啡豆 / 粉类 / 辅料 / 包装 */
+  var LAYER_NAME=['','咖啡豆','粉类','辅料','包装'];
+  var SINGLE_ITEMS=[
+    {id:1,name:'咖啡豆 · 埃塞',layer:1,slot:'#1',cur:2,max:10,shelf:180},
+    {id:2,name:'咖啡豆 · 云拿',layer:1,slot:'#2',cur:4,max:10,shelf:180},
+    {id:3,name:'奶茶粉',layer:2,slot:'#3',cur:0,max:8,shelf:365},
+    {id:4,name:'可可粉',layer:2,slot:'#4',cur:6,max:15,shelf:365},
+    {id:5,name:'抹茶粉',layer:2,slot:'#5',cur:5,max:12,shelf:120},
+    {id:6,name:'糖浆 · 香草',layer:3,slot:'#6',cur:6,max:10,shelf:365},
+    {id:7,name:'牛奶',layer:3,slot:'#7',cur:10,max:10,shelf:540},
+    {id:8,name:'纸杯',layer:4,slot:'#8',cur:8,max:8,shelf:540}
+  ];
+  var SINGLE_EXTRAS=[];
+
+  /* 双门柜：左右各 4 层，商品归属其中一扇门，层号按各自门内计（无货道概念，slot 仅作位置备注） */
+  var DOUBLE_ITEMS=[
+    {id:1,door:'left',name:'可口可乐 330ml',layer:1,slot:'A1',cur:2,max:10,img:imagePath+'product-1.png',shelf:180},
+    {id:2,door:'left',name:'雪碧 330ml',layer:2,slot:'A2',cur:4,max:10,img:imagePath+'product-2.png',shelf:180},
+    {id:3,door:'left',name:'红牛 250ml',layer:3,slot:'B1',cur:0,max:8,img:imagePath+'product-3.png',shelf:365},
+    {id:4,door:'left',name:'矿泉水 550ml',layer:4,slot:'C2',cur:6,max:15,img:imagePath+'product-4.png',shelf:365},
+    {id:5,door:'left',name:'乐事薯片 原味',layer:1,slot:'B1',cur:5,max:12,img:imagePath+'product-5.png',shelf:120},
+    {id:6,door:'right',name:'巧克力 50g',layer:1,slot:'A1',cur:6,max:10,img:imagePath+'product-6.png',shelf:365},
+    {id:7,door:'right',name:'益达口香糖 薄荷',layer:2,slot:'A2',cur:8,max:10,img:imagePath+'product-2.png',shelf:540},
+    {id:8,door:'right',name:'能量棒',layer:3,slot:'B1',cur:8,max:8,img:imagePath+'product-5.png'},
+    {id:9,door:'right',name:'奥利奥 116g',layer:4,slot:'C1',cur:0,max:12,img:imagePath+'product-6.png',shelf:240},
+    {id:10,door:'right',name:'东方树叶 500ml',layer:4,slot:'C2',cur:3,max:10,img:imagePath+'product-4.png',shelf:270}
+  ];
+  var DOUBLE_EXTRAS=[
+    {id:101,door:'left',name:'可口可乐 无糖 330ml',code:'6901234500017',layer:4,slot:'C1',cur:0,max:10,img:imagePath+'product-1.png',shelf:180},
+    {id:102,door:'right',name:'乌龙茶 500ml',code:'6901234500024',layer:4,slot:'C2',cur:0,max:12,img:imagePath+'product-4.png',shelf:270}
+  ];
+
+  var items=(doubleDoor?DOUBLE_ITEMS:SINGLE_ITEMS).slice();
+  var extras=(doubleDoor?DOUBLE_EXTRAS:SINGLE_EXTRAS).slice();
+  /* 补货数量 add / 置顶 pinned / 原始顺序 seq */
+  items.concat(extras).forEach(function(it,index){it.add=0;it.pinned=false;it.done=false;it.seq=index;});
+
+  /* 产品库（演示数据）：trained=AI 已训练 / untrained=有商品但未训练 / missing=产品库没有 */
+  var LIBRARY=[
+    {code:'6921168509256',name:'农夫山泉饮用天然水 550ml',state:'trained'},
+    {code:'6954767434674',name:'雪碧柠檬味汽水 600ml',state:'untrained'},
+    {code:'6933266607185',name:'百事可乐 330ml',state:'missing'}
+  ];
+  var STATE_TAG={trained:['ok','已训练'],untrained:['warn','未训练'],missing:['bad','未收录']};
+  var ticketSeq=1;
+
+  var statusFilter='need',layerFilter=0,selected=null,toastTimer;
+  var listEl=document.getElementById('list');
+  var CHECK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>';
+  var ICON={
+    minus:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+    plus:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+    pin:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V8"/><path d="m6 13 6-5 6 5"/><path d="M5 4h14"/></svg>',
+    clear:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="m9 9 6 6M15 9l-6 6"/></svg>',
+    chev:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
+    arrow:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+  };
+
+  function remain(it){return Math.max(0,it.max-it.cur)}
+  function findItem(id){return items.filter(function(it){return it.id===id})[0]}
+  function doorName(d){return d==='right'?'右门':'左门'}
+  function inDoor(it){return true}   /* 双门整柜补货：左右门商品合并成一个列表 */
+  function sumAdd(){
+    return items.filter(inDoor).reduce(function(s,it){return s+(it.add||0)},0);
+  }
+  function initial(it){var s=it.name.replace(/[^0-9A-Za-z\u4e00-\u9fa5]/g,'');return s.charAt(0)||'·'}
+  function el(id){return document.getElementById(id)}
+
+  function updateStats(){
+    var scoped=items.filter(inDoor);
+    var needed=scoped.filter(function(it){return remain(it)>0});
+    el('skuCount').textContent=needed.length;
+    el('unitCount').textContent=sumAdd();
+    el('needCount').textContent=needed.length;
+    el('allCount').textContent=scoped.length;
+  }
+
+  function syncFooter(){
+    var total=sumAdd(),btn=el('completeBtn');
+    var name='补货';
+    btn.disabled=total===0;
+    btn.innerHTML=(total>0?'完成'+name+' · '+total+' 件':'完成'+name)+ICON.arrow;
+  }
+
+  var DONE_ICON='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
+
+  function row(it){
+    var add=it.add||0;
+    var swipe='<div class="swipe-l"><button class="done'+(it.done?' undo':'')+'" data-done="'+it.id+'" aria-label="'+(it.done?'撤回到原位':it.name+' 标记完成并移到底部')+'">'+DONE_ICON+'<span>'+(it.done?'撤回':'完成')+'</span></button></div>'
+      +'<div class="swipe">'
+        +'<button class="pin'+(it.pinned?' on':'')+'" data-pin="'+it.id+'" aria-label="'+(it.pinned?'取消置顶':'置顶')+'">'+ICON.pin+'<span>'+(it.pinned?'取消置顶':'置顶')+'</span></button>'
+        +'<button class="clear" data-clear="'+it.id+'" aria-label="清空数量">'+ICON.clear+'<span>清空</span></button>'
+      +'</div>';
+
+    return '<div class="item item--v2'+(it.done?' is-done':'')+'" data-id="'+it.id+'">'+swipe
+      +'<div class="item-front"><div class="item-main">'
+        +'<span class="thumb"><i>'+initial(it)+'</i>'+(it.img?'<img src="'+it.img+'" alt="" onerror="this.style.display=\'none\'">':'')+'</span>'
+        +'<span class="item-body"><span class="item-name">'+it.name+'</span>'
+        +'<span class="item-meta"><span class="slot">料仓 '+it.slot+'</span><span>·</span><span class="stock">库存 '+it.cur+'</span>'
+        +(it.cur===0?'<span class="badge danger">缺货</span>':'')
+        +(it.pinned?'<em class="pin-tag">置顶</em>':'')
+        +'</span></span>'
+        +'<div class="step">'
+          +'<button class="minus" data-step="-1" data-id="'+it.id+'" aria-label="减少'+it.name+'的补货数量"'+(add<=0?' disabled':'')+'>'+ICON.minus+'</button>'
+          +'<input type="text" inputmode="numeric" autocomplete="off" data-qty="'+it.id+'" value="'+add+'" aria-label="'+it.name+'的补货数量">'
+          +'<button class="plus" data-step="1" data-id="'+it.id+'" aria-label="增加'+it.name+'的补货数量">'+ICON.plus+'</button>'
+        +'</div>'
+      +'</div></div>'
+    +'</div>';
+  }
+
+  function render(){
+    updateStats();syncFooter();closeSwipe(null);
+    var visible=items.filter(function(it){
+      var byLayer=!layerFilter||it.layer===layerFilter;
+      return inDoor(it)&&byLayer&&(statusFilter==='all'||remain(it)>0);
+    }).sort(function(a,b){
+      if((a.done?1:0)!==(b.done?1:0))return (a.done?1:0)-(b.done?1:0);
+      if((b.pinned?1:0)!==(a.pinned?1:0))return (b.pinned?1:0)-(a.pinned?1:0);
+      /* 补货过程中不区分左右门：只按货架层排 */
+      if(a.layer!==b.layer)return a.layer-b.layer;
+      return a.seq-b.seq;
+    });
+    if(!visible.length){
+      listEl.innerHTML='<div class="empty"><div class="empty-icon">'+CHECK+'</div><p>已补齐</p><span>当前筛选下没有待补料仓</span></div>';
+      return;
+    }
+    if(statusFilter==='all'&&!layerFilter){
+      var undone=visible.filter(function(it){return !it.done});
+      var finished=visible.filter(function(it){return it.done});
+      var pinned=undone.filter(function(it){return it.pinned});
+      var html=pinned.length?'<section><div class="group-head pin">'+ICON.pin+'置顶</div>'+pinned.map(row).join('')+'</section>':'';
+      for(var layer=1;layer<=4;layer++){
+        var group=undone.filter(function(it){return it.layer===layer&&!it.pinned});
+        if(group.length)html+='<section><div class="group-head">'+LAYER_NAME[layer]+'</div>'+group.map(row).join('')+'</section>';
+      }
+      if(finished.length)html+='<section><div class="group-head">已完成 · '+finished.length+' 条</div>'+finished.map(row).join('')+'</section>';
+      listEl.innerHTML=html;
+      return;
+    }
+    listEl.innerHTML=visible.map(row).join('');
+  }
+
+  function renderLayers(){
+    el('layerOptions').innerHTML=['全部料仓'].concat(LAYER_NAME.slice(1)).map(function(label,index){
+      return '<button class="layer-option '+(layerFilter===index?'active':'')+'" data-layer="'+index+'"><span>'+label+'</span>'
+        +'<svg class="check" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></button>';
+    }).join('');
+  }
+
+  function toast(text){
+    var t=el('toast');t.textContent=text;t.classList.add('show');
+    clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show')},1800);
+  }
+  function openOverlay(id){el(id).classList.add('open')}
+  function closeOverlay(id){el(id).classList.remove('open')}
+
+  /* ---------- 行内数量：− 输入 + ---------- */
+  function refreshRow(host,it){
+    var add=it.add||0;
+    var minus=host.querySelector('[data-step="-1"]');
+    if(minus)minus.disabled=add<=0;
+  }
+
+  function setAdd(id,value,fromInput){
+    var it=findItem(id);
+    if(!it)return;
+    var raw=String(value==null?'':value).replace(/[^\d]/g,'');
+    var num=raw===''?0:Math.floor(Number(raw));
+    var v=Math.max(0,num);
+    it.add=v;
+    var input=listEl.querySelector('[data-qty="'+id+'"]');
+    if(input){
+      if(fromInput&&raw==='')input.value='';
+      else input.value=String(v);
+    }
+    var host=listEl.querySelector('.item[data-id="'+id+'"]');
+    if(host)refreshRow(host,it);
+    updateStats();syncFooter();
+  }
+
+  /* ---------- 保质期（忽略 / 按生产日期 / 按到期时间） ---------- */
+  var DAY=86400000;
+  var D={
+    today:function(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())},
+    parse:function(s){if(!s)return null;var p=s.split('-');if(p.length!==3)return null;var d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));return isNaN(d.getTime())?null:d},
+    ymd:function(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)},
+    addDays:function(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x},
+    addYears:function(d,n){var x=new Date(d.getTime());x.setFullYear(x.getFullYear()+n);return x},
+    diff:function(a,b){return Math.round((a.getTime()-b.getTime())/DAY)}
+  };
+  /* mode: ignore | produce | expire；days 为本次使用的保质期天数，manual 表示商品档案缺失、需要现场填 */
+  var batch={mode:'ignore',produce:'',expire:'',days:0,manual:false};
+
+  function applyBatchUi(){
+    el('shelfSeg').querySelectorAll('[data-mode]').forEach(function(b){b.classList.toggle('active',b.dataset.mode===batch.mode)});
+    el('produceDate').value=batch.produce||'';
+    el('expireDate').value=batch.expire||'';
+    el('futureConfirm').classList.remove('show');
+    el('expireDate').max=D.ymd(D.addYears(D.today(),2));
+    el('daysStatic').hidden=batch.manual;
+    el('daysRow').hidden=!batch.manual;
+    el('daysStaticValue').textContent=String(batch.days);
+    el('shelfDays').value=batch.manual?String(batch.days||''):'';
+    renderBatch();
+  }
+
+  function batchReset(it){
+    batch={mode:'ignore',produce:'',expire:'',days:(it&&it.shelf)||30,manual:!(it&&it.shelf)};
+    applyBatchUi();
+  }
+
+  function batchFromItem(it){
+    var b=it.batch;
+    if(!b){batchReset(it);return}
+    batch={
+      mode:b.mode,
+      produce:b.produceDate||'',
+      expire:b.mode==='expire'?(b.expireDate||''):'',
+      days:b.shelfLifeDays||it.shelf||30,
+      manual:!it.shelf
+    };
+    applyBatchUi();
+  }
+
+  /* 返回 {ok, error, note, level, future, expire, remain} */
+  function batchCheck(){
+    var today=D.today(),max=D.addYears(today,2);
+    var out={ok:true,error:'',note:'',level:'',future:false,expire:null,remain:null};
+    if(batch.mode==='ignore')return out;
+    if(batch.mode==='produce'){
+      var pd=D.parse(batch.produce);
+      if(!pd){out.ok=false;out.error='请选择生产日期';return out}
+      var days=Number(batch.days)||0;
+      if(!days||days<=0){out.ok=false;out.error='请填写保质期天数';return out}
+      var ed=D.addDays(pd,days);
+      out.expire=ed;out.remain=D.diff(ed,today);
+      if(out.remain<0){out.ok=false;out.error='按此日期推算已过期 '+(-out.remain)+' 天，请核对包装';return out}
+      if(ed>max){out.ok=false;out.error='推算到期日 '+D.ymd(ed)+' 超过 2 年上限，请核对生产日期';return out}
+      if(out.remain===0){out.level='warn';out.note='推算今日到期，建议优先上架'}
+      else if(D.diff(pd,today)>0){out.level='warn';out.note='生产日期晚于今天，请确认是否预售或重贴标批次';out.future=true}
+      return out;
+    }
+    var xd=D.parse(batch.expire);
+    if(!xd){out.ok=false;out.error='请选择到期日';return out}
+    out.expire=xd;out.remain=D.diff(xd,today);
+    if(out.remain<0){out.ok=false;out.error='到期日已过 '+(-out.remain)+' 天，请核对包装日期';return out}
+    if(xd>max){out.ok=false;out.error='到期日不能超过 2 年（最晚 '+D.ymd(max)+'）';return out}
+    if(out.remain===0){out.level='warn';out.note='今日到期，建议优先上架'}
+    return out;
+  }
+
+  function syncConfirm(){
+    var btn=el('confirmBtn'),s=batchCheck();
+    btn.disabled=!s.ok;
+    btn.textContent=batch.mode==='ignore'?'保存':'保存批次';
+  }
+
+  function renderBatch(){
+    var s=batchCheck();
+    el('produceVal').textContent=batch.produce||'请选择日期';
+    el('produceVal').classList.toggle('empty',!batch.produce);
+    el('expireVal').textContent=batch.expire||'请选择日期';
+    el('expireVal').classList.toggle('empty',!batch.expire);
+    el('shelfDesc').hidden=batch.mode!=='ignore';
+    el('produceBlock').classList.toggle('show',batch.mode==='produce');
+    el('expireBlock').classList.toggle('show',batch.mode==='expire');
+
+    var pc=el('produceCalc');
+    if(!batch.produce)pc.innerHTML='选择生产日期后自动推算到期日';
+    else if(!(Number(batch.days)>0))pc.innerHTML='请填写保质期天数';
+    else if(s.expire&&s.remain<0)pc.innerHTML='推算到期 <b>'+D.ymd(s.expire)+'</b>';
+    else if(s.expire&&s.ok){
+      var left=s.remain<=7?'<span style="color:var(--warn);font-weight:700">'+s.remain+'</span>':'<b>'+s.remain+'</b>';
+      pc.innerHTML='到期 <b>'+D.ymd(s.expire)+'</b> · 剩余 '+left+' 天';
+    }else if(s.expire)pc.innerHTML='推算到期 <b>'+D.ymd(s.expire)+'</b>';
+    pc.classList.toggle('bad',batch.mode==='produce'&&!s.ok);
+
+    var xc=el('expireCalc');
+    if(!batch.expire)xc.innerHTML='选择到期日后显示剩余天数';
+    else if(s.remain<0)xc.innerHTML='已过期 <b>'+(-s.remain)+'</b> 天';
+    else if(s.remain===0)xc.innerHTML='今日到期';
+    else if(!s.ok)xc.innerHTML='';
+    else if(s.remain<=7)xc.innerHTML='剩余 <span style="color:var(--warn);font-weight:700">'+s.remain+'</span> 天';
+    else xc.innerHTML='剩余 <b>'+s.remain+'</b> 天';
+    xc.classList.toggle('bad',batch.mode==='expire'&&!s.ok);
+
+    var note=el('shelfNote');
+    note.className='shelf-note';
+    if(batch.mode!=='ignore'&&s.error){note.className='shelf-note bad show';note.textContent='⚠ '+s.error}
+    else if(batch.mode!=='ignore'&&s.note){note.className='shelf-note warn show';note.textContent='⚠ '+s.note}
+
+    var pdRow=el('produceRow'),xdRow=el('expireRow');
+    pdRow.classList.toggle('invalid',batch.mode==='produce'&&!s.ok);
+    xdRow.classList.toggle('invalid',batch.mode==='expire'&&!s.ok);
+    el('daysRow').classList.toggle('invalid',batch.mode==='produce'&&!s.ok&&!(Number(batch.days)>0));
+
+    if(!s.future)el('futureConfirm').classList.remove('show');
+    else el('futureConfirmText').textContent='生产日期 '+batch.produce+' 晚于今天，录入后库存将按未来批次计算，请确认包装日期无误。';
+    syncConfirm();
+  }
+
+  function openBatch(id){
+    selected=findItem(id);
+    if(!selected)return;
+    var nv=doubleDoor||id===1;           /* 双门全量走新弹层；单门仍保留可口可乐样板，待确认后铺开 */
+    el('editOverlay').querySelector('.sheet').classList.toggle('nv',nv);
+    el('nvQty').hidden=!nv;
+    el('editName').textContent=selected.name;
+    el('editSlot').textContent=(nv
+      ?'料仓 '+selected.slot
+      :'料仓 '+selected.slot+' · 本次 '+(selected.add||0)+' 件');
+    el('editInitial').textContent=initial(selected);
+    var img=el('editImage');
+    if(selected.img){img.style.display='';img.src=selected.img}else{img.style.display='none'}
+    el('sheetStock').innerHTML=nv
+      ?'当前库存 <b>'+selected.cur+'</b>'
+      :'当前库存 <b>'+selected.cur+'</b>';
+    if(nv){el('nvInput').value=String(selected.add||0);syncNvStep()}
+    el('removeConfirm').classList.remove('show');
+    el('futureConfirm').classList.remove('show');
+    batchFromItem(selected);
+    openOverlay('editOverlay');
+  }
+
+  /* 弹层内数量：− 输入 +（与列表行同一份 add） */
+  function syncNvStep(forceValue){
+    if(!selected)return;
+    var add=selected.add||0;
+    if(forceValue)el('nvInput').value=String(add);
+    el('nvMinus').disabled=add<=0;
+  }
+  el('nvMinus').addEventListener('click',function(){
+    if(!selected)return;
+    setAdd(selected.id,(selected.add||0)-1);
+    syncNvStep(true);
+  });
+  el('nvPlus').addEventListener('click',function(){
+    if(!selected)return;
+    setAdd(selected.id,(selected.add||0)+1);
+    syncNvStep(true);
+  });
+  el('nvInput').addEventListener('input',function(){
+    if(!selected)return;
+    setAdd(selected.id,this.value,true);
+    syncNvStep();
+  });
+  el('nvInput').addEventListener('blur',function(){
+    if(!selected)return;
+    setAdd(selected.id,selected.add||0);
+    this.value=String(selected.add||0);
+    syncNvStep();
+  });
+  el('nvInput').addEventListener('keydown',function(event){
+    if(event.key==='Enter')this.blur();
+  });
+
+  /* ---------- 扫码 ---------- */
+  function libOf(code){return LIBRARY.filter(function(p){return p.code===code})[0]}
+
+  function renderScanCodes(){
+    el('scanCodes').innerHTML=LIBRARY.map(function(p){
+      var tag=STATE_TAG[p.state];
+      return '<button class="scn-code" data-code="'+p.code+'"><span class="scn-code-main">'
+        +'<span class="scn-code-name">'+p.name+'</span><span class="scn-code-num">'+p.code+'</span></span>'
+        +'<span class="scn-tag '+tag[0]+'">'+tag[1]+'</span></button>';
+    }).join('');
+  }
+
+  function openScan(){
+    el('scanSheet').classList.remove('show');
+    el('scanSheet').innerHTML='';
+    renderScanCodes();
+    el('scanOverlay').classList.add('open');
+  }
+  function closeScan(){el('scanOverlay').classList.remove('open')}
+
+  function nextSlot(){
+    var names=['A1','A2','B1','B2','C1','C2'];
+    var pool=items.filter(inDoor);
+    for(var layer=1;layer<=4;layer++){
+      var used=pool.filter(function(it){return it.layer===layer}).map(function(it){return it.slot});
+      for(var i=0;i<names.length;i++)if(used.indexOf(names[i])<0)return {layer:layer,slot:names[i]};
+    }
+    return {layer:4,slot:'C3'};
+  }
+
+  function flashRow(id){
+    setTimeout(function(){
+      var host=listEl.querySelector('.item[data-id="'+id+'"]');
+      if(!host)return;
+      host.scrollIntoView({block:'center'});
+      var front=host.querySelector('.item-front');
+      front.classList.add('flash');
+      setTimeout(function(){front.classList.remove('flash')},1200);
+    },40);
+  }
+
+  function addScanned(p){
+    closeScan();
+    closeOverlay('addOverlay');
+    var exist=items.filter(function(it){return it.code===p.code})[0];
+    if(exist){flashRow(exist.id);toast(p.name+' 已在补货列表中');return}
+    var slot=nextSlot();
+    var item={id:Date.now(),code:p.code,name:p.name,door:doubleDoor?currentDoor:undefined,layer:slot.layer,slot:slot.slot,cur:0,max:10,img:p.img,add:0,pinned:false,seq:items.length};
+    items.push(item);
+    statusFilter='all';
+    document.querySelectorAll('[data-status]').forEach(function(x){x.classList.toggle('active',x.dataset.status==='all')});
+    render();
+    flashRow(item.id);
+    toast('已上架至料仓 '+slot.slot+'，填写补货数量');
+  }
+
+  function submitTicket(p){
+    var no='WO-20261124-0'+ticketSeq;
+    ticketSeq+=1;
+    el('scanSheet').innerHTML='<div class="handle"></div>'
+      +'<div class="scn-state ok"><span class="dot"></span>工单已提交给管理员</div>'
+      +'<p class="scn-desc">管理员在后台 Web 完善原料资料与 AI 训练后，该原料即可扫码上架补货。</p>'
+      +'<div class="scn-info"><div><span>工单编号</span><b>'+no+'</b></div>'
+      +'<div><span>原料</span><b>'+p.name+'</b></div>'
+      +'<div><span>条码</span><b>'+p.code+'</b></div>'
+      +'<div><span>处理人</span><b>管理员 Admin</b></div></div>'
+      +'<div class="scn-actions"><button class="btn-primary" id="scanDone">完成</button></div>';
+    el('scanSheet').classList.add('show');
+    el('scanDone').addEventListener('click',function(){closeScan();closeOverlay('addOverlay')});
+  }
+
+  function scanResult(code){
+    var p=libOf(code);
+    if(!p)return;
+    var head='<div class="scn-prod"><span class="thumb"><i>'+initial(p)+'</i></span>'
+      +'<div><div class="scn-prod-name">'+p.name+'</div><div class="scn-prod-code">'+p.code+'</div></div></div>';
+    var body;
+    if(p.state==='trained'){
+      body='<div class="scn-state ok"><span class="dot"></span>产品库已有 · AI 识别已训练</div>'
+        +'<div class="scn-actions"><button class="btn-primary" id="scanAdd">上架并补货</button></div>';
+    }else if(p.state==='untrained'){
+      body='<div class="scn-state warn"><span class="dot"></span>产品库已有 · AI 尚未训练</div>'
+        +'<p class="scn-desc">该原料还没有视觉识别模型，需管理员在后台 Web 完善原料资料后才能上架补货。</p>'
+        +'<div class="scn-actions"><button class="btn-primary" id="scanTicket">提交工单给管理员</button></div>';
+    }else{
+      body='<div class="scn-state bad"><span class="dot"></span>原料库中没有此原料</div>'
+        +'<p class="scn-desc">产品库未收录该条码，需管理员在后台 Web 建档并完成 AI 训练后才能上架补货。</p>'
+        +'<div class="scn-actions"><button class="btn-primary" id="scanTicket">提交工单给管理员</button></div>';
+    }
+    el('scanSheet').innerHTML='<div class="handle"></div>'+head+body;
+    el('scanSheet').classList.add('show');
+    var add=el('scanAdd');
+    if(add)add.addEventListener('click',function(){addScanned(p)});
+    var ticket=el('scanTicket');
+    if(ticket)ticket.addEventListener('click',function(){submitTicket(p)});
+  }
+
+  function renderSearch(){
+    var query=el('searchInput').value.trim().toLowerCase();
+    var found=extras.filter(function(it){
+      if(items.some(function(x){return x.id===it.id}))return false;
+      if(!inDoor(it))return false;
+      return !query||it.name.toLowerCase().indexOf(query)>=0||it.code.indexOf(query)>=0;
+    });
+    if(found.length){
+      el('searchResults').innerHTML=found.map(function(it){
+        return '<button class="result" data-add="'+it.id+'"><span class="thumb"><i>'+initial(it)+'</i><img src="'+it.img+'" alt="" onerror="this.style.display=\'none\'"></span>'
+          +'<span><span class="result-name">'+it.name+'</span><span class="result-code">'+it.code+'</span></span>'
+          +'<span class="add-circle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>';
+      }).join('');
+      return;
+    }
+    el('searchResults').innerHTML='<div class="add-empty"><div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></div>'
+      +'<p>没有匹配的原料</p><span>换个关键词，或扫码录入条形码</span>'
+      +'<button class="btn-secondary" id="emptyScan"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>扫码添加</button></div>';
+    var btn=el('emptyScan');
+    if(btn)btn.addEventListener('click',openScan);
+  }
+
+  /* ---------- 左滑：置顶 / 清空 ---------- */
+  var SWIPE=152,DONE=76,openFront=null,drag=null,suppressClick=false;
+
+  function closeSwipe(except){
+    Array.prototype.forEach.call(listEl.querySelectorAll('.item-front.open, .item-front.open-done'),function(front){
+      if(front===except)return;
+      front.classList.remove('open');
+      front.classList.remove('open-done');
+      front.style.transform='';
+      if(openFront===front)openFront=null;
+    });
+  }
+
+  listEl.addEventListener('pointerdown',function(event){
+    suppressClick=false;
+    var front=event.target.closest('.item-front');
+    if(!front||event.target.closest('input'))return;
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    var base=front.classList.contains('open')?-SWIPE:(front.classList.contains('open-done')?DONE:0);
+    drag={front:front,startX:event.clientX,startY:event.clientY,base:base,x:0,moved:false};
+  });
+
+  window.addEventListener('pointermove',function(event){
+    if(!drag)return;
+    var dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;
+    if(!drag.moved){
+      if(Math.abs(dx)<8||Math.abs(dx)<=Math.abs(dy))return;
+      drag.moved=true;
+      drag.front.classList.add('drag');
+      closeSwipe(drag.front);
+      if(openFront===drag.front)openFront=null;
+    }
+    var x=Math.max(-SWIPE,Math.min(DONE,drag.base+dx));
+    drag.x=x;
+    drag.front.style.transform='translateX('+x+'px)';
+  });
+
+  function endDrag(){
+    if(!drag)return;
+    var front=drag.front,moved=drag.moved,x=drag.x;
+    drag=null;
+    front.classList.remove('drag');
+    if(!moved)return;
+    suppressClick=true;
+    var openDone=x>DONE*.4, open=!openDone&&x<-SWIPE*.45;
+    front.classList.toggle('open',open);
+    front.classList.toggle('open-done',openDone);
+    front.style.transform=openDone?'translateX('+DONE+'px)':(open?'translateX(-'+SWIPE+'px)':'');
+    openFront=(open||openDone)?front:null;
+  }
+  window.addEventListener('pointerup',endDrag);
+  window.addEventListener('pointercancel',endDrag);
+
+  function togglePin(id){
+    var it=findItem(id);
+    if(!it)return;
+    it.pinned=!it.pinned;
+    render();
+    toast(it.pinned?'已置顶「'+it.name+'」':'已取消置顶「'+it.name+'」');
+  }
+
+  function toggleDone(id){
+    var it=findItem(id);
+    if(!it)return;
+    it.done=!it.done;
+    if(it.done)it.pinned=false;
+    render();
+    toast(it.done?'「'+it.name+'」已完成，已移到底部':'「'+it.name+'」已撤回原位');
+  }
+
+  function clearItem(id){
+    var it=findItem(id);
+    if(!it)return;
+    var had=(it.add||0)>0||!!it.batch;
+    it.add=0;
+    it.batch=null;
+    render();
+    toast(had?'已清空「'+it.name+'」的数量与批次':it.name+' 的数量已是 0');
+  }
+
+  listEl.addEventListener('click',function(event){
+    if(suppressClick){suppressClick=false;return}
+
+    var doneBtn=event.target.closest('[data-done]');
+    if(doneBtn){toggleDone(Number(doneBtn.dataset.done));return}
+
+    var pinBtn=event.target.closest('[data-pin]');
+    if(pinBtn){togglePin(Number(pinBtn.dataset.pin));return}
+
+    var clearBtn=event.target.closest('[data-clear]');
+    if(clearBtn){clearItem(Number(clearBtn.dataset.clear));return}
+
+    var stepBtn=event.target.closest('[data-step]');
+    if(stepBtn){
+      var stepItem=findItem(Number(stepBtn.dataset.id));
+      if(stepItem)setAdd(stepItem.id,(stepItem.add||0)+Number(stepBtn.dataset.step));
+      return;
+    }
+
+    var batchBtn=event.target.closest('[data-batch]');
+    if(batchBtn){openBatch(Number(batchBtn.dataset.batch));return}
+
+    if(openFront){closeSwipe(null);return}
+    var front=event.target.closest('.item-front');
+    if(front&&!event.target.closest('input'))openBatch(Number(front.parentElement.dataset.id));
+  });
+
+  listEl.addEventListener('input',function(event){
+    var input=event.target.closest('[data-qty]');
+    if(input)setAdd(Number(input.dataset.qty),input.value,true);
+  });
+
+  listEl.addEventListener('blur',function(event){
+    var input=event.target.closest('[data-qty]');
+    if(!input)return;
+    var it=findItem(Number(input.dataset.qty));
+    if(it)input.value=String(it.add||0);
+  },true);
+
+  listEl.addEventListener('keydown',function(event){
+    if(event.key==='Enter'&&event.target.closest('[data-qty]'))event.target.blur();
+  });
+
+  if(doubleDoor){
+    /* 双门柜：左右两侧分别发起补货，过程中整柜合并展示、不出现左右门字样 */
+    el('statNeedLabel').textContent='待补商品';
+    el('statAddLabel').textContent='已录入';
+    /* 双门模式下返回设备详情，单独打开时不留死路 */
+    var backBtn=document.querySelector('.navbar .icon-btn');
+    backBtn.onclick=function(event){
+      if(window.history.length>2){event.preventDefault();window.history.back();return false}
+      if(window.self!==window.top){parent.postMessage({type:'app:home'},'*');return false}
+      location.href='device-double-door.html';
+      return false;
+    };
+  }
+
+  el('segments').addEventListener('click',function(event){
+    var button=event.target.closest('[data-status]');
+    if(!button)return;
+    statusFilter=button.dataset.status;
+    document.querySelectorAll('[data-status]').forEach(function(x){x.classList.toggle('active',x===button)});
+    render();
+  });
+
+  el('layerBtn').addEventListener('click',function(){renderLayers();openOverlay('layerOverlay')});
+  el('layerOptions').addEventListener('click',function(event){
+    var button=event.target.closest('[data-layer]');
+    if(!button)return;
+    layerFilter=Number(button.dataset.layer);
+    el('layerLabel').textContent=layerFilter?LAYER_NAME[layerFilter]:'全部料仓';
+    closeOverlay('layerOverlay');render();
+  });
+
+  document.querySelectorAll('[data-close]').forEach(function(button){
+    button.addEventListener('click',function(){closeOverlay(button.dataset.close)});
+  });
+  document.querySelectorAll('.overlay').forEach(function(overlay){
+    overlay.addEventListener('click',function(event){if(event.target===overlay)closeOverlay(overlay.id)});
+  });
+
+  el('removeBtn').addEventListener('click',function(){el('removeConfirm').classList.add('show')});
+  el('cancelRemove').addEventListener('click',function(){el('removeConfirm').classList.remove('show')});
+  el('confirmRemove').addEventListener('click',function(){
+    if(!selected)return;
+    var name=selected.name;
+    items=items.filter(function(it){return it.id!==selected.id});
+    selected=null;
+    closeOverlay('editOverlay');render();
+    toast(name+' 已下架');
+  });
+  el('confirmBtn').addEventListener('click',saveBatch);
+
+  function saveBatch(){
+    if(!selected)return;
+    var s=batchCheck();
+    if(!s.ok)return;
+    if(s.future&&!el('futureConfirm').classList.contains('show')){
+      el('futureConfirm').classList.add('show');
+      el('futureConfirm').scrollIntoView({block:'nearest'});
+      return;
+    }
+    var it=selected;
+    it.batch=batch.mode==='ignore'?null:{
+      mode:batch.mode,
+      produceDate:batch.mode==='produce'?batch.produce:null,
+      shelfLifeDays:batch.mode==='produce'?batch.days:null,
+      shelfLifeSource:batch.mode==='produce'?(batch.manual?'manual':'catalog'):null,
+      expireDate:D.ymd(s.expire)
+    };
+    el('futureConfirm').classList.remove('show');
+    closeOverlay('editOverlay');render();
+    toast(it.batch?'批次已保存 · 到期 '+it.batch.expireDate:'已关闭批次记录');
+  }
+
+  /* ---- 保质期交互 ---- */
+  el('shelfSeg').addEventListener('click',function(event){
+    var button=event.target.closest('[data-mode]');
+    if(!button)return;
+    batch.mode=button.dataset.mode;
+    el('shelfSeg').querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('active',x===button)});
+    if(batch.mode!=='produce'){batch.produce='';el('produceDate').value=''}
+    if(batch.mode!=='expire'){batch.expire='';el('expireDate').value=''}
+    renderBatch();
+  });
+  el('produceDate').addEventListener('change',function(){batch.produce=this.value;renderBatch()});
+  el('produceDate').addEventListener('input',function(){batch.produce=this.value;renderBatch()});
+  el('expireDate').addEventListener('change',function(){batch.expire=this.value;renderBatch()});
+  el('expireDate').addEventListener('input',function(){batch.expire=this.value;renderBatch()});
+  el('shelfDays').addEventListener('input',function(){
+    var v=this.value.replace(/\D/g,'');
+    this.value=v;
+    batch.days=Number(v)||0;
+    renderBatch();
+  });
+  el('cancelFuture').addEventListener('click',function(){el('futureConfirm').classList.remove('show')});
+  el('confirmFuture').addEventListener('click',saveBatch);
+
+  el('addBtn').addEventListener('click',function(){el('searchInput').value='';renderSearch();openOverlay('addOverlay')});
+  el('searchInput').addEventListener('input',renderSearch);
+  el('searchResults').addEventListener('click',function(event){
+    var button=event.target.closest('[data-add]');
+    if(!button)return;
+    var item=extras.filter(function(x){return x.id===Number(button.dataset.add)})[0];
+    items.push(item);
+    statusFilter='all';
+    document.querySelectorAll('[data-status]').forEach(function(x){x.classList.toggle('active',x.dataset.status==='all')});
+    closeOverlay('addOverlay');render();
+    flashRow(item.id);
+    toast('已添加 '+item.name+'，填写补货数量');
+  });
+  el('scanBtn').addEventListener('click',openScan);
+  el('scanClose').addEventListener('click',closeScan);
+  el('scanTorch').addEventListener('click',function(){el('scanTorch').classList.toggle('on')});
+  el('scanCodes').addEventListener('click',function(event){
+    var button=event.target.closest('[data-code]');
+    if(button)scanResult(button.dataset.code);
+  });
+  el('completeBtn').addEventListener('click',function(){
+    if(sumAdd()===0)return;
+    var devId=el('deviceId').textContent.trim();
+    var devName=document.querySelector('.device-name').textContent.trim();
+    /* 咖啡机无货柜概念，汇总页按咖啡机口径展示 */
+    var q='?mode=coffee&id='+encodeURIComponent(devId)+'&name='+encodeURIComponent(devName);
+    location.href='restock-done.html'+q;
+  });
+  el('inventoryBtn').addEventListener('click',function(){
+    location.href='inventory.html?device='+encodeURIComponent(el('deviceId').textContent.trim());
+  });
+
+  document.addEventListener('keydown',function(event){
+    if(event.key!=='Escape')return;
+    if(el('scanOverlay').classList.contains('open')){closeScan();return}
+    document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open')});
+  });
+
+  render();
+})();
+</script>
+<script src="app-ui.js"></script>
+</body>
+</html>

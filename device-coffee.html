@@ -14,26 +14,32 @@
 .cf-tags{display:flex;gap:6px;margin-top:8px}
 .cf-stats{margin-bottom:8px}
 
-/* 料仓 */
-.cf-hopper{display:flex;align-items:center;gap:12px;padding:9px 0}
-.cf-hopper+.cf-hopper{border-top:1px solid var(--line)}
-.cf-no{
-  width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:var(--brand-weak);color:var(--brand);
-  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800
-}
-.cf-info{flex:1;min-width:0}
-.cf-name{font-size:14px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cf-stock{margin-top:1px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
-.cf-bar{width:52px;height:6px;flex:0 0 auto;border-radius:99px;background:var(--surface-3);overflow:hidden}
-.cf-bar i{display:block;height:100%;border-radius:99px;background:var(--brand)}
-.cf-bar i.low{background:var(--warn)}
-.cf-state{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--text-2)}
-.cf-state.out{color:var(--danger)}
-.cf-state.low{color:var(--warn)}
-.cf-state.ok{color:var(--ok)}
+
 
 /* 状态值 */
 .cf-ok{color:var(--ok)}
+
+/* 现场图片（与单门柜实拍一致：1:1、可更换） */
+.cf-photo{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line);cursor:pointer}
+.cf-photo-img{display:block;width:100%;height:100%;object-fit:cover}
+.ph-btn{
+  position:absolute;right:10px;bottom:10px;z-index:3;height:28px;padding:0 10px;
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+  background:rgba(255,255,255,.94);color:var(--text);font-size:12px;line-height:18px;font-weight:700;
+  box-shadow:0 2px 8px rgba(11,16,47,.14)
+}
+.ph-btn:active{background:#fff}
+.ph-btn svg{width:14px;height:14px}
+.ph-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ph-reset{margin-top:10px}
+  /* 右上角盘点（与单门 / 双门一致） */
+  .sd-stock-btn{
+    height:32px;padding:0 10px;display:inline-flex;align-items:center;gap:5px;
+    border-radius:9px;background:var(--brand-weak);color:var(--brand);
+    font-size:13px;line-height:18px;font-weight:600;white-space:nowrap
+  }
+  .sd-stock-btn:active{background:var(--brand-line)}
+  .sd-stock-btn svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -43,34 +49,39 @@
 
   <header class="navbar">
     <span class="nav-left">
-      <button class="icon-btn" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="icon-btn" aria-label="返回" onclick="appHome(event,'home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </span>
     <h1>设备详情</h1>
     <span class="nav-right">
-      <button class="icon-btn" id="inventoryBtn" aria-label="盘点"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5M14 11v5"/></svg></button>
+      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="盘点">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+        <span>盘点</span>
+      </button>
     </span>
   </header>
 
   <div class="body">
     <section class="cf-device">
       <div class="cf-device-name" data-device-name>中央广场咖啡机</div>
-      <div class="cf-device-id"><span data-device-id>CM-2001</span> · 现调咖啡机</div>
-      <div class="cf-tags"><span class="badge ok" data-conn-badge><span class="dot ok"></span>在线</span><span class="badge">咖啡机</span></div>
+      <div class="cf-device-id"><span data-device-id>CM-2001</span> · 咖啡机</div>
+      <div class="cf-tags"><span class="badge ok" data-conn-badge><span class="dot ok"></span>在线</span></div>
     </section>
 
-    <section class="stats cf-stats" aria-label="补货统计">
-      <div class="stat primary"><div class="stat-label">待补料仓</div><div class="stat-value">3</div></div>
-      <div class="stat"><div class="stat-label">预计补货 / kg</div><div class="stat-value">3.5</div></div>
+    <section class="stats cf-stats" aria-label="料仓与售出">
+      <div class="stat"><div class="stat-label">料仓数量</div><div class="stat-value">8<small>个</small></div></div>
+      <div class="stat"><div class="stat-label">上次补货后售出杯数</div><div class="stat-value">124<small>杯</small></div></div>
     </section>
 
-    <section class="card" aria-label="料仓概览">
-      <div class="card-head"><h2 class="card-title">料仓概览</h2></div>
-      <div class="card-body tight">
-        <div class="cf-hopper"><span class="cf-no">#1</span><div class="cf-info"><div class="cf-name">奶茶粉</div><div class="cf-stock">0 / 2000 g</div></div><span class="cf-bar"><i class="low" style="width:0%"></i></span><span class="cf-state out">缺货</span></div>
-        <div class="cf-hopper"><span class="cf-no">#2</span><div class="cf-info"><div class="cf-name">咖啡豆 · 埃塞</div><div class="cf-stock">150 / 2000 g</div></div><span class="cf-bar"><i class="low" style="width:7.5%"></i></span><span class="cf-state low">低</span></div>
-        <div class="cf-hopper"><span class="cf-no">#3</span><div class="cf-info"><div class="cf-name">咖啡豆 · 云拿</div><div class="cf-stock">1590 / 2000 g</div></div><span class="cf-bar"><i style="width:79%"></i></span><span class="cf-state ok">充足</span></div>
-        <div class="cf-hopper"><span class="cf-no">#4</span><div class="cf-info"><div class="cf-name">可可粉</div><div class="cf-stock">2000 / 2000 g</div></div><span class="cf-bar"><i style="width:100%"></i></span><span class="cf-state ok">充足</span></div>
-        <div class="cf-hopper"><span class="cf-no">#5</span><div class="cf-info"><div class="cf-name">纸杯</div><div class="cf-stock">120 / 300 个</div></div><span class="cf-bar"><i style="width:40%"></i></span><span class="cf-state ok">—</span></div>
+    <section class="card" aria-label="现场图片">
+      <div class="card-head"><h2 class="card-title">现场图片</h2></div>
+      <div class="card-body">
+        <div class="cf-photo" id="photoWrap">
+          <img class="cf-photo-img" id="cfPhoto" src="assets/device-cm-2001.jpg" alt="中央广场咖啡机 现场照片" width="800" height="800">
+          <button class="ph-btn" id="photoBtn" type="button" aria-haspopup="dialog" aria-controls="photoSheet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l.9-1.4h6.8L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.1"/></svg>
+            <span id="photoBtnLabel">更换照片</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -79,8 +90,8 @@
       <div class="card-body">
         <div class="rows">
           <div class="row"><span class="row-k">在线状态</span><span class="row-v cf-ok" data-conn-value>在线</span></div>
-          <div class="row"><span class="row-k">门状态</span><span class="row-v" id="doorState">已关闭</span></div>
-          <div class="row"><span class="row-k">料仓数量</span><span class="row-v">5 个</span></div>
+          <div class="row"><span class="row-k">舱门状态</span><span class="row-v" id="doorState">已关闭</span></div>
+          <div class="row"><span class="row-k">料仓数量</span><span class="row-v">8 个</span></div>
           <div class="row"><span class="row-k">上次补货</span><span class="row-v">2026-11-18 09:20</span></div>
         </div>
       </div>
@@ -126,14 +137,124 @@
     </div>
   </div>
 
+
+  <div class="overlay" id="photoSheet" role="dialog" aria-modal="true" aria-labelledby="photoTitle">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-head">
+        <h2 id="photoTitle">现场图片</h2>
+        <button class="close" type="button" data-photo-close aria-label="关闭">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <p class="sheet-note">照片用于设备识别与远程巡检。建议正对设备拍摄，光线均匀、设备完整入画；支持 JPG / PNG，单张不超过 10MB。</p>
+        <div class="ph-acts">
+          <button class="btn btn-secondary" type="button" id="phCamera">拍照</button>
+          <button class="btn btn-secondary" type="button" id="phAlbum">从相册选择</button>
+        </div>
+        <button class="btn btn-ghost btn-block ph-reset" type="button" id="phReset" hidden>恢复默认图片</button>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="phInput" accept="image/*" hidden>
+
   <div class="toast" id="toast" role="status"></div>
 </main>
 <script>
 (function(){
-  document.getElementById('restockBtn').addEventListener('click',function(){location.href='restock-list.html'});
+  document.getElementById('restockBtn').addEventListener('click',function(){location.href='coffee-restock.html?id=CM-2001&name='+encodeURIComponent('中央广场咖啡机')});
   document.getElementById('inventoryBtn').addEventListener('click',function(){location.href='inventory.html?device=CM-2001'});
   document.addEventListener('DOMContentLoaded',function(){
     if(window.appUnlock)appUnlock({buttons:'[data-unlock]',sheet:'unlockSheet',statusRow:'doorState',toast:'toast'});
+  });
+})();
+</script>
+<script>
+/* 现场图片：点击图片 / 右下角按钮 → 拍照或相册替换，按设备缓存在本地 */
+(function(){
+  var qs=new URLSearchParams(location.search);
+  var deviceId=qs.get('id')||'CM-2001';
+  var deviceName=qs.get('name')||'中央广场咖啡机';
+  var DEFAULTS={'CM-2001':'assets/device-cm-2001.jpg'};
+  var fallback=DEFAULTS[deviceId]||'assets/device-cm-2001.jpg';
+  var KEY='vs:device-photo:'+deviceId;
+
+  var photo=document.getElementById('cfPhoto');
+  var wrap=document.getElementById('photoWrap');
+  var sheet=document.getElementById('photoSheet');
+  var label=document.getElementById('photoBtnLabel');
+  var resetBtn=document.getElementById('phReset');
+  var input=document.getElementById('phInput');
+  var toastEl=document.getElementById('toast');
+  var toastTimer;
+
+  function toast(text){
+    if(!toastEl)return;
+    toastEl.textContent=text;toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show')},1800);
+  }
+  function stored(){try{return localStorage.getItem(KEY)||''}catch(e){return ''}}
+  function save(value){try{value?localStorage.setItem(KEY,value):localStorage.removeItem(KEY)}catch(e){}}
+
+  function render(src){
+    var show=src||fallback;
+    if(show){
+      photo.src=show;
+      photo.alt=deviceName+' 现场照片';
+    }
+    label.textContent=show?'更换照片':'上传照片';
+    resetBtn.textContent='恢复默认图片';
+    resetBtn.hidden=!stored();
+  }
+  function openSheet(){sheet.classList.add('open')}
+  function closeSheet(){sheet.classList.remove('open')}
+
+  render(stored());
+
+  wrap.addEventListener('click',function(event){
+    if(event.target.closest('#photoBtn')||event.target===wrap||event.target===photo)openSheet();
+  });
+  sheet.querySelectorAll('[data-photo-close]').forEach(function(btn){btn.addEventListener('click',closeSheet)});
+  sheet.addEventListener('click',function(event){if(event.target===sheet)closeSheet()});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape')closeSheet()});
+
+  document.getElementById('phCamera').addEventListener('click',function(){
+    input.setAttribute('capture','environment');input.click();
+  });
+  document.getElementById('phAlbum').addEventListener('click',function(){
+    input.removeAttribute('capture');input.click();
+  });
+
+  input.addEventListener('change',function(){
+    var file=input.files&&input.files[0];
+    input.value='';
+    if(!file)return;
+    if(!/^image\//.test(file.type)){toast('请选择图片文件');return}
+    var reader=new FileReader();
+    reader.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        var max=1200,w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+        if(Math.max(w,h)>max){var k=max/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k)}
+        var canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        var data=canvas.toDataURL('image/jpeg',0.86);
+        save(data);render(data);closeSheet();toast('现场图片已更新');
+      };
+      img.onerror=function(){toast('图片读取失败，请重试')};
+      img.src=reader.result;
+    };
+    reader.onerror=function(){toast('图片读取失败，请重试')};
+    reader.readAsDataURL(file);
+  });
+
+  resetBtn.addEventListener('click',function(){
+    save('');render('');
+    closeSheet();
+    toast('已恢复默认图片');
   });
 })();
 </script>

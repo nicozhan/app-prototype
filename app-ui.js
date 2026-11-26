@@ -14,9 +14,14 @@
     try { return window.self !== window.top; } catch (e) { return false; }
   }
 
-  function tellHost(type) {
+  function tellHost(type, extra) {
     if (!inFrame()) return false;
-    try { parent.postMessage({ type: type }, '*'); return true; } catch (e) { return false; }
+    try {
+      var msg = { type: type };
+      if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) msg[k] = extra[k]; } }
+      parent.postMessage(msg, '*');
+      return true;
+    } catch (e) { return false; }
   }
 
   /* 返回上一级
@@ -44,10 +49,10 @@
   };
 
   /* 回到 demo 首页视图 */
-  window.appHome = function (event) {
-    if (event) event.preventDefault();
-    if (tellHost('app:home')) return false;
-    location.href = homeHref();
+  window.appHome = function (event, view) {
+    if (event && event.preventDefault) event.preventDefault();
+    if (tellHost('app:home', view ? { view: view } : null)) return false;
+    location.href = homeHref() + (view ? '#' + view : '');
     return false;
   };
 
@@ -159,4 +164,38 @@
       if (status !== 'online') value.classList.add('muted');
     }
   })();
+
+  /* 带 #锚点 打开时（如常用 → 经营分析 → analytics.html#analysis）：
+     只滚动页面的 .body 容器，避免把状态栏 / 导航栏一起滚出视口 */
+  (function () {
+    var hash = location.hash;
+    if (!hash || hash.length < 2) return;
+    var target = document.querySelector(hash);
+    var scroller = document.querySelector('.body');
+    if (!target || !scroller) return;
+    var top = target.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - 12;
+    scroller.scrollTop = Math.max(0, top);
+    window.scrollTo(0, 0);
+  })();
+
+  /* 一级模块切换：页面头部标题点击展开菜单（按钮加 data-mod-toggle="#modMenu"） */
+  (function () {
+    var btn = document.querySelector('[data-mod-toggle]');
+    if (!btn) return;
+    var menu = document.querySelector(btn.getAttribute('data-mod-toggle'));
+    if (!menu) return;
+    function set(open) {
+      menu.classList.toggle('open', !!open);
+      btn.classList.toggle('open', !!open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      set(!menu.classList.contains('open'));
+    });
+    menu.addEventListener('click', function (event) { event.stopPropagation(); });
+    document.addEventListener('click', function () { set(false); });
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') set(false); });
+  })();
+
 })();

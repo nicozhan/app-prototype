@@ -12,8 +12,8 @@
   编辑指引：
     1. 页面清单在 <script> 里的 MENU 数组，按业务分组，直接增删改对象即可。
        { label:"显示名", type:"page", href:"xxx.html" }  -> 在 iframe 中打开外部原型
-       { label:"显示名", type:"builtin", view:"home" }    -> 切换到内置视图 home/messages/common
-    2. 首页设备数据在 DEVICES 数组；消息在 MESSAGES 数组；常用在 COMMON 数组。
+       { label:"显示名", type:"builtin", view:"home" }    -> 切换到内置视图 home/common/tasks
+    2. 首页设备数据在 DEVICES 数组；常用在 COMMON 数组；任务列表走 task-list.html 页面。
     3. 品牌色见 :root 里的 --primary / --orange。
     4. 单文件、零外部依赖，直接双击浏览器打开即可。
 -->
@@ -45,26 +45,45 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 /* 顶部标题栏 */
 .header{flex:0 0 auto;padding:6px 16px 0;background:#fff}
 .topbar{height:52px;display:flex;align-items:center;gap:8px}
+.brand{flex:0 0 auto;width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+.brand img{width:38px;height:38px;object-fit:contain;display:block}
+.brand+h1{margin-left:2px}
 .topbar h1{flex:1;font-size:23px;line-height:30px;font-weight:700;letter-spacing:-.3px}
 .header-actions{display:flex;align-items:center;gap:6px}
 .icon-button{position:relative;width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center}
 .icon-button:active{background:var(--surface-2)}
 .icon-button svg{width:23px;height:23px}
 .alert-badge{position:absolute;top:1px;right:-1px;min-width:18px;height:18px;padding:0 4px;border:2px solid #fff;border-radius:99px;background:var(--danger);color:#fff;font-size:10px;line-height:14px;font-weight:700;text-align:center}
-.scan-button{height:40px;padding:0 12px;border:0;border-radius:11px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;white-space:nowrap}
+.scan-button{width:40px;height:40px;padding:0;border:0;border-radius:12px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;white-space:nowrap}
 .scan-button:active{background:var(--primary-dark)}
-.scan-button svg{width:19px;height:19px}
+.scan-button svg{width:21px;height:21px}
 
 /* 搜索 / 筛选 */
 .controls{padding:4px 16px 8px;flex:0 0 auto}
-.search{height:46px;padding:0 13px;border:1px solid transparent;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;gap:9px}
-.search:focus-within{border-color:var(--primary);background:#fff}
+.search{position:relative;height:46px;padding:0 6px 0 13px;border:1px solid transparent;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;gap:9px}
+.search:has(input:focus){border-color:var(--primary);background:#fff}
 .search svg{width:20px;height:20px;color:var(--text-2)}
-.search input{width:100%;min-width:0;height:44px;border:0;outline:0;background:transparent;color:var(--text);font-size:15px}
+.search input{width:100%;min-width:0;height:44px;padding-right:34px;border:0;outline:0;background:transparent;color:var(--text);font-size:15px}
 .search input::placeholder{color:var(--text-2);opacity:1}
-.filters{height:36px;margin-top:6px;padding:3px;border-radius:10px;background:var(--surface-2);display:flex;gap:2px;overflow-x:auto}
+/* 搜索框右侧：筛选开关（漏斗） */
+.filter-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;padding:0;border:0;border-radius:9px;background:transparent;color:var(--text-2);display:flex;align-items:center;justify-content:center;transition:background .16s,color .16s}
+.filter-toggle svg{width:18px;height:18px;color:inherit}
+.filter-toggle:active{background:#E9EBF3}
+.filter-toggle.on{background:var(--primary-tint);color:var(--primary)}
+/* 筛选面板：点搜索框 / 漏斗才展开 */
+.filter-panel{max-height:0;opacity:0;visibility:hidden;overflow:hidden;transition:max-height .24s ease,opacity .18s ease,margin-top .18s ease,visibility .24s}
+.controls.filtering .filter-panel{max-height:84px;opacity:1;visibility:visible;margin-top:8px}
+.filter-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 6px}
+.filter-head>span{font-size:11px;line-height:15px;font-weight:600;color:var(--text-3)}
+.filter-reset{height:22px;margin:-3px -6px -3px 0;padding:0 6px;border:0;border-radius:6px;background:transparent;color:var(--primary);font-size:12px;line-height:22px;font-weight:600}
+.filters{height:36px;padding:3px;border-radius:10px;background:var(--surface-2);display:flex;gap:2px;overflow-x:auto}
 .filter{height:30px;flex:1;border:0;border-radius:8px;background:transparent;color:var(--text-2);font-size:12px;font-weight:500;white-space:nowrap}
 .filter.active{background:#fff;color:var(--primary);font-weight:600}
+/* 面板收起但有筛选生效时，用一枚 chip 说明当前条件 */
+.filter-active{padding-top:8px}
+.filter-chip{height:28px;padding:0 10px;border:0;border-radius:999px;background:var(--primary-tint);color:var(--primary);font-size:12px;line-height:18px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.filter-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--primary);flex:0 0 auto}
+.filter-chip .x{margin-left:1px;font-size:14px;line-height:14px;font-weight:600;opacity:.7}
 
 /* 滚动区 */
 .scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -73,8 +92,9 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 /* 设备列表 */
 .device-row{min-height:98px;padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px;background:#fff;cursor:pointer}
 .device-row:active{background:#FAFAFC}
-.thumb{width:52px;height:60px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--primary);flex:0 0 auto}
+.thumb{width:54px;height:54px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--primary);flex:0 0 auto;overflow:hidden}
 .thumb svg{width:30px;height:30px}
+.thumb img{width:100%;height:100%;display:block;object-fit:cover}
 .device-main{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:3px}
 .device-title{display:flex;align-items:center;gap:8px}
 .device-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;line-height:22px;font-weight:600}
@@ -91,7 +111,13 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 .stock-text{font-size:13px;line-height:18px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .stock-text.low{color:var(--warn)}
 .device-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.restock-button{height:30px;margin:-4px 0;padding:0;border:0;background:transparent;color:var(--primary);font-size:13px;font-weight:600;white-space:nowrap}
+.device-note{min-width:0;flex:1;display:flex;align-items:center;gap:6px}
+.done-tag{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;color:#16803C;font-size:12px;line-height:16px;font-weight:600;white-space:nowrap}
+.done-tag i{width:6px;height:6px;border-radius:50%;background:var(--success)}
+.last-restock{min-width:0}
+.enter-button{flex:0 0 auto;height:30px;margin:-4px 0;padding:0 13px;border:1px solid var(--primary);border-radius:9px;background:#fff;color:var(--primary);font-size:13px;line-height:28px;font-weight:600;white-space:nowrap}
+.enter-button:active{background:var(--primary-tint)}
+.list-empty{padding:56px 20px;color:var(--text-2);text-align:center;font-size:14px;line-height:20px}
 
 /* 消息 */
 .simple-header{flex:0 0 auto;padding:12px 20px 12px}
@@ -107,12 +133,12 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 .unread-dot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:0 0 auto}
 
 /* 常用 */
-.common-grid{padding:8px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.common-item{height:122px;padding:18px;border:0;border-radius:14px;background:var(--surface-2);color:var(--text);display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;text-align:left}
+.common-grid{padding:8px 20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.common-item{width:calc((100% - 10px)/2);height:96px;padding:14px 8px;border:0;border-radius:14px;background:var(--surface-2);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
 .common-item:active{background:var(--primary-tint);color:var(--primary)}
-.common-icon{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center}
-.common-icon svg{width:23px;height:23px}
-.common-item strong{font-size:16px;line-height:22px;font-weight:600}
+.common-icon{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center}
+.common-icon svg{width:22px;height:22px}
+.common-item strong{font-size:14px;line-height:19px;font-weight:600;white-space:nowrap}
 
 /* 外部页面视图 */
 .pagebar{height:52px;flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:0 8px;border-bottom:1px solid var(--border);background:#fff}
@@ -181,21 +207,19 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
 
   <!-- 首页：设备列表（内置） -->
   <section class="view active" id="homeView" aria-label="首页设备列表">
-    <header class="header"><div class="topbar"><h1>首页</h1><div class="header-actions">
+    <header class="header"><div class="topbar"><span class="brand"><img src="assets/logo.png" alt="Vend Solution" width="38" height="38"></span><h1>首页</h1><div class="header-actions">
       <button class="icon-button" type="button" data-page="alerts.html" aria-label="告警"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg><span class="alert-badge">3</span></button>
-      <button class="scan-button" type="button" data-page="scan.html" aria-label="扫码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 7V4a1 1 0 0 1 1-1h3M17 3h3a1 1 0 0 1 1 1v3M21 17v3a1 1 0 0 1-1 1h-3M7 21H4a1 1 0 0 1-1-1v-3M7 12h10"/></svg>扫码</button>
+      <button class="scan-button" type="button" data-page="scan.html" aria-label="扫码" title="扫码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 7V4a1 1 0 0 1 1-1h3M17 3h3a1 1 0 0 1 1 1v3M21 17v3a1 1 0 0 1-1 1h-3M7 21H4a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
     </div></div></header>
-    <section class="controls">
-      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="deviceSearch" type="search" placeholder="设备名称、ID 或位置" aria-label="搜索设备"></div>
-      <div class="filters" id="filters"></div>
+    <section class="controls" id="controls">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="deviceSearch" type="search" placeholder="设备名称、ID 或位置" aria-label="搜索设备"><button class="filter-toggle" id="filterToggle" type="button" aria-label="按机器状态筛选" aria-expanded="false" aria-controls="filterPanel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.1 7.3V19l-3.8-2.3v-4.4L4 5Z"/></svg></button></div>
+      <div class="filter-panel" id="filterPanel">
+        <div class="filter-head"><span>机器状态</span><button class="filter-reset" id="filterReset" type="button" hidden>清除筛选</button></div>
+        <div class="filters" id="filters"></div>
+      </div>
+      <div class="filter-active" id="filterActive" hidden><button class="filter-chip" id="filterChip" type="button" aria-label="清除筛选条件"></button></div>
     </section>
     <div class="scroll"><div id="deviceList"></div></div>
-  </section>
-
-  <!-- 消息（内置） -->
-  <section class="view" id="messagesView" aria-label="消息">
-    <header class="simple-header"><h1>消息</h1></header>
-    <div class="scroll"><div class="message-list" id="messageList"></div></div>
   </section>
 
   <!-- 常用（内置） -->
@@ -218,8 +242,8 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
   <nav class="navigation" aria-label="主导航">
     <div class="dock">
       <button class="dock-button active" type="button" data-view="home" aria-label="首页" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></button>
-      <button class="dock-button" type="button" data-view="messages" aria-label="消息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-4 3v-3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h5"/></svg><span class="dock-unread"></span></button>
-      <button class="dock-button" type="button" data-view="common" aria-label="常用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m20 13-7 7a2 2 0 0 1-2.8 0L4 13.8V4h9.8l6.2 6.2a2 2 0 0 1 0 2.8Z"/><circle cx="8.5" cy="8.5" r="1"/></svg></button>
+      <button class="dock-button" type="button" data-view="tasks" aria-label="任务"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="17" rx="2.6"/><path d="M9 9h6M9 13.5h4"/></svg></button>
+      <button class="dock-button" type="button" data-view="common" aria-label="常用"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="7.2" height="7.2" rx="2.2"/><rect x="13.4" y="3.4" width="7.2" height="7.2" rx="2.2"/><rect x="3.4" y="13.4" width="7.2" height="7.2" rx="2.2"/><rect x="13.4" y="13.4" width="7.2" height="7.2" rx="2.2"/></svg></button>
       <button class="dock-button" id="menuButton" type="button" aria-label="全部页面" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     </div>
     <button class="avatar-entry" id="profileButton" type="button" aria-label="我的"><svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="22" fill="#E3E7FF"/><circle cx="22" cy="17" r="7" fill="#2434C8"/><path d="M9 40c1.4-7.4 7-11 13-11s11.6 3.6 13 11" fill="#2434C8"/></svg></button>
@@ -245,7 +269,7 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     {title:"工作台",items:[
       {label:"首页 · 设备列表",type:"builtin",view:"home"},
       {label:"扫码识别设备",type:"page",href:"scan.html"},
-      {label:"消息",type:"builtin",view:"messages"},
+      {label:"任务",type:"builtin",view:"tasks"},
       {label:"常用",type:"builtin",view:"common"},
       {label:"我的",type:"page",href:"my.html"}
     ]},
@@ -266,13 +290,13 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       {label:"补货列表（1:1）",type:"page",href:"restock-list.html"},
       {label:"机器详情 · 中文",type:"page",href:"restock-door.html"},
       {label:"补货表单",type:"page",href:"restock-form.html"},
-      {label:"补货完成",type:"page",href:"restock-done.html"}
+      {label:"补货完成",type:"page",href:"restock-done.html"},
+      {label:"任务列表",type:"page",href:"task-list.html"},
+      {label:"任务详情",type:"page",href:"task-detail.html?uid=t2&id=RT20261125002&deviceType=GRAB_GO"}
     ]},
     {title:"告警 / 通知",items:[
       {label:"告警列表",type:"page",href:"alerts.html"},
-      {label:"告警详情",type:"page",href:"alert-detail.html"},
-      {label:"通知中心",type:"page",href:"notifications.html"},
-      {label:"通知详情",type:"page",href:"notification-detail.html"}
+      {label:"告警详情",type:"page",href:"alert-detail.html"}
     ]},
     {title:"维保工单",items:[
       {label:"我的工单",type:"page",href:"app_workorder/tickets.html"},
@@ -283,7 +307,6 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       {label:"工单总览",type:"page",href:"app_workorder/index.html"}
     ]},
     {title:"经营 / 商品 / 设备",items:[
-      {label:"经营统计",type:"page",href:"stats.html"},
       {label:"商品销量排行",type:"page",href:"rank-product.html"},
       {label:"点位销量排行",type:"page",href:"rank-site.html"},
       {label:"商品列表",type:"page",href:"products.html"},
@@ -303,24 +326,18 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
      coffee 咖啡机(料仓) | vending 售卖机(严格货道)
      connection 为列表筛选状态：online 在线 / offline 离线 / unknown 未知（无数据上报） */
   var DEVICES=[
-    {id:"VM-1001",name:"机场 1 号柜",address:"曼谷机场 T1-A01",connection:"online",type:"single-door",typeLabel:"单门开门柜",stock:10,capacity:50,percent:20,last:"11-18 10:00",href:"device-single-door.html"},
-    {id:"VM-1004",name:"机场 3 号柜",address:"曼谷机场 T1 Gate 3",connection:"online",type:"double-door",typeLabel:"双门开门柜",stock:18,capacity:50,percent:36,last:"11-18 09:10",href:"device-double-door.html"},
-    {id:"CM-2001",name:"中央广场咖啡机",address:"Central Plaza 1F",connection:"online",type:"coffee",typeLabel:"咖啡机",stock:3,capacity:5,percent:60,last:"11-18 09:20",href:"device-coffee.html"},
-    {id:"VM-3001",name:"地铁站售卖机",address:"Metro Gate 2",connection:"online",type:"vending",typeLabel:"售卖机",stock:4,capacity:8,percent:50,last:"11-18 08:40",href:"device-vending.html"},
+    {id:"VM-1001",name:"机场 1 号柜",address:"曼谷机场 T1-A01",connection:"online",type:"single-door",typeLabel:"单门开门柜",stock:10,capacity:50,percent:20,last:"11-18 10:00",href:"device-single-door.html",photo:"assets/device-vm-1001-thumb.jpg"},
+    {id:"VM-1004",name:"机场 3 号柜",address:"曼谷机场 T1 Gate 3",connection:"online",type:"double-door",typeLabel:"双门开门柜",stock:18,capacity:50,percent:36,last:"11-25 09:10",todayDone:true,href:"device-double-door.html",photo:"assets/device-vm-1004-thumb.jpg"},
+    {id:"CM-2001",name:"中央广场咖啡机",address:"Central Plaza 1F",connection:"online",type:"coffee",typeLabel:"咖啡机",stock:6,capacity:8,percent:75,last:"11-25 09:20",todayDone:true,href:"device-coffee.html"},
+    {id:"VM-3001",name:"地铁站售卖机",address:"Metro Gate 2",connection:"online",type:"vending",typeLabel:"售卖机",stock:4,capacity:8,percent:50,last:"11-18 08:40",href:"device-vending.html",photo:"assets/device-vm-3001-thumb.jpg"},
     {id:"VM-1003",name:"办公楼大堂柜",address:"Tower B · 1F 大堂",connection:"offline",type:"single-door",typeLabel:"单门开门柜",stock:null,capacity:null,percent:null,last:"11-17 18:20",href:"device-single-door.html?id=VM-1003&name=办公楼大堂柜&status=offline"},
-    {id:"VM-3002",name:"商场西门售卖机",address:"Mall West Gate",connection:"unknown",type:"vending",typeLabel:"售卖机",stock:null,capacity:null,percent:null,last:null,href:"device-vending.html?id=VM-3002&name=商场西门售卖机&status=unknown"}
-  ];
-  var MESSAGES=[
-    {title:"机场 1 号柜库存不足",body:"VM-1001 · 当前库存 20%",time:"10:32",unread:true},
-    {title:"补货任务已完成",body:"商场西门柜 · 补货 18 件",time:"09:48",unread:true},
-    {title:"办公楼大堂柜离线",body:"VM-1003 · 离线 26 分钟",time:"08:15",unread:false},
-    {title:"新的维保工单",body:"WO-20261120-008 · 待处理",time:"昨天",unread:false}
+    {id:"VM-3002",name:"商场西门售卖机",address:"Mall West Gate",connection:"unknown",type:"vending",typeLabel:"售卖机",stock:null,capacity:null,percent:null,last:null,href:"device-vending.html?id=VM-3002&name=商场西门售卖机&status=unknown",photo:"assets/device-vm-3001-thumb.jpg"}
   ];
   var COMMON=[
-    {key:"restock",label:"开始补货",href:"cabinet-restock-c.html"},
-    {key:"alerts",label:"告警中心",href:"alerts.html"},
-    {key:"tasks",label:"我的工单",href:"app_workorder/tickets.html"},
-    {key:"analytics",label:"经营分析",href:"stats.html"}
+    {key:"product",label:"商品",href:"products.html"},
+    {key:"alert",label:"告警",href:"alerts.html"},
+    {key:"tasks",label:"工单",href:"app_workorder/tickets.html"},
+    {key:"analytics",label:"经营分析",href:"analytics.html"}
   ];
   var ICONS={
     product:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>',
@@ -331,14 +348,50 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
     gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>',
+    /* 常用：开始补货（周转箱 + 加号） */
+    restock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.7 8.6h16.6v10.1a1.6 1.6 0 0 1-1.6 1.6H5.3a1.6 1.6 0 0 1-1.6-1.6V8.6Z"/><path d="m3.7 8.6 1.7-4.2h13.2l1.7 4.2"/><path d="M12 11.9v5.1M9.4 14.5h5.2"/></svg>',
+    /* 常用：我的工单（写字板 + 对勾） */
+    tasks:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2H7.4A2.4 2.4 0 0 0 5 6.6v11.8A2.4 2.4 0 0 0 7.4 20.8h9.2a2.4 2.4 0 0 0 2.4-2.4V6.6a2.4 2.4 0 0 0-2.4-2.4H15"/><path d="M9 3h6a1 1 0 0 1 1 1v1.8a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="m8.8 13.4 2.2 2.2 4.2-4.2"/></svg>',
+    /* 常用：经营分析（坐标轴 + 柱状） */
+    analytics:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.6 9.2 10l3.6 3.4L20 5.6"/><path d="M15.6 5.6H20v4.4"/><path d="M4 20h16"/></svg>',
+    product:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>',
+    device:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    stats:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
     chevron:'<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m9 5 7 7-7 7"/></svg>'
   };
 
   function showToast(message){clearTimeout(toastTimer);$("toast").textContent=message;$("toast").classList.add("show");toastTimer=setTimeout(function(){$("toast").classList.remove("show")},2000)}
 
+  var FILTER_LABEL={online:"在线",offline:"离线",today:"今日已完成"};
   function renderFilters(){
-    var defs=[["online","在线"],["offline","离线"],["unknown","未知"],["all","全部"]];
+    var defs=[["online","在线"],["offline","离线"],["today","今日已完成"],["all","全部"]];
     $("filters").innerHTML=defs.map(function(d){return '<button class="filter'+(filter===d[0]?' active':'')+'" type="button" data-filter="'+d[0]+'">'+d[1]+'</button>'}).join('');
+    syncFilterUI();
+  }
+  /* 面板展开态 / 生效条件 / 漏斗高亮 统一在这里同步 */
+  function syncFilterUI(){
+    var controls=$("controls");
+    if(!controls)return;
+    var open=controls.classList.contains("filtering");
+    var label=FILTER_LABEL[filter]||"";
+    var reset=$("filterReset");
+    if(reset)reset.hidden=filter==="all";
+    var active=$("filterActive");
+    if(active)active.hidden=!(label&&!open);
+    var chip=$("filterChip");
+    if(chip&&label)chip.innerHTML='<i class="dot"></i>'+label+'<span class="x">×</span>';
+    var toggle=$("filterToggle");
+    if(toggle){
+      toggle.setAttribute("aria-expanded",open?"true":"false");
+      toggle.classList.toggle("on",open||filter!=="all");
+    }
+  }
+  /* 筛选面板：默认收起，点搜索框或漏斗才展开 */
+  function setFilterPanel(open){
+    var controls=$("controls");
+    if(!controls)return;
+    controls.classList.toggle("filtering",!!open);
+    syncFilterUI();
   }
   function stockHtml(d){
     if(d.percent==null)return '<div class="stock-line"><span class="stock-track"></span><span class="stock-text">库存数据未上报</span></div>';
@@ -353,14 +406,22 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
   };
   function renderDevices(){
     var q=$("deviceSearch").value.trim().toLowerCase();
-    var list=DEVICES.filter(function(d){var inFilter=filter==='all'||d.connection===filter;return inFilter&&(!q||(d.name+' '+d.id+' '+d.address).toLowerCase().indexOf(q)>=0)});
-    $("deviceList").innerHTML=list.map(function(d){var icon=TYPE_ICONS[d.type]||TYPE_ICONS["single-door"],href=(d.href||'').replace(/&/g,'&amp;');return '<article class="device-row" data-open="'+href+'" role="button" tabindex="0"><div class="thumb">'+icon+'</div><div class="device-main"><div class="device-title"><span class="device-name">'+d.name+'</span><span class="connectivity '+d.connection+'"><i class="dot"></i>'+(d.connection==='online'?'在线':d.connection==='offline'?'离线':'未知')+'</span></div><div class="device-meta">'+d.typeLabel+' · ID '+d.id+'</div>'+stockHtml(d)+'<div class="device-bottom"><span class="last-restock">上次补货 '+(d.last||'—')+'</span><button class="restock-button" type="button" data-open="'+href+'">开始补货</button></div></div></article>'}).join('')||'<div style="padding:60px 20px;color:var(--text-2);text-align:center;font-size:14px">'+(q?'未找到设备':'该状态下暂无设备')+'</div>';
-  }
-  function renderMessages(){
-    $("messageList").innerHTML=MESSAGES.map(function(m){return '<button class="message'+(m.unread?' unread':'')+'" type="button" data-page="notification-detail.html"><span class="message-top">'+(m.unread?'<i class="unread-dot"></i>':'')+'<span class="message-title">'+m.title+'</span><span class="message-time">'+m.time+'</span></span><span class="message-body">'+m.body+'</span></button>'}).join('');
+    var list=DEVICES.filter(function(d){
+      var inFilter=filter==='all'||(filter==='today'?!!d.todayDone:d.connection===filter);
+      return inFilter&&(!q||(d.name+' '+d.id+' '+d.address).toLowerCase().indexOf(q)>=0);
+    });
+    var empty=q?'未找到设备':(filter==='today'?'今日暂无已完成的设备':'该状态下暂无设备');
+    $("deviceList").innerHTML=list.map(function(d){
+      var icon=TYPE_ICONS[d.type]||TYPE_ICONS["single-door"],href=(d.href||'').replace(/&/g,'&amp;');
+      var note=d.todayDone?'<span class="done-tag"><i></i>今日已完成</span><span class="last-restock">'+(d.last||'—')+'</span>':'<span class="last-restock">上次补货 '+(d.last||'—')+'</span>';
+      return '<article class="device-row" data-open="'+href+'" role="button" tabindex="0">'
+        +(d.photo?'<div class="thumb"><img src="'+d.photo+'" alt="'+d.name+'" width="108" height="108"></div>':'<div class="thumb">'+icon+'</div>')
+        +'<div class="device-main"><div class="device-title"><span class="device-name">'+d.name+'</span><span class="connectivity '+d.connection+'"><i class="dot"></i>'+(d.connection==='online'?'在线':d.connection==='offline'?'离线':'未知')+'</span></div><div class="device-meta">'+d.typeLabel+' · ID '+d.id+'</div>'+stockHtml(d)
+        +'<div class="device-bottom"><span class="device-note">'+note+'</span><button class="enter-button" type="button" data-open="'+href+'">进入</button></div></div></article>';
+    }).join('')||'<div class="list-empty">'+empty+'</div>';
   }
   function renderCommon(){
-    $("commonGrid").innerHTML=COMMON.map(function(item){return '<button class="common-item" type="button" data-page="'+item.href+'"><span class="common-icon">'+ICONS[item.key]+'</span><strong>'+item.label+'</strong></button>'}).join('');
+    $("commonGrid").innerHTML=COMMON.map(function(item){return '<button class="common-item" type="button" data-page="'+item.href+'"><span class="common-icon">'+(ICONS[item.key]||'')+'</span><strong>'+item.label+'</strong></button>'}).join('');
   }
   function renderMenu(){
     $("menuContent").innerHTML=MENU.map(function(group){return '<section class="menu-group"><h3>'+group.title+'</h3>'+group.items.map(function(item){
@@ -376,7 +437,10 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     'home.html':'tab',
     'machines.html':'tab',
     'products.html':'tab',
-    'stats.html':'tab',
+    'analytics.html':'tab',
+    'alerts.html':'tab',
+    'tickets.html':'tab',
+    'task-list.html':'tab',
     'scan.html':'immersive',
     'cabinet-restock-c.html':'immersive',
     'vending-restock.html':'immersive',
@@ -388,22 +452,30 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     key=key.substring(key.lastIndexOf('/')+1);
     return PAGE_CHROME[key]||'focus';
   }
-  function applyChrome(level){
+  /* 保留 dock 的一级页面（商品 / 设备 / 告警 / 工单 / 经营分析）：
+     dock 上高亮「用户从哪个 tab 进来的」——从常用进入就亮常用，从首页铃铛进入就亮首页，
+     不再一律把「全部（汉堡）」标成当前页。 */
+  function applyChrome(level,href){
     var app=document.querySelector('.app');
     if(!app)return;
     var next=(level==='tab'||level==='immersive')?level:'focus';
     app.dataset.chrome=next;
-    /* 分区页（设备 / 商品 / 统计）从「全部」进入，dock 上把该入口标为当前位置 */
-    var menuBtn=$("menuButton");
-    if(menuBtn){
-      var inSection=next==='tab'&&currentView==='page';
-      menuBtn.classList.toggle('active',inSection);
-      if(inSection)menuBtn.setAttribute('aria-current','page');else menuBtn.removeAttribute('aria-current');
+    if(currentView==='page'&&next==='tab'){
+      var dockTarget=(lastBuiltin&&lastBuiltin!=='page')?lastBuiltin:'home';
+      document.querySelectorAll('.dock-button[data-view]').forEach(function(button){
+        var on=button.dataset.view===dockTarget;
+        button.classList.toggle('active',on);
+        if(on)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+      });
+      var menuBtn=$("menuButton");
+      if(menuBtn){menuBtn.classList.remove('active');menuBtn.removeAttribute('aria-current');}
     }
   }
 
   function switchView(name){
-    if(name!=='page'&&name!=='home'&&name!=='messages'&&name!=='common')return;
+    /* 任务：第二个 dock tab，页面本体是 task-list.html，挂在 iframe 里并保留 dock */
+    if(name==='tasks'){openTaskTab();return}
+    if(name!=='page'&&name!=='home'&&name!=='common')return;
     currentView=name;
     if(name!=='page')lastBuiltin=name;
     var app=document.querySelector('.app');
@@ -416,6 +488,8 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
         if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
       }
     });
+    /* 切视图时收起筛选面板（生效中的条件会落在 chip 上） */
+    setFilterPanel(false);
     /* 回到内置 tab 视图时把 dock 要回来 */
     if(name!=='page')applyChrome('tab');
   }
@@ -429,7 +503,7 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
       if(href.indexOf('about:blank')===0){switchView(lastBuiltin||'home');return}
       /* 页面内部跳转（分区页 → 详情页 / 补货执行页）时同步外壳层级，
          否则从 tab 页下钻后 dock 会一直压在新页面上 */
-      applyChrome(chromeFor(href));
+      applyChrome(chromeFor(href),href);
     });
   }
   function mountPage(href){
@@ -450,9 +524,31 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
     $("pageTitle").textContent=title||'原型页面';
     mountPage(href);
     switchView('page');
-    applyChrome(chromeFor(href));
+    applyChrome(chromeFor(href),href);
     closeMenu();
   }
+  var taskBackView='home';   /* 进入任务前所在的 tab，任务页左上角返回到这里 */
+  function openTaskTab(){
+    var active=(document.querySelector('.view.active')||{}).id||'homeView';
+    var from=String(active).replace(/View$/,'');
+    if(from==='home'||from==='common')taskBackView=from;
+    lastBuiltin='tasks';
+    var cur='';
+    try{cur=$("pageFrame").contentWindow.location.href||''}catch(e){cur=''}
+    if(cur.indexOf('task-list.html')<0){
+      $("pageTitle").textContent='任务';
+      mountPage('task-list.html');
+    }
+    switchView('page');
+    applyChrome('tab','task-list.html');
+    closeMenu();
+  }
+  /* 扫码页用完后把 iframe 置空，结束摄像头采集 */
+  function releaseCamera(href){
+    if(String(href||'').indexOf('scan.html')<0)return;
+    try{$("pageFrame").src='about:blank'}catch(e){}
+  }
+
   function goBack(){
     $("pageFrame").src='about:blank';
     switchView(lastBuiltin||'home');
@@ -463,7 +559,15 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
   window.addEventListener('message',function(event){
     var type=event&&event.data&&event.data.type;
     if(type==='app:home'){
+      /* 页面可指定回到哪个内置视图（如设备详情固定回首页） */
+      var want=event.data&&event.data.view;
+      var before='';
+      try{before=$("pageFrame").contentWindow.location.pathname||''}catch(e){before=''}
+      releaseCamera(before);
+      if(want&&want!=='page'){switchView(want);return}
       switchView(lastBuiltin&&lastBuiltin!=='page'?lastBuiltin:'home');
+    }else if(type==='app:taskback'){
+      switchView(taskBackView||'home');
     }else if(type==='app:logout'){
       location.href='login.html';
     }
@@ -490,9 +594,34 @@ button:focus-visible,input:focus-visible{outline:3px solid rgba(36,52,200,.2);ou
   $("backButton").addEventListener('click',goBack);
   $("profileButton").addEventListener('click',function(){openPage('my.html','我的')});
   $("deviceSearch").addEventListener('input',renderDevices);
+  $("deviceSearch").addEventListener('focus',function(){setFilterPanel(true)});
+  $("filterToggle").addEventListener('click',function(){
+    var open=!$("controls").classList.contains("filtering");
+    setFilterPanel(open);
+    if(open)$("deviceSearch").focus();
+    else $("deviceSearch").blur();
+  });
+  $("filterReset").addEventListener('click',function(){
+    filter="all";renderFilters();renderDevices();
+    if(!$("deviceSearch").value.trim())setFilterPanel(false);
+  });
+  $("filterChip").addEventListener('click',function(){
+    filter="all";renderFilters();renderDevices();
+  });
+  /* 焦点离开搜索区且没有筛选条件时收起面板 */
+  document.addEventListener('focusout',function(event){
+    var controls=$("controls");
+    if(!controls.contains(event.target))return;
+    if(event.relatedTarget&&controls.contains(event.relatedTarget))return;
+    if($("deviceSearch").value.trim()||filter!=="all")return;
+    setFilterPanel(false);
+  });
   document.addEventListener('keydown',function(event){if(event.key==='Escape'){if($("fullMenu").classList.contains('open'))closeMenu();else if(currentView==='page')goBack()}});
 
-  renderFilters();renderDevices();renderMessages();renderCommon();renderMenu();
+  renderFilters();renderDevices();renderCommon();renderMenu();
+  /* 支持 navigation.html#common 等锚点直达内置视图（页面「返回常用」单独打开时用） */
+  var initView=String(location.hash||'').replace('#','');
+  if(initView==='common'||initView==='tasks'||initView==='home')switchView(initView);
 })();
 </script>
 </body>

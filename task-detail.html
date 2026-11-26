@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2434c8">
+<title>任务详情 · VendSolution</title>
+<link rel="stylesheet" href="app-ui.css">
+<style>
+/* 任务详情 · 页面前缀 td-（只写布局，组件一律用 app-ui.css） */
+.td-body{padding:12px 16px 22px}
+.td-photo{position:relative;border-radius:var(--r-sm);overflow:hidden;background:#eef1f8;aspect-ratio:16/9}
+.td-photo svg{width:100%;height:100%}
+.td-pill{position:absolute;left:9px;top:9px;height:22px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.94);display:inline-flex;align-items:center;font-size:10px;font-weight:700;color:var(--brand)}
+.td-sum{font-size:12px;line-height:17px;font-weight:600;color:var(--text-2);white-space:nowrap}
+.td-note{padding:0 0 2px;font-size:13px;line-height:20px;color:var(--text-2)}
+.td-line dt small{display:block;margin-top:1px;font-size:11px;line-height:15px;color:var(--text-3)}
+.td-qty{color:var(--brand);font-weight:800}
+.td-empty{padding:16px 0 6px;text-align:center;font-size:12px;line-height:17px;color:var(--text-3)}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
+
+  <header class="navbar">
+    <span class="nav-left"><a class="icon-btn" href="task-list.html" aria-label="返回任务"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a></span>
+    <h1>任务详情</h1>
+    <span class="nav-right"></span>
+  </header>
+
+  <div class="body td-body" id="tdBody"></div>
+
+</main>
+<script src="app-ui.js"></script>
+<script>
+(function(){
+  var TASKS=[
+    {uid:'t1',id:'RT20261125001',deviceType:'GRAB_GO',type:'REPLENISHMENT',status:'PENDING',device:'万事达测试机5.1_004',site:'万事达测试点位',summary:'补货 0 个 SKU / 0 件',time:'待处理',done:false,operator:'—',duration:'—',remark:'任务待处理，请尽快前往设备完成补货。',lines:[]},
+    {uid:'t2',id:'RT20261125002',deviceType:'GRAB_GO',type:'REPLENISHMENT',status:'COMPLETED',device:'京品矩视开门柜设备',site:'京品矩视点位',summary:'补货 0 个 SKU / 0 件',time:'17:32',done:true,operator:'Leo Messi',duration:'03 分 18 秒',remark:'补货完成，已确认柜内商品状态。',lines:[]},
+    {uid:'t3',id:'RT20261125001',deviceType:'GRAB_GO',type:'REPLENISHMENT',status:'COMPLETED',device:'京品矩视开门柜设备',site:'京品矩视点位',summary:'补货 0 个 SKU / 0 件',time:'17:25',done:true,operator:'Leo Messi',duration:'02 分 46 秒',remark:'补货完成，货架照片已上传。',lines:[]},
+    {uid:'t4',id:'RT20261124102',deviceType:'GRAB_GO',type:'REPLENISHMENT',status:'COMPLETED',device:'京品矩视开门柜设备',site:'京品矩视点位',summary:'补货 0 个 SKU / 0 件',time:'16:48',done:true,operator:'Leo Messi',duration:'04 分 02 秒',remark:'补货完成，柜门已关闭。',lines:[]}
+  ];
+  var p=new URLSearchParams(location.search);
+  var uid=p.get('uid'), id=p.get('id');
+  var t=TASKS.filter(function(x){return x.uid===uid})[0]
+     ||TASKS.filter(function(x){return x.id===id})[0]
+     ||TASKS[1];
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]})}
+
+  var SHELF='<svg viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'
+    + '<rect width="320" height="160" fill="#eef1f8"/>'
+    + '<rect x="16" y="16" width="288" height="128" rx="10" fill="#fff" stroke="#dce2ff" stroke-width="2"/>'
+    + '<rect x="30" y="30" width="260" height="34" rx="6" fill="#f5f6fa"/>'
+    + '<rect x="30" y="78" width="260" height="34" rx="6" fill="#f5f6fa"/>'
+    + '<rect x="30" y="126" width="260" height="2" fill="#e4e7ef"/>'
+    + '<rect x="42" y="36" width="18" height="22" rx="3" fill="#8fa3e8"/><rect x="66" y="36" width="18" height="22" rx="3" fill="#f0c33c"/><rect x="90" y="36" width="18" height="22" rx="3" fill="#4caf7d"/>'
+    + '<rect x="42" y="84" width="18" height="22" rx="3" fill="#e14b3b"/><rect x="66" y="84" width="18" height="22" rx="3" fill="#2f9be0"/><rect x="90" y="84" width="18" height="22" rx="3" fill="#f0c33c"/>'
+    + '<rect x="220" y="36" width="18" height="22" rx="3" fill="#2f9be0"/><rect x="244" y="36" width="18" height="22" rx="3" fill="#4caf7d"/><rect x="268" y="36" width="18" height="22" rx="3" fill="#f0c33c"/>'
+    + '<rect x="220" y="84" width="18" height="22" rx="3" fill="#e14b3b"/><rect x="244" y="84" width="18" height="22" rx="3" fill="#4caf7d"/><rect x="268" y="84" width="18" height="22" rx="3" fill="#2f9be0"/>'
+    + '</svg>';
+
+  var deviceTypeLabel=t.deviceType==='GRAB_GO'?'开门柜（GRAB_GO）':esc(t.deviceType||'—');
+  var stateBadge=t.done
+    ? '<span class="badge ok"><span class="dot ok"></span>补货完成</span>'
+    : '<span class="badge brand"><span class="dot warn"></span>待处理</span>';
+
+  var rows=[
+    ['任务编号',t.id],
+    ['任务类型','补货任务'],
+    ['设备名称',t.device],
+    ['点位',t.site],
+    ['设备类型',deviceTypeLabel],
+    ['补货员',t.operator],
+    ['耗时',t.duration],
+    ['完成时间',t.done?t.time:'—']
+  ];
+  var h='';
+
+  if(t.done){
+    h+='<section class="card">'
+      + '<div class="card-head"><h2 class="card-title">补货照片</h2><span class="td-sum">'+esc(t.summary)+'</span></div>'
+      + '<div class="card-body"><div class="td-photo">'+SHELF+'<span class="td-pill">货架整体照</span></div></div>'
+      + '</section>';
+  }
+
+  h+='<section class="card">'
+    + '<div class="card-head bordered"><h2 class="card-title">任务信息</h2>'+stateBadge+'</div>'
+    + '<div class="card-body tight"><div class="rows">'
+    + rows.map(function(r){return '<div class="row"><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join('')
+    + '</div></div></section>';
+
+  h+='<section class="card">'
+    + '<div class="card-head bordered"><h2 class="card-title">补货明细</h2><span class="td-sum">'+esc(t.summary)+'</span></div>'
+    + '<div class="card-body tight"><div class="rows">'
+    + (t.lines.length
+        ? t.lines.map(function(l){return '<div class="row"><dt>'+esc(l.name)+'<small>'+esc(l.slot||'')+'</small></dt><dd class="td-qty">+'+esc(l.qty)+'</dd></div>'}).join('')
+        : '<div class="td-empty">本次无 SKU 明细</div>')
+    + '</div></div></section>';
+
+  h+='<section class="card">'
+    + '<div class="card-head bordered"><h2 class="card-title">备注</h2></div>'
+    + '<div class="card-body"><p class="td-note">'+esc(t.remark)+'</p></div>'
+    + '</section>';
+
+  document.getElementById('tdBody').innerHTML=h;
+})();
+</script>
+</body>
+</html>

@@ -502,6 +502,16 @@
   .drawer-bd{flex:1;overflow-y:auto;padding:18px}
   .drawer-ft{display:flex;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:1px solid var(--border)}
   .drawer-x{border:0;background:none;font-size:18px;color:var(--text-3);cursor:pointer;line-height:1}
+
+  /* 机器 · 设备详情抽屉（iframe 载入本地页面 machine-detail.html，头部 / 七个 Tab / 底栏均由页面自身提供） */
+  body.mdr-open{overflow:hidden}
+  .mdr-mask{position:fixed;inset:0;background:rgba(26,26,26,.42);z-index:80;opacity:0;pointer-events:none;transition:opacity .22s ease}
+  .mdr-mask.on{opacity:1;pointer-events:auto}
+  .mdr{position:fixed;top:0;right:0;height:100vh;width:1000px;max-width:100vw;background:#F1F1F1;z-index:81;display:flex;flex-direction:column;box-shadow:var(--sh-modal);transform:translateX(100%);transition:transform .24s cubic-bezier(.4,0,.2,1)}
+  .mdr.on{transform:none}
+  .mdr-frame{flex:1;width:100%;min-height:0;border:0;display:block;background:#F1F1F1}
+  tr.mrow{cursor:pointer}
+  tr.mrow:hover td{background:var(--ds-surface-2)}
   .field{margin-bottom:16px}
   .field label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
   .field .src{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;font-size:13px;color:var(--text-2)}
@@ -2107,7 +2117,7 @@ function objRowsOf(type){
 }
 function objName(type,objId){ const o=objRow(type,objId); return o?(o.name||o.code||objId):objId; }
 function tagSourceLabel(){ if(state.sec==='catalog'){ return state.mod==='prepack'?{crumb:'商品 / 预包装商品',label:'预包装商品'}:{crumb:'商品 / 现制商品',label:'现制商品'}; } return {crumb:'机器 / 机器列表',label:'机器列表'}; }
-function rerender(){ document.getElementById('content').innerHTML=contentHTML(); }
+function rerender(){ document.body.classList.remove('mdr-open'); document.getElementById('content').innerHTML=contentHTML(); }
 function tagFilterPass(type,objId){ const filt=TAG.objFilter[type]||{}; const sel=Object.keys(filt).filter(k=>filt[k]); if(!sel.length) return true; return sel.some(tid=>(TAG_BIND[tid]||[]).indexOf(objId)>=0); }
 function tagCellHTML(type,objId){
   const tags=objTagsOf(type,objId);
@@ -2827,7 +2837,7 @@ function machinePage(){
   const type='MACHINE'; state.listType=type;
   let rows=MACHINE_LIST_ROWS.slice().filter(r=>tagFilterPass(type,r.id) && groupFilterPass(type,r.id));
   const head='<tr><th>机器</th><th>品牌型号</th><th>点位</th><th>状态</th><th>模式</th><th>分组</th><th>标签</th><th>操作</th></tr>';
-  const body=rows.map(r=>'<tr><td><span class="strong">'+esc(r.name)+'</span></td><td>'+esc(r.model)+'</td><td>'+esc(r.loc)+'</td>'+
+  const body=rows.map(r=>'<tr class="mrow" data-mrow="'+r.id+'" title="点击查看运营配置"><td><span class="strong">'+esc(r.name)+'</span></td><td>'+esc(r.model)+'</td><td>'+esc(r.loc)+'</td>'+
     '<td><span class="badge '+(r.status==='在线'?'ok':'muted')+'">'+esc(r.status)+'</span></td><td>'+esc(r.mode)+'</td><td>'+groupCellHTML(type,r.id)+'</td><td>'+tagCellHTML(type,r.id)+'</td>'+
     '<td><span class="lnk" data-act="view">查看详情</span></td></tr>').join('');
   return '<div class="page">'+
@@ -2844,7 +2854,57 @@ function machinePage(){
     '<div class="tbl-hd"><span class="t">机器列表</span><span class="a"><button class="btn" data-act="export">导出</button></span></div>'+
     '<div class="tbl-wrap"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
     '<div class="tbl-ft"><span>共 '+rows.length+' 台</span><span>演示数据</span></div></div>'+
+    '<div id="mdrHost"></div>'+
   '</div>';
+}
+
+/* ------------------------------------------------------------
+   机器 · 设备详情抽屉（本地演示）
+   内容来自本地页面 machine-detail.html（SN0010150 七个 Tab 快照合成）；
+   未入库；点机器行打开，右侧滑出，可点遮罩 / 页面内 × 或「取消」/ Esc 收起。
+   ------------------------------------------------------------ */
+var MDR={id:null};
+function openMdr(id){
+  var r=MACHINE_LIST_ROWS.filter(function(x){return x.id===id})[0];
+  var host=document.getElementById('mdrHost');
+  if(!r||!host) return;
+  MDR.id=id; host.dataset.open='1';
+  var qs='?name='+encodeURIComponent(r.name)+
+         '&sub='+encodeURIComponent('运营中 · SN0010150')+
+         '&id='+encodeURIComponent(r.id)+'&model='+encodeURIComponent(r.model)+
+         '&loc='+encodeURIComponent(r.loc)+'&tenant='+encodeURIComponent(r.tenant)+
+         '&status='+encodeURIComponent(r.status);
+  host.innerHTML='<div class="mdr-mask" data-mdrclose></div>'+
+    '<aside class="mdr" role="dialog" aria-modal="true" aria-label="'+esc(r.name)+' 设备详情">'+
+      '<iframe class="mdr-frame" src="machine-detail.html'+qs+'" title="'+esc(r.name)+' 设备详情"></iframe>'+
+    '</aside>';
+  var mask=host.querySelector('.mdr-mask'), pane=host.querySelector('.mdr');
+  if(pane)pane.getBoundingClientRect();
+  if(mask)mask.classList.add('on');
+  if(pane)pane.classList.add('on');
+  document.body.classList.add('mdr-open');
+}
+/* 抽屉内页面（machine-detail.html）通过 postMessage 请求关闭 / 提示 */
+window.addEventListener('message', function(e){
+  var d=e.data;
+  if(!d||typeof d!=='object') return;
+  if(d.type==='mdr-close'){ closeMdr(); }
+  else if(d.type==='mdr-toast'&&typeof toast==='function'&&d.text){ toast(String(d.text)); }
+});
+function closeMdr(){
+  var host=document.getElementById('mdrHost');
+  MDR.id=null;
+  if(!host){ document.body.classList.remove('mdr-open'); return; }
+  host.dataset.open='0';
+  var mask=host.querySelector('.mdr-mask'), pane=host.querySelector('.mdr');
+  if(mask)mask.classList.remove('on');
+  if(pane)pane.classList.remove('on');
+  setTimeout(function(){
+    if(host.isConnected && host.dataset.open!=='1'){
+      host.innerHTML='';
+      document.body.classList.remove('mdr-open');
+    }
+  },280);
 }
 
 /* ------------------------------------------------------------
@@ -4428,6 +4488,7 @@ function contentHTML(){
 }
 
 function render(){
+  document.body.classList.remove('mdr-open');
   if(state.tagOpen){
     const sl=tagSourceLabel();
     document.getElementById('crumbs').innerHTML=sl.crumb+' / <b>标签管理</b>';
@@ -4548,6 +4609,10 @@ document.addEventListener('click',e=>{
     try{ localStorage.setItem('vendSubCollapsed',collapsed?'1':'0'); }catch(err){}
     return;
   }
+  /* 机器 · 设备详情抽屉 */
+  if(e.target.closest('[data-mdrclose]')){ closeMdr(); return; }
+  const mrow=e.target.closest('[data-mrow]');
+  if(mrow && !e.target.closest('select') && !e.target.closest('input')){ openMdr(mrow.dataset.mrow); return; }
   const rrole=e.target.closest('[data-rrole]');
   if(rrole){ state.rootRole=rrole.dataset.rrole; rootGo(); return; }
   const rtab=e.target.closest('[data-rtab]');
@@ -5080,6 +5145,7 @@ document.addEventListener('click',e=>{
   }
 });
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.body.classList.contains('mdr-open')){ closeMdr(); return; }
   if(state.sec==='settings'&&state.mod==='matrix'&&MX.edit&&e.target.dataset&&e.target.dataset.mx2Input!==undefined){
     if(e.key==='Enter'){ e.preventDefault(); mxCommit(true); }
     else if(e.key==='Escape'){ e.preventDefault(); MX.edit=null; mxRender(); }

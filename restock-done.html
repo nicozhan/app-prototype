@@ -182,6 +182,7 @@ svg{display:block;flex:0 0 auto}
       <dl class="rows">
         <div class="row"><dt>任务编号</dt><dd id="taskNo">WO-20260625-001</dd></div>
         <div class="row"><dt>设备名称</dt><dd id="taskDevice">曼谷机场 T1-A01</dd></div>
+        <div class="row"><dt>货柜</dt><dd id="taskCabinet">01 左侧</dd></div>
         <div class="row"><dt>补货员</dt><dd>Leo Messi</dd></div>
         <div class="row"><dt>补货耗时</dt><dd id="taskDuration">05 分 21 秒</dd></div>
         <div class="row"><dt>完成时间</dt><dd>2026-06-25 15:20</dd></div>
@@ -283,7 +284,10 @@ svg{display:block;flex:0 0 auto}
 </main>
 <script>
 (function(){
-  var mode=new URLSearchParams(location.search).get('mode')==='coffee'?'coffee':'retail';
+  var qs=new URLSearchParams(location.search);
+  var mode=qs.get('mode')==='coffee'?'coffee':'retail';
+  /* 补货页会带上设备与门（door=left|right），双门柜在设备名称下补一条货柜信息 */
+  var door=qs.get('door');
 
   var DATA={
     retail:{
@@ -317,7 +321,24 @@ svg{display:block;flex:0 0 auto}
   };
 
   var data=DATA[mode];
-  document.getElementById('taskDevice').textContent=data.device;
+  var cabinetNo=qs.get('cab')||'01';
+  document.getElementById('taskDevice').textContent=qs.get('name')||data.device;
+  /* 咖啡机：照片说明按料仓口径 */
+  if(mode==='coffee'){
+    var pill=document.querySelector('.photo-wrap .pill');if(pill)pill.textContent='料仓照片';
+    var desc=document.querySelector('.photo-wrap .photo-s');if(desc)desc.textContent='补货后的料仓照片，便于后台核验';
+    var note=document.querySelector('.sheet-note');if(note)note.textContent='拍摄补货后的料仓整体照片，便于后台核验。可拍照，也可从相册选择已有照片。';
+    var sub=document.querySelector('.photo-opt-sub');if(sub)sub.textContent='调用相机拍摄料仓';
+  }
+
+  /* 咖啡机没有货柜，隐藏「货柜」一行 */
+  if(mode==='coffee'){
+    var cabRow=document.getElementById('taskCabinet');
+    var row=cabRow&&cabRow.parentNode;
+    if(row)row.style.display='none';
+  }else{
+    document.getElementById('taskCabinet').textContent=cabinetNo+(door==='both'?' 左右两侧':door==='left'?' 左侧':door==='right'?' 右侧':'');
+  }
   document.getElementById('taskNo').textContent=data.taskNo;
   document.getElementById('taskDuration').textContent=data.duration;
   document.getElementById('resultText').innerHTML=data.result;

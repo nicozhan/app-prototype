@@ -7,53 +7,16 @@
 <title>告警 · VendSolution</title>
 <link rel="stylesheet" href="app-ui.css">
 <style>
-/* 告警列表 · 页面前缀 al- */
-.al-filter-btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:3px;
-  height:36px;padding:0 6px;border-radius:var(--r-sm);
-  font-size:13px;font-weight:600;color:var(--brand);white-space:nowrap
-}
-.al-filter-btn:active{background:var(--brand-weak)}
-.al-filter-btn svg{width:14px;height:14px}
-
-.al-filter{margin-bottom:10px}
-.al-group+.al-group{margin-top:12px}
-.al-label{margin-bottom:6px;font-size:12px;line-height:17px;font-weight:600;color:var(--text-2)}
+/* 告警列表 · 页面前缀 al-（只写布局，组件一律用 app-ui.css） */
 .al-wrap{flex-wrap:wrap;overflow:visible}
-
-.al-date{display:none;margin-top:10px}
+.al-date{display:none;margin-top:12px}
 .al-date.open{display:block}
-.al-hint{margin-top:8px;font-size:11px;line-height:16px;color:var(--text-3)}
+.al-hint{margin-top:6px;font-size:11px;line-height:16px;color:var(--text-3)}
 .al-hint i{font-style:normal;font-weight:600;color:var(--text-2)}
 .al-hint b{font-weight:700;color:var(--brand)}
-.al-clear{margin-top:12px}
-
-.al-seg{margin-top:2px}
-.al-seg button .al-count{margin-left:4px;font-size:11px;font-weight:700;color:var(--text-3)}
-.al-seg button.active .al-count{color:var(--brand)}
-
-.al-list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-.al-card{
-  display:block;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--line);
-  border-radius:var(--r-card);background:var(--surface);color:var(--ink)
-}
-.al-card:active{background:var(--surface-2)}
-.al-card.p0{border-left-color:var(--danger)}
-.al-card.p1{border-left-color:var(--warn)}
-.al-card.p2{border-left-color:var(--brand)}
-.al-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.al-title{margin-top:7px;font-size:16px;line-height:22px;font-weight:700;letter-spacing:-.2px}
-.al-tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
-.al-tag{
-  display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:7px;
-  background:var(--surface-2);font-size:11px;font-weight:600;color:var(--text-2)
-}
-.al-tag svg{width:11px;height:11px;color:var(--text-3)}
-.al-tag.cat{background:var(--brand-weak);color:var(--brand)}
-.al-tag.cat svg{color:var(--brand)}
-.al-foot{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.al-time{font-size:11px;line-height:16px;color:var(--text-3);font-variant-numeric:tabular-nums}
-.al-go{font-size:12px;font-weight:700;color:var(--brand);white-space:nowrap}
+.al-clear{margin-top:14px}
+.al-time{font-size:12px;line-height:17px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.al-st{align-self:start}
 </style>
 </head>
 <body>
@@ -62,23 +25,32 @@
   <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
   <header class="navbar">
-    <span class="nav-left"><button class="icon-btn" type="button" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button></span>
-    <h1>告警</h1>
-    <span class="nav-right">
-      <button class="al-filter-btn" id="fltBtn" type="button" aria-expanded="false" aria-controls="tfilter">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选
-      </button>
-    </span>
+    <span class="nav-left"><button class="icon-btn" type="button" aria-label="返回常用" onclick="appHome(event,'common')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button></span>
+    <h1><button class="mod-title" type="button" data-mod-toggle="#modMenu" aria-expanded="false"><span>告警</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></h1>
+    <span class="nav-right"><button class="nav-text" id="fltBtn" type="button" aria-expanded="false" aria-controls="tfilter"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选</button></span>
+    <nav class="mod-menu" id="modMenu" aria-label="模块切换">
+      <a href="products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg><span>商品</span></a>
+      <a href="machines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>设备</span></a>
+      <a href="alerts.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span>告警</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></a>
+      <a href="app_workorder/tickets.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2H7.4A2.4 2.4 0 0 0 5 6.6v11.8A2.4 2.4 0 0 0 7.4 20.8h9.2a2.4 2.4 0 0 0 2.4-2.4V6.6a2.4 2.4 0 0 0-2.4-2.4H15"/><path d="M9 3h6a1 1 0 0 1 1 1v1.8a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="m8.8 13.4 2.2 2.2 4.2-4.2"/></svg><span>工单</span></a>
+      <a href="analytics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.6v15.8a1 1 0 0 0 1 1h15.4"/><path d="M8.4 16.6v-4.2M13 16.6V8.4M17.6 16.6v-6.4"/></svg><span>经营分析</span></a>
+    </nav>
   </header>
+
+  <div class="tabs" id="catTabs">
+    <button class="tab active" type="button" data-v="all">全部<span class="count" id="cAll"></span></button>
+    <button class="tab" type="button" data-v="dev">设备告警<span class="count" id="cDev"></span></button>
+    <button class="tab" type="button" data-v="ops">运营告警<span class="count" id="cOps"></span></button>
+  </div>
 
   <div class="body">
 
     <!-- 筛选面板 -->
-    <section class="card al-filter" id="tfilter" hidden>
+    <section class="card" id="tfilter" hidden>
       <div class="card-body">
 
-        <div class="al-group">
-          <div class="al-label">告警类型</div>
+        <div class="field">
+          <div class="field-label">告警类型</div>
           <div class="chips al-wrap" id="typeOpts">
             <button class="chip active" type="button" data-v="all">全部</button>
             <button class="chip" type="button" data-v="设备离线">设备离线</button>
@@ -90,8 +62,8 @@
           </div>
         </div>
 
-        <div class="al-group">
-          <div class="al-label">等级</div>
+        <div class="field">
+          <div class="field-label">等级</div>
           <div class="chips al-wrap" id="lvlOpts">
             <button class="chip active" type="button" data-v="all">全部</button>
             <button class="chip" type="button" data-v="P0">P0</button>
@@ -100,8 +72,8 @@
           </div>
         </div>
 
-        <div class="al-group">
-          <div class="al-label">状态</div>
+        <div class="field">
+          <div class="field-label">状态</div>
           <div class="chips al-wrap" id="stOpts">
             <button class="chip active" type="button" data-v="all">全部</button>
             <button class="chip" type="button" data-v="todo">待处理</button>
@@ -111,8 +83,8 @@
           </div>
         </div>
 
-        <div class="al-group">
-          <div class="al-label">时间</div>
+        <div class="field">
+          <div class="field-label">时间</div>
           <div class="chips al-wrap" id="timeOpts">
             <button class="chip active" type="button" data-v="all">全部</button>
             <button class="chip" type="button" data-v="today">今天</button>
@@ -122,14 +94,14 @@
           </div>
 
           <div class="al-date" id="dateRange">
-            <label class="field">
-              <span class="field-label">开始时间 · 年/月/日 时:分:秒</span>
+            <div class="field">
+              <div class="field-label">开始时间 · 年/月/日 时:分:秒</div>
               <input class="input num" type="datetime-local" id="dStart" step="1">
-            </label>
-            <label class="field">
-              <span class="field-label">结束时间 · 年/月/日 时:分:秒</span>
+            </div>
+            <div class="field">
+              <div class="field-label">结束时间 · 年/月/日 时:分:秒</div>
               <input class="input num" type="datetime-local" id="dEnd" step="1">
-            </label>
+            </div>
             <div class="al-hint" id="drHint">精确到秒；留空表示该端不限</div>
           </div>
         </div>
@@ -142,34 +114,23 @@
       </div>
     </section>
 
-    <!-- 分类分段 -->
-    <div class="segmented al-seg" id="catTabs">
-      <button class="active" type="button" data-v="all">全部<span class="al-count" id="cAll"></span></button>
-      <button type="button" data-v="dev">设备告警<span class="al-count" id="cDev"></span></button>
-      <button type="button" data-v="ops">运营告警<span class="al-count" id="cOps"></span></button>
-    </div>
-
     <!-- 搜索 -->
     <div class="search mt-12">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="kw" placeholder="搜索告警名称 / 设备SN / 告警ID">
     </div>
 
     <!-- 告警列表 -->
-    <div class="al-list" id="alist"></div>
+    <div class="mt-12" id="alist"></div>
 
   </div>
 </main>
 
 <script>
-var DEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
-var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-
-/* 严重度：P0 严重（danger）/ P1 警告（warn）/ P2 提示（brand） */
 var SEV = {
-  P0:{ cls:'p0', badge:'danger', txt:'P0 · 严重' },
-  P1:{ cls:'p1', badge:'warn',   txt:'P1 · 警告' },
-  P2:{ cls:'p2', badge:'brand',  txt:'P2 · 提示' }
+  P0:{ badge:'danger', txt:'P0 · 严重' },
+  P1:{ badge:'warn',   txt:'P1 · 警告' },
+  P2:{ badge:'brand',  txt:'P2 · 提示' }
 };
 /* 状态点：待处理 danger / 处理中 brand / 已完成 ok / 已关闭 灰 */
 var STC = { todo:'danger', doing:'brand', done:'ok', closed:'off' };
@@ -255,28 +216,31 @@ function render(){
   var list = filtered();
   var el = document.getElementById('alist');
   if(!list.length){
-    el.innerHTML = '<div class="empty">'
+    el.innerHTML = '<div class="card"><div class="empty">'
       + '<div class="empty-icon gray"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>'
-      + '<p>暂无符合条件的告警</p></div>';
+      + '<p>暂无符合条件的告警</p>'
+      + '<span>换个等级或清空搜索词再试</span></div></div>';
     updateHint(0);
     return;
   }
-  el.innerHTML = list.map(function(a){
+  el.innerHTML = '<div class="card"><div class="list">' + list.map(function(a){
     var sev = SEV[a.lvl];
     var typeTxt = a.cat==='dev' ? '设备告警' : '运营告警';
-    var tags = '<span class="al-tag cat">' + typeTxt + '</span>';
-    if(a.sn && a.sn!=='—') tags += '<span class="al-tag">' + DEV + a.sn + '</span>';
-    if(a.site && a.site!=='—') tags += '<span class="al-tag">' + PIN + a.site + '</span>';
-    return '<a class="al-card ' + sev.cls + '" href="alert-detail.html">'
-         +   '<div class="al-top">'
-         +     '<span class="badge ' + sev.badge + '">' + sev.txt + '</span>'
-         +     '<span class="badge"><span class="dot ' + STC[a.stKey] + '"></span>' + a.st + '</span>'
-         +   '</div>'
-         +   '<div class="al-title">' + a.name + '</div>'
-         +   '<div class="al-tags">' + tags + '</div>'
-         +   '<div class="al-foot"><span class="al-time">' + a.time + '</span><span class="al-go">查看 →</span></div>'
+    var sub = typeTxt;
+    if(a.sn && a.sn!=='—') sub += ' · ' + a.sn;
+    if(a.site && a.site!=='—') sub += ' · ' + a.site;
+    return '<a class="item no-thumb" href="alert-detail.html">'
+         +   '<span class="item-body">'
+         +     '<span class="item-name">' + a.name + '</span>'
+         +     '<span class="item-sub">' + sub + '</span>'
+         +     '<span class="item-meta">'
+         +       '<span class="badge ' + sev.badge + '">' + sev.txt + '</span>'
+         +       '<span class="al-time">' + a.time + '</span>'
+         +     '</span>'
+         +   '</span>'
+         +   '<span class="badge al-st"><span class="dot ' + STC[a.stKey] + '"></span>' + a.st + '</span>'
          + '</a>';
-  }).join('');
+  }).join('') + '</div></div>';
   updateHint(list.length);
 }
 

@@ -33,6 +33,7 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;
@@ -92,7 +93,35 @@ svg{display:block;flex:0 0 auto}
 }
 .icon-btn:active{background:var(--surface-2)}
 .icon-btn.accent{color:var(--brand)}
-.nav-text{font-size:14px;font-weight:600;color:var(--brand);padding:0 4px}
+.nav-text{display:inline-flex;align-items:center;gap:3px;height:44px;font-size:14px;font-weight:600;color:var(--brand);padding:0 4px;white-space:nowrap}
+.navbar .nav-left,.navbar .nav-right{white-space:nowrap}
+
+/* ---------- 一级模块切换（商品 / 设备 / 经营统计 / 告警 / 工单 / 经营分析） ---------- */
+.navbar{position:relative}
+.mod-title{
+  display:inline-flex;align-items:center;gap:3px;max-width:100%;
+  font-size:17px;line-height:24px;font-weight:700;letter-spacing:-.2px;color:var(--ink)
+}
+.mod-title>span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod-title svg{width:14px;height:14px;color:var(--text-3);transition:transform .18s}
+.mod-title.open svg{transform:rotate(180deg)}
+.mod-menu{
+  position:absolute;left:12px;right:12px;top:52px;z-index:40;padding:6px;
+  border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);
+  box-shadow:0 16px 36px rgba(11,16,47,.16);
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .18s,transform .18s,visibility .18s
+}
+.mod-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
+.mod-menu a{
+  display:flex;align-items:center;gap:10px;height:44px;padding:0 10px;
+  border-radius:var(--r-sm);font-size:14px;font-weight:600;color:var(--ink)
+}
+.mod-menu a:active{background:var(--surface-2)}
+.mod-menu a>svg:first-child{width:19px;height:19px;color:var(--text-2)}
+.mod-menu a.active{background:var(--brand-weak);color:var(--brand)}
+.mod-menu a.active>svg:first-child{color:var(--brand)}
+.mod-menu a .tick{margin-left:auto;width:16px;height:16px;color:var(--brand)}
 
 /* ---------- 滚动主体 ---------- */
 .body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px 16px}

@@ -7,8 +7,6 @@
 <title>工单 · VendSolution</title>
 <link rel="stylesheet" href="../app-ui.css">
 <style>
-.tk-flt{display:inline-flex;align-items:center;gap:2px;height:36px;padding:0;
-  font-size:12.5px;font-weight:600;color:var(--brand);white-space:nowrap}
 .tk-filter{display:none;margin-bottom:10px}
 .tk-filter.open{display:block}
 .tk-fg+.tk-fg{margin-top:11px}
@@ -31,13 +29,16 @@
   <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
   <header class="navbar">
-    <span class="nav-left"><button class="icon-btn" type="button" aria-label="返回" onclick="appBack(event)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button></span>
-    <h1>工单</h1>
-    <span class="nav-right">
-      <button class="tk-flt" id="fltBtn" type="button">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选
-      </button>
-    </span>
+    <span class="nav-left"><button class="icon-btn" type="button" aria-label="返回常用" onclick="appHome(event,'common')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button></span>
+    <h1><button class="mod-title" type="button" data-mod-toggle="#modMenu" aria-expanded="false"><span>工单</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button></h1>
+    <span class="nav-right"><button class="nav-text" id="fltBtn" type="button" aria-expanded="false" aria-controls="tfilter"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>筛选</button></span>
+    <nav class="mod-menu" id="modMenu" aria-label="模块切换">
+      <a href="../products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg><span>商品</span></a>
+      <a href="../machines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>设备</span></a>
+      <a href="../alerts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg><span>告警</span></a>
+      <a href="tickets.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2H7.4A2.4 2.4 0 0 0 5 6.6v11.8A2.4 2.4 0 0 0 7.4 20.8h9.2a2.4 2.4 0 0 0 2.4-2.4V6.6a2.4 2.4 0 0 0-2.4-2.4H15"/><path d="M9 3h6a1 1 0 0 1 1 1v1.8a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="m8.8 13.4 2.2 2.2 4.2-4.2"/></svg><span>工单</span><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></a>
+      <a href="../analytics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.6v15.8a1 1 0 0 0 1 1h15.4"/><path d="M8.4 16.6v-4.2M13 16.6V8.4M17.6 16.6v-6.4"/></svg><span>经营分析</span></a>
+    </nav>
   </header>
 
   <div class="tabs" id="mainTabs">
