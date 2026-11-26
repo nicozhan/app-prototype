@@ -98,6 +98,10 @@ svg{display:block;flex:0 0 auto}
   display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;line-height:17px;color:var(--text-2)
 }
 .detail-total b{font-size:14px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.detail-k em{margin-left:6px;font-style:normal;font-size:11px;font-weight:600;color:var(--text-3);font-variant-numeric:tabular-nums}
+.detail-cup{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--ok-bg);display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:12px;line-height:17px;color:#00674a}
+.detail-cup b{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.detail-cup em{font-style:normal;font-size:10px;color:#3f8a72;white-space:nowrap}
 
 /* 备注 */
 .note-wrap{padding:11px 14px 14px}
@@ -322,6 +326,15 @@ svg{display:block;flex:0 0 auto}
 
   var data=DATA[mode];
   var cabinetNo=qs.get('cab')||'01';
+
+  /* 补货页把本次实际录入的料仓明细放在 rows 里带过来 */
+  var parsed=null;
+  try{parsed=JSON.parse(qs.get('rows')||'null')}catch(e){parsed=null}
+  if(mode==='coffee'&&parsed&&parsed.length){
+    data.rows=parsed;
+    data.result='本次补货完成，共补 <b>'+parsed.length+'</b> 个料仓';
+    data.sum=parsed.length+' 个料仓';
+  }
   document.getElementById('taskDevice').textContent=qs.get('name')||data.device;
   /* 咖啡机：照片说明按料仓口径 */
   if(mode==='coffee'){
@@ -343,10 +356,27 @@ svg{display:block;flex:0 0 auto}
   document.getElementById('taskDuration').textContent=data.duration;
   document.getElementById('resultText').innerHTML=data.result;
   document.getElementById('detailSum').textContent=data.sum;
+  function fmt(n){return Number(n||0).toLocaleString('en-US')}
+  var totals={},order=[],cups=0;
   document.getElementById('detailRows').innerHTML=data.rows.map(function(row){
-    var value=typeof row.qty==='number'?'×'+row.qty+'<small>件</small>':row.qty;
-    return '<div class="detail-row"><span class="detail-k">'+row.name+'</span><span class="detail-v">'+value+'</span></div>';
-  }).join('')+'<div class="detail-total"><span>'+(mode==='coffee'?'原料合计':'商品合计')+'</span><b>'+data.sum+'</b></div>';
+    var value;
+    if(typeof row.qty==='number'){
+      value=row.unit?fmt(row.qty)+'<small>'+row.unit+'</small>':'×'+row.qty+'<small>件</small>';
+      if(row.unit){
+        if(!totals[row.unit]){totals[row.unit]=0;order.push(row.unit)}
+        totals[row.unit]+=row.qty;
+      }
+      if(row.cups)cups+=row.cups;
+    }else{
+      value=row.qty;
+    }
+    var label=row.name+(row.slot?'<em>料仓 '+row.slot+'</em>':'');
+    return '<div class="detail-row"><span class="detail-k">'+label+'</span><span class="detail-v">'+value+'</span></div>';
+  }).join('')
+  +'<div class="detail-total"><span>'+(mode==='coffee'?'分单位小计':'商品合计')+'</span><b>'
+  +(mode==='coffee'&&order.length?order.map(function(unit){return unit+' '+fmt(totals[unit])}).join(' · '):data.sum)
+  +'</b></div>'
+  +(mode==='coffee'&&cups>0?'<div class="detail-cup"><span>预计可出杯 <b>约 '+fmt(cups)+' 杯</b></span><em>按粉料 9 g/杯 折算，仅供参考</em></div>':'');
 
   /* ---------- 补货照片 ---------- */
   var photoBtn=document.getElementById('photoBtn'),

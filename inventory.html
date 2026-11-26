@@ -98,6 +98,7 @@
 .iv-rec-main{flex:1;min-width:0}
 .iv-rec-title{display:flex;align-items:center;gap:6px;font-size:15px;line-height:21px;font-weight:600}
 .iv-rec-sub{display:block;margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-rec-sub.two{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .iv-rec-side{flex:0 0 auto;text-align:right}
 .iv-rec-time{display:block;font-size:11px;line-height:16px;color:var(--text-3);font-variant-numeric:tabular-nums}
 .iv-rec-tag{
@@ -106,6 +107,97 @@
 }
 .iv-rec-tag.restock{background:var(--brand-weak);color:var(--brand)}
 .iv-rec-tag.count{background:var(--surface-2);color:var(--text-2)}
+
+/* ---------- 咖啡机：料仓盘点（与补货页口径一致：g / ml / 个） ---------- */
+.ivc-stats{
+  flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);
+  margin:0 16px 8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden
+}
+.ivc-stat{padding:9px 10px 8px;border-right:1px solid var(--line)}
+.ivc-stat:last-child{border-right:0}
+.ivc-stat b{
+  display:block;font-size:19px;line-height:24px;font-weight:800;letter-spacing:-.4px;
+  font-variant-numeric:tabular-nums
+}
+.ivc-stat span{display:block;margin-top:1px;font-size:11px;line-height:15px;font-weight:600;color:var(--text-2)}
+.ivc-stat.on b{color:var(--brand)}
+.ivc-stat.warn b{color:var(--warn)}
+
+.iv-hint{margin:0 16px 8px;font-size:11px;line-height:16px;color:var(--text-3)}
+
+.ivc-group{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 5px;border-bottom:1px solid var(--line);background:#fafbfd;
+  font-size:11px;line-height:16px;font-weight:700;letter-spacing:.5px;color:var(--text-3)
+}
+.ivc-group span:last-child{font-weight:600;letter-spacing:0;font-variant-numeric:tabular-nums}
+
+.ivc-row{
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto;
+  column-gap:10px;row-gap:3px;align-items:center;
+  padding:11px 13px;border-bottom:1px solid var(--line)
+}
+.ivc-row:last-child{border-bottom:0}
+.ivc-row .thumb{grid-column:1;grid-row:1;align-self:start;width:44px;height:44px;border-radius:11px;background:var(--brand-weak)}
+.ivc-row .thumb i{color:var(--brand);font-size:15px}
+
+.ivc-name{grid-column:2;grid-row:1;display:flex;align-items:center;gap:6px;min-width:0;font-size:15px;line-height:20px;font-weight:600}
+.ivc-name .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ivc-name .badge{flex:0 0 auto}
+
+.ivc-meta{
+  grid-column:2/-1;grid-row:2;display:flex;align-items:center;gap:5px;
+  font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums;
+  white-space:nowrap;overflow:hidden
+}
+.ivc-meta .slot{flex:0 0 auto;font-weight:600;color:var(--text-2)}
+.ivc-meta .sep{flex:0 0 auto;color:var(--text-3)}
+.ivc-meta b{font-weight:600;color:var(--text-2)}
+.ivc-meta .exp{
+  flex:0 0 auto;margin-left:2px;height:17px;padding:0 6px;border-radius:5px;
+  background:var(--surface-2);color:var(--text-3);font-size:10px;line-height:17px;font-weight:600
+}
+.ivc-meta .exp.warn{background:var(--warn-bg);color:var(--warn)}
+.ivc-meta .exp.danger{background:var(--danger-bg);color:var(--danger)}
+
+.ivc-prog{grid-column:2/-1;grid-row:3;display:block;position:relative;height:5px;border-radius:99px;background:#e9ecf4;overflow:hidden}
+.ivc-prog>i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--brand)}
+.ivc-prog>i.full{background:var(--ok)}
+.ivc-prog>s{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(11,16,47,.34)}
+
+.ivc-qty{grid-column:2/-1;grid-row:4;display:flex;align-items:center;gap:6px;font-size:11px;line-height:16px;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ivc-qty b{font-size:12px;font-weight:700;color:var(--ink)}
+
+.ivc-step{
+  grid-column:3;grid-row:1;width:98px;height:34px;display:grid;grid-template-columns:28px 42px 28px;
+  border:1px solid #ccd4f6;border-radius:10px;overflow:hidden;background:var(--brand-weak)
+}
+.ivc-step button{display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:17px;line-height:1;font-weight:600}
+.ivc-step button:active{background:#dce2ff}
+.ivc-step button:disabled{color:#bcc3da;background:transparent;cursor:not-allowed}
+.ivc-step input{
+  width:100%;min-width:0;border:0;border-left:1px solid #dde2f6;border-right:1px solid #dde2f6;
+  background:var(--surface);text-align:center;font-size:13px;font-weight:800;
+  letter-spacing:-.3px;font-variant-numeric:tabular-nums;outline:0
+}
+.ivc-step input:focus{background:#f7f8ff}
+
+/* 保存前的差异确认 */
+#saveOverlay{text-align:left}
+.dif-list{margin:2px 0 10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dif-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.dif-row:last-child{border-bottom:0}
+.dif-main{flex:1;min-width:0}
+.dif-main b{display:block;font-size:13px;line-height:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dif-main em{
+  display:block;margin-top:1px;font-style:normal;font-size:11px;line-height:15px;
+  color:var(--text-2);font-variant-numeric:tabular-nums
+}
+.dif-sum{
+  margin-top:9px;padding:9px 11px;border-radius:10px;background:var(--surface-2);
+  font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums
+}
+.dif-sum b{font-weight:700;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -122,6 +214,13 @@
   </header>
 
   <div class="segmented iv-mode" id="mode"><button class="active" data-mode="count">盘点</button><button data-mode="record">记录</button></div>
+
+  <section class="ivc-stats" id="coffeeStats" aria-label="本次盘点概览" hidden>
+    <div class="ivc-stat"><b id="cStatTotal">8</b><span>个料仓</span></div>
+    <div class="ivc-stat" id="cStatDiffCell"><b id="cStatDiff">0</b><span>个有差异</span></div>
+    <div class="ivc-stat" id="cStatExpCell"><b id="cStatExp">0</b><span>个临期</span></div>
+  </section>
+  <p class="iv-hint" id="coffeeHint" hidden>上限由设备档案下发（g / ml / 个），实盘超出会自动按上限记录。</p>
 
   <div class="iv-range" id="rangeBar">
     <div class="segmented iv-range-seg" id="rangeSeg">
@@ -155,7 +254,7 @@
     </section>
   </div>
 
-  <!-- 添加商品 -->
+  <!-- 添加商品（仅商品型设备） -->
   <div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
     <section class="sheet">
       <div class="handle"></div>
@@ -190,13 +289,33 @@
     <div class="scn-sheet" id="scanSheet"></div>
   </div>
 
+  <!-- 保存前的差异确认（咖啡机） -->
+  <div class="overlay center" id="saveOverlay" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+    <section class="sheet">
+      <div class="sheet-head"><h2 id="saveTitle">确认盘点差异</h2><button class="close" data-close="saveOverlay" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <p class="sheet-note" id="saveNote"></p>
+      <div class="dif-list" id="saveDiffs"></div>
+      <div class="dif-sum" id="saveSum"></div>
+      <p class="sheet-note" style="margin:10px 0 0;font-size:11px;line-height:16px;color:var(--text-3)">保存后库存按实盘更新，并同步到补货页与设备档案的料仓数据。</p>
+      <div class="sheet-btns"><button class="btn btn-ghost" data-close="saveOverlay">取消</button><button class="btn btn-primary" id="saveConfirm">确认保存</button></div>
+    </section>
+  </div>
+
   <div class="toast" id="toast" role="status"></div>
 </main>
 <script>
 (function(){
   const imagePath='jpgk-platform/mobile/src/static/replenishment/';
-  const device=new URLSearchParams(location.search).get('device')||'VM-1001';
+  const params=new URLSearchParams(location.search);
+  const device=params.get('device')||'VM-1001';
+  /* 咖啡机（CM-*）走料仓计量盘点，其余设备沿用商品盘点 */
+  const IS_COFFEE=/^CM-/i.test(device)||params.get('type')==='coffee';
   document.getElementById('deviceLabel').textContent=device;
+
+  const pad=n=>('0'+n).slice(-2);
+  function at(daysAgo,h,m){const d=new Date();d.setHours(h,m||0,0,0);d.setDate(d.getDate()-daysAgo);return d.getTime()}
+
+  /* ================= 商品型设备：库存（件 / 货道） ================= */
   // 库存：sys 系统账面值，cur 实盘编辑值；code 用于扫码/搜索匹配
   let stock=[
     {id:1,name:'可口可乐 330ml',code:'6901234500001',slot:'1 层 A1',sys:2,cur:2,max:10,img:imagePath+'product-1.png'},
@@ -217,8 +336,6 @@
   // 扫码结果的库状态：ok=已收录 / warn=档案待补 / bad=产品库未收录（盘点均允许加入）
   const SCAN_STATE={'6901234500017':['ok','已收录'],'6901234500024':['ok','已收录'],'6921168509256':['warn','档案待补'],'6954767434674':['ok','已收录'],'6933266607185':['bad','未收录']};
   // 记录：type = restock(补货) | count(盘点)；at 为时间戳，diff 为盘点差异（正=增加，负=减少）
-  const pad=n=>('0'+n).slice(-2);
-  function at(daysAgo,h,m){const d=new Date();d.setHours(h,m||0,0,0);d.setDate(d.getDate()-daysAgo);return d.getTime()}
   let records=[
     {type:'restock',title:'完成补货',sub:'补货 18 件 · 6 个商品',at:at(1,10,5)},
     {type:'count',title:'盘点完成',sub:'实盘 42 件 · 6 个商品',at:at(2,18,40),diff:3},
@@ -230,12 +347,41 @@
     {type:'count',title:'盘点完成',sub:'实盘 36 件 · 6 个商品',at:at(72,9,50),diff:-4},
     {type:'count',title:'盘点完成',sub:'实盘 44 件 · 6 个商品',at:at(108,16,25),diff:2}
   ];
+
+  /* ================= 咖啡机：料仓（g / ml / 个，cap 与 unit 由设备档案下发） ================= */
+  const COFFEE_LAYER=['','咖啡豆','粉类','辅料','包装'];
+  let coffee=[
+    {id:1,name:'咖啡豆 · 埃塞',layer:1,slot:'#1',sys:220,cur:220,cap:1000,unit:'g',step:50,expire:'2027-05-19'},
+    {id:2,name:'咖啡豆 · 云拿',layer:1,slot:'#2',sys:380,cur:380,cap:1000,unit:'g',step:50,expire:'2027-04-02'},
+    {id:3,name:'奶茶粉',layer:2,slot:'#3',sys:0,cur:0,cap:800,unit:'g',step:50},
+    {id:4,name:'可可粉',layer:2,slot:'#4',sys:640,cur:640,cap:1500,unit:'g',step:50,expire:'2027-05-11'},
+    {id:5,name:'抹茶粉',layer:2,slot:'#5',sys:480,cur:480,cap:1200,unit:'g',step:50,expire:'2027-03-28'},
+    {id:6,name:'糖浆 · 香草',layer:3,slot:'#6',sys:620,cur:620,cap:1000,unit:'ml',step:50,expire:'2027-07-15'},
+    {id:7,name:'牛奶',layer:3,slot:'#7',sys:2000,cur:2000,cap:2000,unit:'ml',step:50,expire:'2027-01-20'},
+    {id:8,name:'纸杯',layer:4,slot:'#8',sys:100,cur:100,cap:100,unit:'个',step:5}
+  ];
+  let coffeeRecords=[
+    {type:'restock',title:'完成补货',sub:'补货 6 个料仓 · 3,780 g',at:at(1,10,5)},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 4,240 g / 620 ml / 100 个',at:at(2,18,40),chg:2,trend:'up'},
+    {type:'restock',title:'完成补货',sub:'补货 3 个料仓 · 1,380 g',at:at(5,9,15)},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 4,180 g / 590 ml / 80 个',at:at(7,17,22),chg:1,trend:'down'},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 4,320 g / 640 ml / 100 个',at:at(13,20,5),chg:0,trend:'zero'},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 4,260 g / 620 ml / 100 个',at:at(26,11,30),chg:3,trend:'up'},
+    {type:'restock',title:'完成补货',sub:'补货 2 个料仓 · 1,800 ml',at:at(34,15,10)},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 3,980 g / 540 ml / 90 个',at:at(72,9,50),chg:2,trend:'down'},
+    {type:'count',title:'盘点完成',sub:'实盘 8 个料仓 · 4,120 g / 600 ml / 100 个',at:at(108,16,25),chg:1,trend:'up'}
+  ];
+
   let mode='count',toastTimer;
   // 时间段：7=近 7 天 / 1m=近 1 个月 / 3m=近 3 个月 / custom=自定义
   let rangeKey='7',customFrom=null,customTo=null;
   const listWrap=document.getElementById('listWrap');
   const $=id=>document.getElementById(id);
   function toast(text){const el=$('toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+  function fmtNum(n){return Number(n||0).toLocaleString('en-US')}
+  function initial(name){const s=String(name||'').replace(/[^0-9A-Za-z\u4e00-\u9fa5]/g,'');return s.charAt(0)||'·'}
+
+  /* ---------- 商品型：差异与渲染 ---------- */
   function diffOf(item){return item.cur-item.sys}
   function diffClass(item){const d=diffOf(item);return d>0?'up':d<0?'down':'zero'}
   function diffText(item){const d=diffOf(item);return d>0?'+'+d:d<0?String(d):'0'}
@@ -247,6 +393,86 @@
       return '<div class="iv-row" id="row-'+item.id+'"><span class="thumb"><img src="'+item.img+'" alt="" onerror="this.style.display=\'none\'"></span><span class="iv-main"><span class="iv-name">'+item.name+'</span><span class="iv-meta">'+meta+'</span></span><span class="iv-side"><span class="iv-editor"><button data-dec="'+item.id+'" aria-label="减少">−</button><input data-input="'+item.id+'" type="text" inputmode="numeric" value="'+item.cur+'" aria-label="实盘数量"><button data-inc="'+item.id+'" aria-label="增加">+</button></span><span class="iv-diff '+diffClass(item)+'">'+diffText(item)+'</span></span></div>';
     }).join('');
   }
+
+  /* ---------- 咖啡机：临期 / 差异 / 行渲染 ---------- */
+  function daysTo(s){
+    if(!s)return null;
+    const p=s.split('-').map(Number);
+    const d=new Date(p[0],p[1]-1,p[2]);d.setHours(0,0,0,0);
+    const n=new Date();n.setHours(0,0,0,0);
+    return Math.round((d-n)/86400000);
+  }
+  function expTag(it){
+    if(!it.expire)return '<span class="exp">无到期日</span>';
+    const days=daysTo(it.expire);
+    if(days<0)return '<span class="exp danger">已过期</span>';
+    const cls=days<=15?'danger':days<=60?'warn':'';
+    const extra=days<=15?' · '+days+'天':'';
+    return '<span class="exp '+cls+'">到期 '+it.expire.slice(5)+extra+'</span>';
+  }
+  function coffeeChanged(){return coffee.filter(it=>it.cur!==it.sys)}
+  function coffeeRow(it){
+    const d=it.cur-it.sys;
+    const pct=it.cap?Math.min(100,it.cur/it.cap*100):0;
+    const sysPct=it.cap?Math.min(100,it.sys/it.cap*100):0;
+    const full=it.cur>=it.cap;
+    return '<div class="ivc-row" id="c-'+it.id+'">'
+      +'<span class="thumb"><i>'+initial(it.name)+'</i></span>'
+      +'<span class="ivc-name"><span class="nm">'+it.name+'</span>'+(it.cur===0?'<em class="badge danger">缺货</em>':'')+'</span>'
+      +'<span class="ivc-step">'
+        +'<button type="button" data-cdec="'+it.id+'" aria-label="减少 '+it.name+' 的实盘数量"'+(it.cur<=0?' disabled':'')+'>−</button>'
+        +'<input data-cinput="'+it.id+'" type="text" inputmode="numeric" autocomplete="off" value="'+it.cur+'" aria-label="'+it.name+' 实盘数量">'
+        +'<button type="button" data-cinc="'+it.id+'" aria-label="增加 '+it.name+' 的实盘数量"'+(it.cur>=it.cap?' disabled':'')+'>+</button>'
+      +'</span>'
+      +'<span class="ivc-meta"><span class="slot">料仓 '+it.slot+'</span><span class="sep">·</span><span>账面 <b>'+fmtNum(it.sys)+' '+it.unit+'</b></span>'+expTag(it)+'</span>'
+      +'<span class="ivc-prog"><i class="'+(full?'full':'')+'" style="width:'+pct+'%"></i>'+(d!==0?'<s style="left:calc('+sysPct+'% - 1px)"></s>':'')+'</span>'
+      +'<span class="ivc-qty"><b>'+fmtNum(it.cur)+' / '+fmtNum(it.cap)+' '+it.unit+'</b>'+(d!==0?'<span class="iv-diff sm '+(d>0?'up':'down')+'">'+(d>0?'+':'')+fmtNum(d)+' '+it.unit+'</span>':'')+'</span>'
+    +'</div>';
+  }
+  function updateCoffeeStats(){
+    const changed=coffeeChanged().length;
+    const exp=coffee.filter(it=>{const d=daysTo(it.expire);return d!==null&&d<=60&&d>=0}).length;
+    $('cStatTotal').textContent=coffee.length;
+    $('cStatDiff').textContent=changed;
+    $('cStatExp').textContent=exp;
+    $('cStatDiffCell').classList.toggle('on',changed>0);
+    $('cStatExpCell').classList.toggle('warn',exp>0);
+  }
+  function renderCoffeeCount(){
+    updateCoffeeStats();
+    let html='';
+    for(let l=1;l<=4;l++){
+      const group=coffee.filter(it=>it.layer===l);
+      if(!group.length)continue;
+      html+='<div class="ivc-group"><span>'+COFFEE_LAYER[l]+'</span><span>'+group.length+' 个料仓</span></div>'+group.map(coffeeRow).join('');
+    }
+    listWrap.innerHTML=html;
+  }
+  /* 只改当前行，避免输入时整页重绘导致失焦 */
+  function patchCoffeeRow(it,syncInput){
+    const row=listWrap.querySelector('#c-'+it.id);
+    if(!row)return;
+    const d=it.cur-it.sys;
+    const pct=it.cap?Math.min(100,it.cur/it.cap*100):0;
+    const sysPct=it.cap?Math.min(100,it.sys/it.cap*100):0;
+    row.querySelector('.ivc-prog').innerHTML='<i class="'+(it.cur>=it.cap?'full':'')+'" style="width:'+pct+'%"></i>'+(d!==0?'<s style="left:calc('+sysPct+'% - 1px)"></s>':'');
+    row.querySelector('.ivc-qty b').innerHTML=fmtNum(it.cur)+' / '+fmtNum(it.cap)+' '+it.unit;
+    const qty=row.querySelector('.ivc-qty');
+    const chip=qty.querySelector('.iv-diff');
+    if(d!==0){
+      const html='<span class="iv-diff sm '+(d>0?'up':'down')+'">'+(d>0?'+':'')+fmtNum(d)+' '+it.unit+'</span>';
+      if(chip)chip.outerHTML=html;else qty.insertAdjacentHTML('beforeend',html);
+    }else if(chip)chip.remove();
+    const nm=row.querySelector('.ivc-name');
+    const badge=nm.querySelector('.badge');
+    if(it.cur===0&&!badge)nm.insertAdjacentHTML('beforeend','<em class="badge danger">缺货</em>');
+    if(it.cur>0&&badge)badge.remove();
+    row.querySelector('[data-cdec]').disabled=it.cur<=0;
+    row.querySelector('[data-cinc]').disabled=it.cur>=it.cap;
+    if(syncInput){const input=row.querySelector('[data-cinput]');if(input)input.value=String(it.cur)}
+    updateCoffeeStats();syncFooter();
+  }
+
   /* ---------- 时间段筛选 ---------- */
   function monthsAgo(n){
     const d=new Date();d.setHours(0,0,0,0);
@@ -288,8 +514,9 @@
   const ICON_COUNT='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5M14 11v5"/></svg>';
 
   function renderRecords(){
+    const source=IS_COFFEE?coffeeRecords:records;
     const b=rangeBounds();
-    const list=records.filter(r=>r.at>=b.from&&r.at<=b.to).sort((x,y)=>y.at-x.at);
+    const list=source.filter(r=>r.at>=b.from&&r.at<=b.to).sort((x,y)=>y.at-x.at);
     $('rangeLabel').textContent=rangeText(b);
     $('rangeCount').textContent='共 '+list.length+' 条';
     if(!list.length){
@@ -301,22 +528,48 @@
       const label=isCount?'盘点':'补货';
       let chip='';
       if(isCount){
-        const d=r.diff||0,cls=d>0?'up':d<0?'down':'zero',txt=d>0?'+'+d:String(d);
-        chip='<span class="iv-diff sm '+cls+'">差异 '+txt+'</span>';
+        if(IS_COFFEE){
+          /* 咖啡机差异按料仓个数记，单位不适合求和 */
+          const n=r.chg||0;
+          chip='<span class="iv-diff sm '+(r.trend||'zero')+'">'+(n?n+' 个有差异':'无差异')+'</span>';
+        }else{
+          const d=r.diff||0,cls=d>0?'up':d<0?'down':'zero',txt=d>0?'+'+d:String(d);
+          chip='<span class="iv-diff sm '+cls+'">差异 '+txt+'</span>';
+        }
       }
       return '<div class="iv-rec"><span class="iv-rec-badge '+r.type+'">'+(isCount?ICON_COUNT:ICON_RESTOCK)+'</span>'
-        +'<span class="iv-rec-main"><span class="iv-rec-title">'+r.title+chip+'</span><span class="iv-rec-sub">'+r.sub+'</span></span>'
+        +'<span class="iv-rec-main"><span class="iv-rec-title">'+r.title+chip+'</span><span class="iv-rec-sub'+(IS_COFFEE?' two':'')+'">'+r.sub+'</span></span>'
         +'<span class="iv-rec-side"><span class="iv-rec-time">'+fmtTime(r.at)+'</span><span class="iv-rec-tag '+r.type+'">'+label+'</span></span></div>';
     }).join('');
+  }
+
+  function syncFooter(){
+    const btn=$('submitBtn');
+    if(IS_COFFEE){
+      const n=coffeeChanged().length;
+      btn.disabled=n===0;
+      btn.textContent=n?('保存盘点 · '+n+' 个料仓有差异'):'保存盘点结果';
+    }else{
+      btn.disabled=!anyChanged();
+      btn.textContent='保存盘点结果';
+    }
   }
   function render(){
     const isCount=mode==='count';
     $('rangeBar').style.display=isCount?'none':'';
     $('submitBtn').style.display=isCount?'':'none';
-    $('addBtn').hidden=!isCount;
+    $('addBtn').hidden=!isCount||IS_COFFEE;
     $('pageTitle').textContent=isCount?'库存盘点':'盘点记录';
-    if(isCount)renderCount();else renderRecords();
-    $('submitBtn').disabled=!anyChanged();
+    if(IS_COFFEE){
+      $('coffeeStats').hidden=!isCount;
+      $('coffeeHint').hidden=!isCount;
+    }
+    if(isCount){
+      if(IS_COFFEE)renderCoffeeCount();else renderCount();
+      syncFooter();
+    }else{
+      renderRecords();
+    }
   }
 
   /* ---------- 添加商品：搜索 / 扫码 ---------- */
@@ -411,7 +664,38 @@
     if(done)done.addEventListener('click',()=>{closeScan();flashRow(findStock(p.code).id)});
   }
 
-  $('addBtn').addEventListener('click',()=>{$('searchInput').value='';renderSearch();openOverlay('addOverlay')});
+  /* ---------- 咖啡机：保存前差异确认 ---------- */
+  function openSave(){
+    const rows=coffeeChanged();
+    if(!rows.length)return;
+    const byUnit={};
+    rows.forEach(it=>{const d=it.cur-it.sys;byUnit[it.unit]=(byUnit[it.unit]||0)+d});
+    const sum=Object.keys(byUnit).map(u=>{const v=byUnit[u];return (v>0?'+':'')+fmtNum(v)+' '+u}).join(' · ');
+    $('saveNote').innerHTML='<b>'+rows.length+' 个料仓</b>实盘与账面不一致，保存后按实盘更新库存。';
+    $('saveDiffs').innerHTML=rows.map(it=>{
+      const d=it.cur-it.sys;
+      return '<div class="dif-row"><span class="dif-main"><b>'+it.name+'</b><em>料仓 '+it.slot+' · 账面 '+fmtNum(it.sys)+' → 实盘 '+fmtNum(it.cur)+' '+it.unit+'</em></span>'
+        +'<span class="iv-diff '+(d>0?'up':'down')+'">'+(d>0?'+':'')+fmtNum(d)+' '+it.unit+'</span></div>';
+    }).join('');
+    $('saveSum').innerHTML='净差异 <b>'+sum+'</b> · 盘亏记为损耗，盘盈按实盘入库';
+    openOverlay('saveOverlay');
+  }
+  function commitCoffee(){
+    const rows=coffeeChanged();
+    const totals={};
+    coffee.forEach(it=>{totals[it.unit]=(totals[it.unit]||0)+it.cur});
+    const totalTxt=Object.keys(totals).map(u=>fmtNum(totals[u])+' '+u).join(' / ');
+    let up=0,down=0;
+    rows.forEach(it=>{it.cur>it.sys?up++:down++});
+    coffeeRecords.unshift({type:'count',title:'盘点完成',sub:'实盘 '+coffee.length+' 个料仓 · '+totalTxt,at:Date.now(),chg:rows.length,trend:up>down?'up':down>up?'down':'zero'});
+    coffee.forEach(it=>{it.sys=it.cur});
+    closeOverlay('saveOverlay');
+    toast('盘点已保存 · '+rows.length+' 个料仓按实盘更新');
+    render();
+  }
+
+  /* ---------- 事件 ---------- */
+  $('addBtn').addEventListener('click',()=>{if(IS_COFFEE)return;$('searchInput').value='';renderSearch();openOverlay('addOverlay')});
   $('searchInput').addEventListener('input',renderSearch);
   $('searchResults').addEventListener('click',event=>{
     const btn=event.target.closest('[data-code]');
@@ -461,6 +745,8 @@
     rangeKey='custom';syncRangeSeg();closeRange();renderRecords();
     toast('已筛选 '+s+' 至 '+e);
   });
+
+  /* 商品型：行内加减 / 输入 */
   listWrap.addEventListener('click',event=>{
     const inc=event.target.closest('[data-inc]'),dec=event.target.closest('[data-dec]');
     if(!inc&&!dec)return;
@@ -474,7 +760,41 @@
     const v=Math.max(0,Math.min(item.max,parseInt(input.value.replace(/\D/g,'')||'0',10)));
     item.cur=v;render();
   });
+
+  /* 咖啡机：料仓加减 / 输入（按料仓步进与上限） */
+  listWrap.addEventListener('click',event=>{
+    const inc=event.target.closest('[data-cinc]'),dec=event.target.closest('[data-cdec]');
+    if(!inc&&!dec)return;
+    const id=Number((inc||dec).dataset[inc?'cinc':'cdec']);
+    const it=coffee.find(x=>x.id===id);
+    if(!it)return;
+    const step=it.step||1;
+    it.cur=inc?Math.min(it.cap,it.cur+step):Math.max(0,it.cur-step);
+    patchCoffeeRow(it,true);
+    if(inc&&it.cur>=it.cap)toast(it.name+' 已达料仓上限 '+fmtNum(it.cap)+' '+it.unit);
+  });
+  listWrap.addEventListener('input',event=>{
+    const input=event.target.closest('[data-cinput]');if(!input)return;
+    const it=coffee.find(x=>x.id===Number(input.dataset.cinput));
+    if(!it)return;
+    const raw=input.value.replace(/\D/g,'');
+    if(raw==='')return;   /* 清空重输时不立刻按 0 记，失焦再落 */
+    const v=parseInt(raw,10);
+    const clamped=Math.min(it.cap,v);
+    it.cur=clamped;
+    if(clamped!==v){input.value=String(clamped);toast('超出上限，已按 '+fmtNum(it.cap)+' '+it.unit+' 记录')}
+    patchCoffeeRow(it,false);
+  });
+  listWrap.addEventListener('focusout',event=>{
+    const input=event.target.closest('[data-cinput]');if(!input)return;
+    const it=coffee.find(x=>x.id===Number(input.dataset.cinput));
+    if(!it)return;
+    if(input.value.trim()===''){it.cur=0;patchCoffeeRow(it,false)}
+    input.value=String(it.cur);
+  });
+
   $('submitBtn').addEventListener('click',function(){
+    if(IS_COFFEE){openSave();return}
     let diffTotal=0;stock.forEach(item=>{const d=diffOf(item);if(d!==0)diffTotal+=d});
     const total=stock.reduce((s,i)=>s+i.cur,0);
     records.unshift({type:'count',title:'盘点完成',sub:'实盘 '+total+' 件 · '+stock.length+' 个商品',at:Date.now(),diff:diffTotal});
@@ -482,6 +802,8 @@
     toast('盘点已保存');
     render();
   });
+  $('saveConfirm').addEventListener('click',commitCoffee);
+
   render();
 })();
 </script>
