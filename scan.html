@@ -156,7 +156,7 @@
     <div class="sc-result-card">
       <span class="sc-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span>
       <p class="t" id="resTitle">识别成功</p>
-      <p class="d" id="resName">曼谷机场 T1-A01 · VM-1001</p>
+      <p class="d" id="resName">机场 3 号柜 · VM-1004 · 左门</p>
       <p class="s">正在进入设备详情…</p>
     </div>
   </div>
@@ -174,7 +174,7 @@
         <p class="sheet-note">二维码损坏或反光无法识别时，可直接输入柜门铭牌上的设备编号。</p>
         <label class="field">
           <span class="field-label">设备编号</span>
-          <input class="input" id="manualInput" type="text" value="VM-1001" placeholder="例如 VM-1001" autocomplete="off">
+          <input class="input" id="manualInput" type="text" value="VM-1004" placeholder="例如 VM-1004" autocomplete="off">
         </label>
         <div class="sheet-btns">
           <button class="btn btn-ghost" type="button" data-close>取消</button>
@@ -206,22 +206,29 @@
     stream=null;
   }
 
-  /* 识别成功 → 进入开门柜单门 · 设备页 */
-  function go(id,name){
+  /* 演示与识别目标：双开门第二台 · 左门（?door=right 可演示右门） */
+  var DEMO_DOOR=new URLSearchParams(location.search).get('door')==='right'?'right':'left';
+  var DEMO={id:'VM-1004',name:'机场 3 号柜'};
+  function doorLabel(d){return d==='right'?'右门':'左门'}
+  function isDouble(id){return String(id||'').toUpperCase()==='VM-1004'}
+
+  /* 识别成功 → 双开门设备页（带门高亮），其他设备仍走单门页 */
+  function go(id,name,door){
     if(state!=='scanning')return;
     state='success';
     clearTimeout(autoTimer);
     stopCam();
-    document.getElementById('resName').textContent=(name||'扫码设备')+' · '+id;
+    var d=door||DEMO_DOOR, dbl=isDouble(id);
+    document.getElementById('resName').textContent=(name||'扫码设备')+' · '+id+(dbl?' · '+doorLabel(d):'');
     document.getElementById('result').classList.add('open');
     setTimeout(function(){
-      location.href='device-single-door.html?id='+encodeURIComponent(id)
-        +'&name='+encodeURIComponent(name||'扫码设备')+'&status=online';
+      var q='?id='+encodeURIComponent(id)+'&name='+encodeURIComponent(name||'扫码设备')+'&status=online';
+      location.href=(dbl?'device-double-door.html':'device-single-door.html')+q+(dbl?'&door='+d:'');
     },1000);
   }
   function codeToId(raw){
     var m=String(raw||'').match(/VM-\d{4,}/i);
-    return m?m[0].toUpperCase():'VM-1001';
+    return m?m[0].toUpperCase():DEMO.id;
   }
 
   /* 系统自带条码识别（Chrome 支持 BarcodeDetector 时启用） */
@@ -266,7 +273,7 @@
       app.classList.add('cam-on');
       detectLoop();
       /* 演示：取景就绪后模拟识别到柜门二维码（真实设备上由上面的条码识别接管） */
-      autoTimer=setTimeout(function(){ if(state==='scanning')go('VM-1001','曼谷机场 T1-A01') },4500);
+      autoTimer=setTimeout(function(){ if(state==='scanning')go(DEMO.id,DEMO.name) },4500);
     }).catch(noCamera);
   }
 
@@ -286,7 +293,7 @@
   /* 演示识别入口（相机不可用时点状态条） */
   camBadge.addEventListener('click',function(){
     if(camReady)return;
-    go('VM-1001','曼谷机场 T1-A01');
+    go(DEMO.id,DEMO.name);
   });
 
   /* 相册识别 */
@@ -295,7 +302,7 @@
   albumInput.addEventListener('change',function(){
     if(!albumInput.files||!albumInput.files.length)return;
     toast('正在识别图片…');
-    setTimeout(function(){go('VM-1001','曼谷机场 T1-A01')},1200);
+    setTimeout(function(){go(DEMO.id,DEMO.name)},1200);
   });
 
   /* 手动输入编号 */
@@ -311,7 +318,7 @@
   document.getElementById('manualConfirm').addEventListener('click',function(){
     var val=document.getElementById('manualInput').value.trim().toUpperCase();
     sheet.classList.remove('open');
-    go(val||'VM-1001','扫码设备');
+    go(val||DEMO.id,'扫码设备');
   });
 
   document.addEventListener('keydown',function(e){

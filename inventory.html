@@ -797,6 +797,15 @@
     if(IS_COFFEE){openSave();return}
     let diffTotal=0;stock.forEach(item=>{const d=diffOf(item);if(d!==0)diffTotal+=d});
     const total=stock.reduce((s,i)=>s+i.cur,0);
+    /* 本次盘点结果留给补货汇总页（restock-done）在补货详情下面记录 */
+    try{
+      const changed=stock.filter(item=>item.cur!==item.sys);
+      localStorage.setItem('vs:count:'+device,JSON.stringify({
+        at:Date.now(),device:device,count:stock.length,total:total,
+        sysTotal:stock.reduce((s,i)=>s+i.sys,0),diff:diffTotal,changed:changed.length,
+        items:changed.map(item=>({name:item.name,slot:item.slot||'',sys:item.sys,cur:item.cur,diff:item.cur-item.sys,isNew:!!item.isNew}))
+      }));
+    }catch(e){}
     records.unshift({type:'count',title:'盘点完成',sub:'实盘 '+total+' 件 · '+stock.length+' 个商品',at:Date.now(),diff:diffTotal});
     stock.forEach(item=>{item.sys=item.cur;item.isNew=false});
     toast('盘点已保存');

@@ -48,12 +48,6 @@ svg{display:block;flex:0 0 auto}
 .device-name{font-size:19px;line-height:26px;font-weight:700;letter-spacing:-.4px}
 .device-meta{margin-top:2px;display:flex;align-items:center;gap:6px;font-size:12px;line-height:17px;color:var(--text-2);font-variant-numeric:tabular-nums}
 .device-meta b{font-weight:600;color:var(--text-2)}
-.inv-btn{
-  flex:0 0 auto;height:32px;margin-top:1px;padding:0 11px;display:inline-flex;align-items:center;gap:5px;
-  border:1px solid #dce2ff;border-radius:10px;background:var(--brand-weak);
-  font-size:12px;line-height:18px;font-weight:700;color:var(--brand)
-}
-.inv-btn:active{background:#dce2ff}
 .door-tag{height:18px;padding:0 7px;display:inline-flex;align-items:center;border-radius:999px;background:var(--brand-weak);color:var(--brand);font-size:10px;line-height:18px;font-weight:700;letter-spacing:.2px}
 
 /* ---------- 双门：整柜补货，不再分左右门 ---------- */
@@ -330,7 +324,6 @@ svg{display:block;flex:0 0 auto}
 
 /* ---------- 计量补货：头部 / 行 / 进度 / 二次确认 ---------- */
 .device-acts{flex:0 0 auto;display:flex;align-items:center;gap:8px;margin-top:1px}
-.device-acts .inv-btn{margin-top:0}
 .fill-all{height:32px;padding:0 11px;display:inline-flex;align-items:center;border-radius:9px;background:var(--ok);color:#fff;font-size:12px;line-height:18px;font-weight:700;letter-spacing:.2px}
 .fill-all:active{background:#007a54}
 .fill-all:disabled{background:#c8d2e2;color:#fff;cursor:not-allowed}
@@ -414,10 +407,7 @@ svg{display:block;flex:0 0 auto}
         <div class="device-name">中央广场咖啡机</div>
         <div class="device-meta"><b id="deviceId">CM-2001</b><span class="meta-note">现磨 · 8 个料仓</span></div>
       </div>
-      <div class="device-acts"><button class="fill-all" id="fillAllBtn" type="button">全部补满</button><button class="inv-btn" id="inventoryBtn" type="button" aria-label="库存盘点">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h3v14H4zM10 5h3.5v14H10M17 5h3v14h-3"/></svg>
-        盘点
-      </button></div>
+      <div class="device-acts"><button class="fill-all" id="fillAllBtn" type="button">全部补满</button></div>
     </section>
   </div>
 
@@ -1393,9 +1383,6 @@ svg{display:block;flex:0 0 auto}
   el('fillAllBtn').addEventListener('click',function(){
     if(!fillScope().length){toast('当前没有待补料仓');return}
     openConfirm('all');
-  });
-  el('inventoryBtn').addEventListener('click',function(){
-    location.href='inventory.html?device='+encodeURIComponent(el('deviceId').textContent.trim());
   });
 
   document.addEventListener('keydown',function(event){

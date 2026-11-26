@@ -103,6 +103,44 @@ svg{display:block;flex:0 0 auto}
 .detail-cup b{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
 .detail-cup em{font-style:normal;font-size:10px;color:#3f8a72;white-space:nowrap}
 
+/* 本次盘点（开门柜补货时的盘点结果） */
+.badge.warn{background:#fff4e5;color:#b4560c}
+.count-time{margin-left:6px;font-size:11px;line-height:16px;font-weight:600;color:var(--text-3);font-variant-numeric:tabular-nums}
+.count-row{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 0;border-bottom:1px solid var(--line)}
+.count-row:last-of-type{border-bottom:0}
+.count-main{flex:1;min-width:0}
+.count-name{display:flex;align-items:center;gap:5px;font-size:13px;line-height:18px;font-weight:600}
+.count-name span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.count-new{
+  flex:0 0 auto;height:16px;padding:0 5px;border-radius:4px;
+  background:var(--brand-weak);color:var(--brand);font-size:10px;line-height:16px;font-weight:700;font-style:normal
+}
+.count-meta{
+  display:block;margin-top:1px;font-size:11px;line-height:15px;color:var(--text-2);
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.count-meta s{text-decoration:none;color:var(--text-3)}
+.count-pill{
+  flex:0 0 auto;min-width:50px;height:22px;padding:0 8px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;font-variant-numeric:tabular-nums
+}
+/* 盘盈=红，盘亏=绿（国内涨红跌绿惯例） */
+.count-pill.up{background:var(--danger-bg);color:var(--danger)}
+.count-pill.down{background:var(--ok-bg);color:var(--ok)}
+.count-total{
+  margin:8px 0 2px;padding:10px 12px;border-radius:10px;background:var(--surface-2);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;line-height:17px;color:var(--text-2)
+}
+.count-total b{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.count-empty{padding:12px 14px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;line-height:18px;color:var(--text-2)}
+.count-empty[hidden]{display:none}
+.count-go{
+  flex:0 0 auto;height:32px;padding:0 12px;border-radius:9px;
+  background:var(--brand-weak);color:var(--brand);font-size:12px;font-weight:700
+}
+.count-go:active{background:var(--brand-line,#dce2ff)}
+
 /* 备注 */
 .note-wrap{padding:11px 14px 14px}
 .note{width:100%;min-height:84px;padding:11px 12px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface);font-size:13px;line-height:20px;resize:none;outline:0}
@@ -249,6 +287,15 @@ svg{display:block;flex:0 0 auto}
       <div class="rows" id="detailRows"></div>
     </section>
 
+    <section class="card" id="countCard">
+      <div class="card-head">
+        <h3 class="card-title">本次盘点<span class="count-time" id="countTime"></span></h3>
+        <span class="badge muted" id="countBadge">未盘点</span>
+      </div>
+      <div class="rows" id="countRows"></div>
+      <div class="count-empty" id="countEmpty" hidden></div>
+    </section>
+
     <section class="card">
       <div class="card-head"><h3 class="card-title">备注</h3></div>
       <div class="note-wrap"><textarea class="note" placeholder="添加备注" aria-label="备注"></textarea></div>
@@ -378,6 +425,61 @@ svg{display:block;flex:0 0 auto}
   +'</b></div>'
   +(mode==='coffee'&&cups>0?'<div class="detail-cup"><span>预计可出杯 <b>约 '+fmt(cups)+' 杯</b></span><em>按粉料 9 g/杯 折算，仅供参考</em></div>':'');
 
+  /* ---------- 本次盘点：开门柜补货时录入的实盘结果 ---------- */
+  var devId=qs.get('id')||'';
+  function pad2(n){return (n<10?'0':'')+n}
+  function hhmm(ts){var d=new Date(ts);return pad2(d.getHours())+':'+pad2(d.getMinutes())}
+  function readCount(){
+    if(!devId)return null;
+    try{
+      var raw=localStorage.getItem('vs:count:'+devId);
+      if(!raw)return null;
+      var c=JSON.parse(raw);
+      /* 只认 24 小时内的盘点，避免旧数据串到本次补货 */
+      if(!c||!c.at||Date.now()-c.at>864e5)return null;
+      return c;
+    }catch(e){return null}
+  }
+  function renderCount(){
+    var card=document.getElementById('countCard');
+    /* 只有开门柜（单门 / 双门，带设备号）才记录盘点；咖啡机与其它入口不展示 */
+    if(mode!=='retail'||!devId){card.hidden=true;return}
+    card.hidden=false;
+    var rowsEl=document.getElementById('countRows'),
+        emptyEl=document.getElementById('countEmpty'),
+        badge=document.getElementById('countBadge'),
+        timeEl=document.getElementById('countTime'),
+        c=readCount();
+    if(!c){
+      rowsEl.hidden=true;rowsEl.innerHTML='';
+      emptyEl.hidden=false;timeEl.textContent='';
+      emptyEl.innerHTML='<span>本次补货还没有盘点记录。</span><button class="count-go" type="button" id="countGo">去盘点</button>';
+      badge.textContent='未盘点';badge.className='badge muted';
+      var go=document.getElementById('countGo');
+      if(go)go.addEventListener('click',function(){
+        location.href='inventory.html?device='+encodeURIComponent(devId);
+      });
+      return;
+    }
+    rowsEl.hidden=false;emptyEl.hidden=true;
+    timeEl.textContent=hhmm(c.at)+' 保存';
+    var changed=c.changed||(c.items||[]).length;
+    badge.textContent=changed?changed+' 项差异':'全部一致';
+    badge.className='badge '+(changed?'warn':'ok');
+    var list=c.items||[];
+    rowsEl.innerHTML=(list.length?list.map(function(it){
+      var up=it.diff>0;
+      return '<div class="count-row"><span class="count-main">'
+        +'<span class="count-name"><span>'+it.name+'</span>'+(it.isNew?'<em class="count-new">新增</em>':'')+'</span>'
+        +'<span class="count-meta">'+(it.slot?it.slot+' · ':'')+'账面 <s>'+fmt(it.sys)+'</s> → 实盘 '+fmt(it.cur)+' 件</span></span>'
+        +'<span class="count-pill '+(up?'up':'down')+'">'+(up?'+':'')+fmt(it.diff)+'</span></div>';
+    }).join(''):'<div class="count-row"><span class="count-main"><span class="count-name"><span>实盘与账面一致</span></span><span class="count-meta">'+fmt(c.count)+' 个商品无需调整库存</span></span></div>')
+    +'<div class="count-total"><span>实盘合计 <b>'+fmt(c.total)+' 件</b> · '+fmt(c.count)+' 个商品</span>'
+    +'<span>净差异 <b>'+(c.diff>0?'+':'')+fmt(c.diff||0)+' 件</b></span></div>';
+  }
+  renderCount();
+  window.addEventListener('pageshow',function(event){if(event.persisted)renderCount()});
+
   /* ---------- 补货照片 ---------- */
   var photoBtn=document.getElementById('photoBtn'),
       photoEmpty=document.getElementById('photoEmpty'),
@@ -431,7 +533,11 @@ svg{display:block;flex:0 0 auto}
     toast('照片已删除');
   });
 
-  document.getElementById('doneBtn').addEventListener('click',function(){appHome()});
+  document.getElementById('doneBtn').addEventListener('click',function(){
+    /* 本次任务的盘点结果只服务于本次汇总，完成后清掉，避免串到下一次补货 */
+    if(devId){try{localStorage.removeItem('vs:count:'+devId)}catch(e){}}
+    appHome();
+  });
   renderPhoto();
 })();
 </script>

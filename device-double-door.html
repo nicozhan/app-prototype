@@ -48,6 +48,14 @@
 .dd-door.is-open .dd-lbl{color:var(--brand)}
 .dd-note{margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2)}
 
+/* 扫码进入：命中的柜门与补货按钮转橙，其余保持品牌蓝 */
+.dd-door.is-scanned{border-color:rgba(255,122,0,.7);background:rgba(255,122,0,.08);box-shadow:inset 0 0 0 1px rgba(255,122,0,.4)}
+.dd-door.is-scanned .dd-lbl{color:#c25300}
+.dd-door.is-scanned .dd-lock{color:#e05f00}
+.dd-tags .badge.scan{background:#fff2e3;color:#c25300}
+.dd-actions .btn.is-scan{background:#fff3e6;color:#d95500;box-shadow:inset 0 0 0 1.5px rgba(255,122,0,.5)}
+.dd-actions .btn.is-scan:active{background:#ffe7cd}
+
 /* 底部补货 */
 
 /* 状态值 */
@@ -70,14 +78,6 @@
 .ph-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ph-reset{margin-top:10px}
   .dd-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  /* 右上角盘点（与单门一致） */
-  .sd-stock-btn{
-    height:32px;padding:0 10px;display:inline-flex;align-items:center;gap:5px;
-    border-radius:9px;background:var(--brand-weak);color:var(--brand);
-    font-size:13px;line-height:18px;font-weight:600;white-space:nowrap
-  }
-  .sd-stock-btn:active{background:var(--brand-line)}
-  .sd-stock-btn svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -90,19 +90,14 @@
       <button class="icon-btn" aria-label="返回首页" onclick="appHome(event,'home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </span>
     <h1>设备详情</h1>
-    <span class="nav-right">
-      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="盘点">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-        <span>盘点</span>
-      </button>
-    </span>
+    <span class="nav-right"></span>
   </header>
 
   <div class="body">
     <section class="dd-device">
       <div class="dd-device-name" data-device-name>机场 3 号柜</div>
       <div class="dd-device-id"><span data-device-id>VM-1004</span> · 双门开门柜</div>
-      <div class="dd-tags"><span class="badge ok" data-conn-badge><span class="dot ok"></span>在线</span></div>
+      <div class="dd-tags"><span class="badge ok" data-conn-badge><span class="dot ok"></span>在线</span><span class="badge scan" id="scanBadge" hidden>扫码 · 左门</span></div>
     </section>
 
     <section class="stats dd-stats" aria-label="商品与销量">
@@ -230,7 +225,25 @@
   document.getElementById('restockRight').addEventListener('click',function(){
     location.href='cabinet-restock-c.html'+base+'&cab=02&door=right';
   });
-  document.getElementById('inventoryBtn').addEventListener('click',function(){location.href='inventory.html?device=VM-1004'});
+
+  /* 扫码进入：?door=left|right 命中的那扇门与补货入口转橙，另一扇保持品牌蓝 */
+  var scanDoor=new URLSearchParams(location.search).get('door');
+  if(scanDoor==='left'||scanDoor==='right'){
+    var scanLabel=scanDoor==='right'?'右门':'左门';
+    var scanBtn=document.getElementById(scanDoor==='right'?'restockRight':'restockLeft');
+    if(scanBtn)scanBtn.classList.add('is-scan');
+    var scanDoorEl=document.querySelector('.dd-door[data-door="'+scanDoor+'"]');
+    if(scanDoorEl)scanDoorEl.classList.add('is-scanned');
+    var scanBadge=document.getElementById('scanBadge');
+    if(scanBadge){scanBadge.textContent='扫码 · '+scanLabel;scanBadge.hidden=false}
+    setTimeout(function(){
+      var t=document.getElementById('toast');
+      if(!t)return;
+      t.textContent='已识别'+scanLabel+'二维码';
+      t.classList.add('show');
+      setTimeout(function(){t.classList.remove('show')},2400);
+    },360);
+  }
 
   document.addEventListener('DOMContentLoaded',function(){
     if(!window.appUnlock)return;

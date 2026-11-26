@@ -32,14 +32,6 @@
 .ph-btn svg{width:14px;height:14px}
 .ph-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ph-reset{margin-top:10px}
-  /* 右上角盘点（与单门 / 双门一致） */
-  .sd-stock-btn{
-    height:32px;padding:0 10px;display:inline-flex;align-items:center;gap:5px;
-    border-radius:9px;background:var(--brand-weak);color:var(--brand);
-    font-size:13px;line-height:18px;font-weight:600;white-space:nowrap
-  }
-  .sd-stock-btn:active{background:var(--brand-line)}
-  .sd-stock-btn svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -52,12 +44,7 @@
       <button class="icon-btn" aria-label="返回" onclick="appHome(event,'home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </span>
     <h1>设备详情</h1>
-    <span class="nav-right">
-      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="盘点">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-        <span>盘点</span>
-      </button>
-    </span>
+    <span class="nav-right"></span>
   </header>
 
   <div class="body">
@@ -164,7 +151,6 @@
 <script>
 (function(){
   document.getElementById('restockBtn').addEventListener('click',function(){location.href='coffee-restock.html?id=CM-2001&name='+encodeURIComponent('中央广场咖啡机')});
-  document.getElementById('inventoryBtn').addEventListener('click',function(){location.href='inventory.html?device=CM-2001'});
   document.addEventListener('DOMContentLoaded',function(){
     if(window.appUnlock)appUnlock({buttons:'[data-unlock]',sheet:'unlockSheet',statusRow:'doorState',toast:'toast'});
   });

@@ -80,16 +80,6 @@
 /* 状态值 */
 .sd-ok{color:var(--ok)}
 
-/* 顶栏右上：盘点（文字按钮，标题保持绝对居中） */
-.sd-nav{position:relative;grid-template-columns:44px minmax(0,1fr) auto}
-.sd-nav h1{position:absolute;left:50%;transform:translateX(-50%);max-width:150px}
-.sd-stock-btn{
-  height:32px;padding:0 10px;display:inline-flex;align-items:center;gap:5px;
-  border-radius:9px;background:var(--brand-weak);color:var(--brand);
-  font-size:13px;line-height:18px;font-weight:600;white-space:nowrap
-}
-.sd-stock-btn:active{background:var(--brand-line)}
-.sd-stock-btn svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -97,17 +87,12 @@
 
   <div class="status"><span>9:41</span><span class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 4.2a10.5 10.5 0 0 1 14 0M3.5 6.8a6.7 6.7 0 0 1 9 0M6.2 9.4a2.7 2.7 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg><span class="battery"><i></i></span></span></div>
 
-  <header class="navbar sd-nav">
+  <header class="navbar">
     <span class="nav-left">
       <button class="icon-btn" aria-label="返回首页" onclick="appHome(event,'home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </span>
     <h1>设备详情</h1>
-    <span class="nav-right">
-      <button class="sd-stock-btn" id="inventoryBtn" type="button" aria-label="盘点">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-        <span>盘点</span>
-      </button>
-    </span>
+    <span class="nav-right"></span>
   </header>
 
   <div class="body">
@@ -237,10 +222,6 @@
     cabinet.classList.add('is-photo');
   }
 
-  /* 右上「盘点」：进库存盘点页，带上当前设备 */
-  document.getElementById('inventoryBtn').addEventListener('click',function(){
-    location.href='inventory.html?device='+encodeURIComponent(deviceId);
-  });
   document.getElementById('restockBtn').addEventListener('click',function(){
     location.href='cabinet-restock-c.html?id='+encodeURIComponent(deviceId)+'&name='+encodeURIComponent(deviceName);
   });
